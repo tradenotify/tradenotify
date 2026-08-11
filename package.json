@@ -1,7 +1,6 @@
 {
   "name": "tradenotify",
   "version": "1.0.0",
-  "type": "module",
   "description": "Sistema de alertas instantáneas de TradingView",
   "main": "index.js",
   "scripts": {

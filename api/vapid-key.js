@@ -1,9 +1,6 @@
-export default function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Método no permitido' });
-  }
-
+module.exports = (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   return res.status(200).json({
-    publicKey: process.env.VAPID_PUBLIC_KEY
+    publicKey: process.env.VAPID_PUBLIC_KEY || ''
   });
-}
+};

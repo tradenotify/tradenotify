@@ -74,6 +74,7 @@
       margin-top: 16px;
       font-size: 13px;
       font-weight: 500;
+      word-break: break-word;
     }
     .status.success { color: #3fb950; }
     .status.error { color: #f85149; }
@@ -136,10 +137,14 @@
 
         status.innerText = 'Conectando con el servidor...';
         const keyRes = await fetch('/api/vapid-key');
+        if (!keyRes.ok) {
+          const textErr = await keyRes.text();
+          throw new Error('Error al conectar con el servidor: ' + textErr);
+        }
         const keyData = await keyRes.json();
 
         if (!keyData.publicKey) {
-          throw new Error('No se pudo obtener la clave VAPID');
+          throw new Error('No se ha configurado la clave VAPID_PUBLIC_KEY en Vercel.');
         }
 
         const registration = await navigator.serviceWorker.register('/sw.js');
