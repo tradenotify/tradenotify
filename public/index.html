@@ -2,8 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Alertas en Tiempo Real</title>
+
+  <!-- Configuración PWA obligatoria para iOS (iPhone / Safari) -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TradeNotify">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -118,7 +126,7 @@
 
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         status.className = 'status error';
-        status.innerText = 'Este navegador no soporta notificaciones Web Push.';
+        status.innerText = 'Este navegador no soporta notificaciones Web Push. Asegúrate de abrir la app desde el icono guardado en tu pantalla de inicio de iOS.';
         return;
       }
 
@@ -137,6 +145,10 @@
 
         status.innerText = 'Conectando con el servidor...';
         const keyRes = await fetch('/api/vapid-key');
+        if (!keyRes.ok) {
+          const textErr = await keyRes.text();
+          throw new Error('Error al conectar con el servidor: ' + textErr);
+        }
         const keyData = await keyRes.json();
 
         if (!keyData.publicKey) {
