@@ -1,3 +1,12 @@
+// Forzar activación inmediata sin esperar a recargar la página
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+
 self.addEventListener('push', (event) => {
   let data = { title: '🚨 Nueva Alerta de Trading', body: 'Revisa tu gráfico' };
 
@@ -11,12 +20,12 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: '/icon.png',
-    badge: '/badge.png',
-    vibrate: [300, 100, 300, 100, 500], // Patrón de vibración agresivo
+    icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+    badge: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+    vibrate: [300, 100, 300, 100, 500],
     tag: 'trade-alert-' + Date.now(),
     renotify: true,
-    requireInteraction: true // Mantiene la notificación visible hasta que el usuario la toque
+    requireInteraction: true
   };
 
   event.waitUntil(
@@ -26,7 +35,6 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  // Al tocar la notificación, abre la web
   event.waitUntil(
     clients.openWindow('/')
   );

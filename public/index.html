@@ -126,7 +126,7 @@
 
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         status.className = 'status error';
-        status.innerText = 'Este navegador no soporta notificaciones Web Push. Asegúrate de abrir la app desde el icono guardado en tu pantalla de inicio de iOS.';
+        status.innerText = 'Este navegador no soporta notificaciones Web Push.';
         return;
       }
 
@@ -155,7 +155,12 @@
           throw new Error('No se ha configurado la clave VAPID_PUBLIC_KEY en Vercel.');
         }
 
-        const registration = await navigator.serviceWorker.register('/sw.js');
+        status.innerText = 'Activando Service Worker...';
+        await navigator.serviceWorker.register('/sw.js');
+        
+        // Esperar formalmente a que el Service Worker esté activo en iOS Safari
+        const registration = await navigator.serviceWorker.ready;
+
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
