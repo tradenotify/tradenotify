@@ -137,10 +137,6 @@
 
         status.innerText = 'Conectando con el servidor...';
         const keyRes = await fetch('/api/vapid-key');
-        if (!keyRes.ok) {
-          const textErr = await keyRes.text();
-          throw new Error('Error al conectar con el servidor: ' + textErr);
-        }
         const keyData = await keyRes.json();
 
         if (!keyData.publicKey) {
@@ -153,7 +149,7 @@
           applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
         });
 
-        status.innerText = 'Vinculando dispositivo...';
+        status.innerText = 'Vinculando dispositivo en base de datos...';
 
         const response = await fetch('/api/subscribe', {
           method: 'POST',
@@ -165,7 +161,13 @@
           })
         });
 
-        const result = await response.json();
+        const rawText = await response.text();
+        let result;
+        try {
+          result = JSON.parse(rawText);
+        } catch (e) {
+          throw new Error('Respuesta no válida del servidor: ' + rawText);
+        }
 
         if (response.ok) {
           status.className = 'status success';
