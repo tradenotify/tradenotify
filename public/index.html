@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeNotify - Alertas en Tiempo Real</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0b0e14;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .logo {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #58a6ff;
+      margin-bottom: 8px;
+    }
+    p {
+      color: #8b949e;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #58a6ff;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #238636;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #2ea043; }
+    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+    .status {
+      margin-top: 16px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .status.success { color: #3fb950; }
+    .status.error { color: #f85149; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">⚡</div>
+    <h1>TradeNotify</h1>
+    <p>Conecta este dispositivo para recibir alertas instantáneas de TradingView directamente en tu pantalla.</p>
+
+    <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
+    <button id="btnSubscribe" onclick="activarAlertas()">Activar Alertas en este Móvil</button>
+
+    <div id="statusMsg" class="status"></div>
+  </div>
+
+  <script>
+    // Tu Public Key de VAPID (Se inyectará al suscribir)
+    const VAPID_PUBLIC_KEY = BIpqeIg18bCLPLyWmuiwVDn9lBTiyoRcHk9VGLtILlB5W4iMsnCFqhzUjjGMv2J2jxWwtzmmGgs9tMA_pcmXISA;
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    async function activarAlertas() {
+      const token = document.getElementById('tokenInput').value.trim();
+      const status = document.getElementById('statusMsg');
+      const btn = document.getElementById('btnSubscribe');
+
+      if (!token) {
+        status.className = 'status error';
+        status.innerText = 'Por favor, introduce el token del canal.';
+        return;
+      }
+
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        status.className = 'status error';
+        status.innerText = 'Este navegador no soporta notificaciones Web Push.';
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        status.className = 'status';
+        status.innerText = 'Solicitando permisos...';
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          status.className = 'status error';
+          status.innerText = 'Permiso de notificaciones denegado.';
+          btn.disabled = false;
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        });
+
+        status.innerText = 'Vinculando con el servidor...';
+
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channel_token: token,
+            subscription: subscription,
+            device_info: navigator.userAgent
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          status.className = 'status success';
+          status.innerText = '✅ ¡Dispositivo vinculado con éxito!';
+        } else {
+          status.className = 'status error';
+          status.innerText = '❌ ' + (result.error || 'Error al vincular.');
+          btn.disabled = false;
+        }
+
+      } catch (err) {
+        console.error(err);
+        status.className = 'status error';
+        status.innerText = 'Error: ' + err.message;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

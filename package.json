@@ -1,0 +1,25 @@
+{
+  "name": "tradenotify",
+  "version": "1.0.0",
+  "description": "<!--\r **tradenotify/tradenotify** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tradenotify/tradenotify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tradenotify/tradenotify/issues"
+  },
+  "homepage": "https://github.com/tradenotify/tradenotify#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
+    "web-push": "^3.6.7"
+  }
+}
