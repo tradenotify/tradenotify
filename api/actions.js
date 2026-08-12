@@ -5,6 +5,21 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || ''
 );
 
+// Función auxiliar para leer el body de forma segura en Vercel
+async function parseBody(req) {
+  if (req.body) {
+    if (typeof req.body === 'object') return req.body;
+    try { return JSON.parse(req.body); } catch (e) { return {}; }
+  }
+  return new Promise((resolve) => {
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(data)); } catch (e) { resolve({}); }
+    });
+  });
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
@@ -14,10 +29,7 @@ module.exports = async (req, res) => {
     const pathname = url.pathname;
     const method = req.method;
 
-    let body = req.body || {};
-    if (typeof body === 'string') {
-      try { body = JSON.parse(body); } catch (e) { body = {}; }
-    }
+    const body = await parseBody(req);
 
     // 1. REGISTRAR CANAL (MENTOR O ALUMNO / TRIAL 14 DÍAS)
     if (pathname.includes('/register-channel') && method === 'POST') {
