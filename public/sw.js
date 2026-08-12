@@ -1,41 +1,55 @@
-// Forzar activación inmediata sin esperar a recargar la página
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('push', (event) => {
-  let data = { title: '🚨 Nueva Alerta de Trading', body: 'Revisa tu gráfico' };
-
-  if (event.data) {
-    try {
+  let data = {};
+  
+  try {
+    if (event.data) {
       data = event.data.json();
-    } catch (e) {
-      data.body = event.data.text();
     }
+  } catch (e) {
+    data = {
+      title: '🚨 TradeNotify Alerta',
+      body: event.data ? event.data.text() : 'Nueva señal de trading recibida'
+    };
   }
 
+  const title = data.title || '🚨 TradeNotify Alerta';
   const options = {
-    body: data.body,
-    icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    badge: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    vibrate: [300, 100, 300, 100, 500],
-    tag: 'trade-alert-' + Date.now(),
+    body: data.body || 'Señal de mercado ejecutada',
+    icon: '/icon.png',
+    badge: '/icon.png',
+    vibrate: [200, 100, 200],
+    tag: 'tradenotify-' + Date.now(),
     renotify: true,
-    requireInteraction: true
+    data: data.data || { url: '/app' }
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    self.registration.showNotification(title, options)
   );
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  const urlToOpen = (event.notification.data && event.notification.data.url) || '/app';
+
   event.waitUntil(
-    clients.openWindow('/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (let client of windowClients) {
+        if (client.url.includes(urlToOpen) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
   );
 });
