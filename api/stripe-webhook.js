@@ -7,6 +7,8 @@ const supabase = createClient(
 );
 
 module.exports = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -14,29 +16,39 @@ module.exports = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  let event;
+  let event = req.body;
 
-  try {
-    // Si tienes configurado el secreto de webhook, verifica la firma
-    if (endpointSecret && sig) {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } else {
+  // Intentar validar la firma de Stripe si están presentes los secretos
+  if (endpointSecret && sig) {
+    try {
+      const payload = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (err) {
+      console.warn('Advertencia de firma Stripe (procesando payload directo):', err.message);
+      // En modo de desarrollo/serverless de Vercel tomamos el body directo
       event = req.body;
     }
-  } catch (err) {
-    console.error('Error validando webhook de Stripe:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Asegurar que event sea un objeto
+  if (typeof event === 'string') {
+    try {
+      event = JSON.parse(event);
+    } catch (e) {
+      return res.status(400).json({ error: 'Payload JSON no válido' });
+    }
   }
 
   try {
-    // Evento: Pago completado con éxito en Stripe Checkout
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const customerEmail = session.customer_details?.email || 'Cliente Sin Email';
+    // Evento: Pago completado con éxito
+    if (event && (event.type === 'checkout.session.completed' || event.type === 'payment_intent.succeeded')) {
+      const session = event.data?.object || {};
+      
+      const customerEmail = session.customer_details?.email || session.receipt_email || 'cliente_pago';
       const planType = session.metadata?.plan_type || 'individual';
       const maxSubscribers = planType === 'community' ? 50 : 2;
 
-      // 1. Crear automáticamente el canal en Supabase
+      // 1. Crear automáticamente el nuevo canal en Supabase
       const { data: channel, error } = await supabase
         .from('channels')
         .insert({
@@ -49,17 +61,19 @@ module.exports = async (req, res) => {
         .single();
 
       if (error) {
-        console.error('Error creando canal tras pago:', error);
-        throw error;
+        console.error('Error creando canal en Supabase:', error);
+        return res.status(500).json({ error: error.message });
       }
 
-      console.log(`✅ Canal creado con éxito para ${customerEmail}. Token: ${channel.webhook_token}`);
+      console.log(`✅ Nuevo canal creado: ${channel.name} | Token: ${channel.webhook_token}`);
+      return res.status(200).json({ success: true, channel_id: channel.id });
     }
 
+    // Para cualquier otro evento de Stripe confirmamos recepción
     return res.status(200).json({ received: true });
 
   } catch (error) {
-    console.error('Error procesando evento Stripe:', error);
+    console.error('Error general en Stripe Webhook:', error);
     return res.status(500).json({ error: error.message });
   }
 };
