@@ -18,7 +18,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // 1. Validar el canal en Supabase
     const { data: channel, error: chError } = await supabase
       .from('channels')
       .select('*')
@@ -29,16 +28,6 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'Canal no encontrado o token inválido' });
     }
 
-    if (!channel.is_active) {
-      return res.status(403).json({ error: 'El canal está pausado' });
-    }
-
-    if (channel.is_trial && channel.trial_ends_at) {
-      if (new Date() > new Date(channel.trial_ends_at)) {
-        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado.' });
-      }
-    }
-
     let payload = req.body;
     if (typeof payload === 'string') {
       try { payload = JSON.parse(payload); } catch (e) {}
@@ -47,13 +36,11 @@ module.exports = async (req, res) => {
     const alertTitle = payload.title || '🚨 TradeNotify Alerta';
     const alertBody = payload.message || (typeof payload === 'object' ? JSON.stringify(payload) : String(payload));
 
-    // 2. Guardar alerta en el historial de Supabase
     await supabase.from('alerts').insert({
       channel_id: channel.id,
       payload: { title: alertTitle, message: alertBody }
     });
 
-    // 3. Enviar notificación a través de la API REST de OneSignal
     const onesignalPayload = {
       app_id: "fbb3e9f0-75f8-49d5-bdad-296daa278ad0",
       included_segments: ["All"],
@@ -74,9 +61,9 @@ module.exports = async (req, res) => {
     const result = await response.json();
 
     return res.status(200).json({ 
-      success: true, 
-      recipients: result.recipients || 1,
-      onesignal_response: result 
+      success: response.ok, 
+      http_status: response.status,
+      onesignal_error: result 
     });
 
   } catch (error) {
