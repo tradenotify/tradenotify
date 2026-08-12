@@ -195,7 +195,6 @@
     .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
     .back-link:hover { color: #a5b4fc; }
 
-    .divider { border: 0; height: 1px; background: var(--glass-border); margin: 20px 0; }
     .register-box { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px; margin-top: 15px; }
   </style>
 </head>
@@ -256,10 +255,7 @@
       <div id="feedList" class="feed-container"></div>
 
       <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
-        <div style="display: flex; gap: 8px;">
-          <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
-          <button class="btn-secondary" style="padding: 10px; color: #34d399;" onclick="solicitarPermisoOneSignal()">🔔 Activar Push</button>
-        </div>
+        <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
         <button class="btn-secondary" style="padding: 10px; color: #f87171;" onclick="desvincular()">Desconectar</button>
       </div>
     </div>
@@ -422,13 +418,6 @@
         status.innerText = '❌ ' + err.message;
         btn.disabled = false;
       }
-    }
-
-    async function solicitarPermisoOneSignal() {
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.Slidedown.promptPush();
-      });
     }
 
     async function mostrarPanelLive(token) {
