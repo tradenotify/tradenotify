@@ -25,7 +25,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // 1. Validar el canal
     const { data: channel, error: chError } = await supabase
       .from('channels')
       .select('*')
@@ -40,15 +39,6 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'El canal está pausado' });
     }
 
-    // 2. Comprobar si el periodo de prueba expiró
-    if (channel.is_trial && channel.trial_ends_at) {
-      const now = new Date();
-      const expiresAt = new Date(channel.trial_ends_at);
-      if (now > expiresAt) {
-        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado.' });
-      }
-    }
-
     let payload = req.body;
     if (typeof payload === 'string') {
       try { payload = JSON.parse(payload); } catch (e) {}
@@ -57,32 +47,32 @@ module.exports = async (req, res) => {
     const alertTitle = payload.title || '🚨 TradeNotify Alerta';
     const alertBody = payload.message || (typeof payload === 'object' ? JSON.stringify(payload) : String(payload));
 
-    // 3. Registrar alerta en Supabase con verificación
-    const { error: insertError } = await supabase.from('alerts').insert({
+    // Guardar en Supabase
+    await supabase.from('alerts').insert({
       channel_id: channel.id,
       payload: { title: alertTitle, message: alertBody }
     });
 
-    if (insertError) {
-      console.error('Error insertando en alerts:', insertError);
-    }
-
-    // 4. Obtener suscriptores
+    // Obtener suscriptores
     const { data: subscribers, error: subError } = await supabase
       .from('subscribers')
       .select('*')
       .eq('channel_id', channel.id);
 
     if (subError || !subscribers || subscribers.length === 0) {
-      return res.status(200).json({ success: true, count: 0, message: 'Alerta guardada (Sin dispositivos vinculados)' });
+      return res.status(200).json({ success: true, count: 0, message: 'Alerta guardada (Sin dispositivos)' });
     }
 
-    // 5. Enviar Notificación Push
     const notificationPayload = JSON.stringify({
       title: alertTitle,
       body: alertBody,
       data: { url: '/app' }
     });
+
+    const pushOptions = {
+      TTL: 60,
+      urgency: 'high' // Obligatorio para despertar la pantalla en iOS
+    };
 
     const pushPromises = subscribers.map((sub) => {
       const pushConfig = {
@@ -93,7 +83,7 @@ module.exports = async (req, res) => {
         }
       };
 
-      return webpush.sendNotification(pushConfig, notificationPayload).catch((err) => {
+      return webpush.sendNotification(pushConfig, notificationPayload, pushOptions).catch((err) => {
         if (err.statusCode === 404 || err.statusCode === 410) {
           return supabase.from('subscribers').delete().eq('id', sub.id);
         }
