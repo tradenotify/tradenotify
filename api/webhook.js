@@ -1,11 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-const webpush = require('web-push');
-
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT || 'mailto:soporte@tradenotify.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
 
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
@@ -25,6 +18,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // 1. Validar el canal en Supabase
     const { data: channel, error: chError } = await supabase
       .from('channels')
       .select('*')
@@ -39,6 +33,12 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'El canal está pausado' });
     }
 
+    if (channel.is_trial && channel.trial_ends_at) {
+      if (new Date() > new Date(channel.trial_ends_at)) {
+        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado.' });
+      }
+    }
+
     let payload = req.body;
     if (typeof payload === 'string') {
       try { payload = JSON.parse(payload); } catch (e) {}
@@ -47,51 +47,37 @@ module.exports = async (req, res) => {
     const alertTitle = payload.title || '🚨 TradeNotify Alerta';
     const alertBody = payload.message || (typeof payload === 'object' ? JSON.stringify(payload) : String(payload));
 
-    // Guardar en Supabase
+    // 2. Guardar alerta en el historial de Supabase
     await supabase.from('alerts').insert({
       channel_id: channel.id,
       payload: { title: alertTitle, message: alertBody }
     });
 
-    // Obtener suscriptores
-    const { data: subscribers, error: subError } = await supabase
-      .from('subscribers')
-      .select('*')
-      .eq('channel_id', channel.id);
-
-    if (subError || !subscribers || subscribers.length === 0) {
-      return res.status(200).json({ success: true, count: 0, message: 'Alerta guardada (Sin dispositivos)' });
-    }
-
-    const notificationPayload = JSON.stringify({
-      title: alertTitle,
-      body: alertBody,
-      data: { url: '/app' }
-    });
-
-    const pushOptions = {
-      TTL: 60,
-      urgency: 'high' // Obligatorio para despertar la pantalla en iOS
+    // 3. Enviar notificación a través de la API REST de OneSignal
+    const onesignalPayload = {
+      app_id: "fbb3e9f0-75f8-49d5-bdad-296daa278ad0",
+      included_segments: ["All"],
+      headings: { en: alertTitle },
+      contents: { en: alertBody },
+      url: "https://tradenotify-lac.vercel.app/app"
     };
 
-    const pushPromises = subscribers.map((sub) => {
-      const pushConfig = {
-        endpoint: sub.endpoint,
-        keys: {
-          auth: sub.keys_auth,
-          p256dh: sub.keys_p256dh
-        }
-      };
-
-      return webpush.sendNotification(pushConfig, notificationPayload, pushOptions).catch((err) => {
-        if (err.statusCode === 404 || err.statusCode === 410) {
-          return supabase.from('subscribers').delete().eq('id', sub.id);
-        }
-      });
+    const response = await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "Basic nsjpxewfjuulu7rvygiyjmun6"
+      },
+      body: JSON.stringify(onesignalPayload)
     });
 
-    await Promise.all(pushPromises);
-    return res.status(200).json({ success: true, count: subscribers.length });
+    const result = await response.json();
+
+    return res.status(200).json({ 
+      success: true, 
+      recipients: result.recipients || 1,
+      onesignal_response: result 
+    });
 
   } catch (error) {
     return res.status(500).json({ error: error.message });
