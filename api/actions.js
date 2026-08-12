@@ -13,25 +13,31 @@ module.exports = async (req, res) => {
   const method = req.method;
 
   try {
-    // 1. REGISTRAR CANAL DE ALUMNO
+    // 1. REGISTRAR CANAL (MENTOR O ALUMNO / TRIAL 14 DÍAS)
     if (pathname.includes('/register-channel') && method === 'POST') {
-      const { name } = req.body;
+      const { name, role } = req.body;
       if (!name || !name.trim()) {
         return res.status(400).json({ error: 'El nombre del canal es obligatorio' });
       }
       
+      const channelRole = role === 'mentor' ? 'mentor' : 'student';
       const token = 'tn_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      
       const { data, error } = await supabase
         .from('channels')
-        .insert({ name: name.trim(), webhook_token: token, role: 'student', is_trial: true })
+        .insert({ 
+          name: name.trim(), 
+          webhook_token: token, 
+          role: channelRole, 
+          is_trial: true 
+        })
         .select()
         .single();
 
       if (error) throw error;
-      return res.status(200).json({ success: true, token: data.webhook_token, message: 'Canal creado con éxito' });
+      return res.status(200).json({ success: true, token: data.webhook_token, role: channelRole });
     }
 
-    // Token común para las siguientes acciones de mentor/alumno
     const token = url.searchParams.get('token') || req.body?.token;
 
     // 2. GENERAR CÓDIGO DE INVITACIÓN
