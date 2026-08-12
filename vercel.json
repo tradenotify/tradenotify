@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/app", "destination": "/app.html" },
     { "source": "/api/generate-code", "destination": "/api/actions" },
     { "source": "/api/list-codes", "destination": "/api/actions" },
     { "source": "/api/redeem-code", "destination": "/api/actions" },
