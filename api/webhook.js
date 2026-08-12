@@ -53,17 +53,17 @@ module.exports = async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "Basic nsjpxewfjuulu7rvygiyjmun6"
+        "Authorization": "Key nsjpxewfjuulu7rvygiyjmun6"
       },
       body: JSON.stringify(onesignalPayload)
     });
 
-    const result = await response.json();
+    const resultText = await response.text();
 
     return res.status(200).json({ 
       success: response.ok, 
       http_status: response.status,
-      onesignal_error: result 
+      onesignal_response: resultText 
     });
 
   } catch (error) {
