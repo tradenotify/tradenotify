@@ -460,7 +460,6 @@
         localStorage.setItem('tradenotify_token', token);
         actualizarWebhookModal(token);
         
-        // Pedir permisos nativos a OneSignal automáticamente al vincular
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function(OneSignal) {
           await OneSignal.Slidedown.promptPush();
@@ -498,6 +497,14 @@
 
         if (res.ok) {
           document.getElementById('channelTitle').innerText = data.channel.name;
+
+          // LOGICA DE OCULTACIÓN DEL BOTÓN DE GUÍA POR ROL
+          const guideBtn = document.querySelector('.guide-btn');
+          if (data.channel.role !== 'mentor') {
+            guideBtn.style.display = 'none'; // Oculta si no es mentor
+          } else {
+            guideBtn.style.display = 'flex'; // Muestra si es mentor
+          }
 
           if (data.channel.is_expired) {
             document.getElementById('expiredModal').style.display = 'flex';
