@@ -7,28 +7,26 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-  let data = {};
-  
-  try {
-    if (event.data) {
-      data = event.data.json();
+  let title = '🚨 TradeNotify Alerta';
+  let body = 'Nueva señal recibida';
+  let url = '/app';
+
+  if (event.data) {
+    try {
+      const data = event.data.json();
+      if (data.title) title = String(data.title);
+      if (data.body) body = String(data.body);
+      if (data.message) body = String(data.message);
+      if (data.data && data.data.url) url = data.data.url;
+    } catch (e) {
+      body = event.data.text();
     }
-  } catch (e) {
-    data = {
-      title: '🚨 TradeNotify Alerta',
-      body: event.data ? event.data.text() : 'Nueva señal de trading recibida'
-    };
   }
 
-  const title = data.title || '🚨 TradeNotify Alerta';
   const options = {
-    body: data.body || 'Señal de mercado ejecutada',
+    body: body,
     icon: '/icon.png',
-    badge: '/icon.png',
-    vibrate: [200, 100, 200],
-    tag: 'tradenotify-' + Date.now(),
-    renotify: true,
-    data: data.data || { url: '/app' }
+    data: { url: url }
   };
 
   event.waitUntil(
