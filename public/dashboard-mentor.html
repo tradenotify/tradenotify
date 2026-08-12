@@ -113,6 +113,19 @@
     .status-used { color: #f87171; font-size: 12px; font-weight: 600; }
     .status-active { color: #34d399; font-size: 12px; font-weight: 600; }
 
+    /* MODAL INTEGRADO DE REVOCACIÓN */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+      display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px);
+    }
+    .modal-content {
+      background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top); border-radius: 18px;
+      padding: 24px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+    }
+    .modal-content h3 { font-size: 17px; color: #fff; font-weight: 700; margin-bottom: 8px; }
+    .modal-content p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
+
     .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
     .back-link:hover { color: #a5b4fc; }
   </style>
@@ -133,7 +146,7 @@
       <button onclick="verificarMentor()">Acceder al Panel</button>
       <div id="authStatus" class="status-msg"></div>
 
-      <a href="/app" class="back-link">← Ir a la App de Alertas</a>
+      <a href="/app.html" class="back-link">← Ir a la App de Alertas</a>
     </div>
 
     <!-- DASHBOARD SECTION -->
@@ -156,7 +169,21 @@
 
   </div>
 
+  <!-- MODAL DE CONFIRMACIÓN DE REVOCACIÓN -->
+  <div id="revokeModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>⚠️ ¿Revocar acceso al alumno?</h3>
+      <p>El alumno dejará de estar vinculado a tu mentoría de forma inmediata.</p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-secondary" onclick="cerrarModalRevoke()">Cancelar</button>
+        <button class="btn-primary" style="background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.4); color: #f87171;" onclick="ejecutarRevocacion()">Sí, Revocar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    let studentToRevokeId = null;
+
     const savedMentorToken = localStorage.getItem('mentor_token');
     if (savedMentorToken) {
       document.getElementById('mentorToken').value = savedMentorToken;
@@ -193,7 +220,6 @@
     }
 
     async function cargarDatosMentor(token) {
-      // 1. Cargar Códigos
       const resCodes = await fetch(`/api/list-codes?token=${token}`);
       const dataCodes = await resCodes.json();
       const codesList = document.getElementById('codesList');
@@ -209,7 +235,6 @@
         `).join('');
       }
 
-      // 2. Cargar Alumnos
       const resStudents = await fetch(`/api/mentor-students?token=${token}`);
       const dataStudents = await resStudents.json();
       const studentsList = document.getElementById('studentsList');
@@ -223,7 +248,7 @@
               <div style="font-weight:600; color:#fff;">${s.channels?.name || 'Alumno sin nombre'}</div>
               <div style="font-size:11px; color:var(--text-muted);">Vinculado: ${new Date(s.created_at).toLocaleDateString()}</div>
             </div>
-            <button class="btn-danger" onclick="revocarAcceso('${s.id}')">Revocar</button>
+            <button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button>
           </div>
         `).join('');
       }
@@ -235,16 +260,27 @@
       cargarDatosMentor(token);
     }
 
-    async function revocarAcceso(mentorshipId) {
-      if (!confirm('¿Seguro que deseas revocar el acceso a este alumno?')) return;
+    function abrirModalRevoke(mentorshipId) {
+      studentToRevokeId = mentorshipId;
+      document.getElementById('revokeModal').style.display = 'flex';
+    }
+
+    function cerrarModalRevoke() {
+      studentToRevokeId = null;
+      document.getElementById('revokeModal').style.display = 'none';
+    }
+
+    async function ejecutarRevocacion() {
+      if (!studentToRevokeId) return;
       const token = localStorage.getItem('mentor_token');
       
       await fetch('/api/mentor-students', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, mentorship_id: mentorshipId })
+        body: JSON.stringify({ token, mentorship_id: studentToRevokeId })
       });
 
+      cerrarModalRevoke();
       cargarDatosMentor(token);
     }
 
