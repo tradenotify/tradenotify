@@ -2,70 +2,255 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Panel Mentor</title>
   <link rel="icon" type="image/png" href="/icon.png">
+
   <style>
     :root {
       --bg: #070913;
       --glass-bg: rgba(18, 24, 38, 0.75);
       --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-border-top: rgba(255, 255, 255, 0.18);
       --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --green: #10b981;
       --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-    body { background: var(--bg); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-    .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 26px; width: 100%; max-width: 500px; }
-    input { width: 100%; padding: 12px; background: #0a0e17; border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; margin-bottom: 10px; }
-    button { width: 100%; padding: 12px; background: var(--accent-gradient); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; }
-    .code-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--glass-border); font-family: monospace; }
-    .status-used { color: #f87171; }
-    .status-active { color: #34d399; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 20px;
+      padding: 26px;
+      max-width: 520px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .header { text-align: center; margin-bottom: 22px; }
+    .header img {
+      width: 54px; height: 54px; border-radius: 14px;
+      box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;
+    }
+    .header h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    .header p { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; }
+    
+    input {
+      width: 100%; padding: 14px;
+      background: rgba(10, 14, 23, 0.75);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px; color: #fff; font-size: 14.5px;
+      margin-bottom: 12px; outline: none; transition: border-color 0.2s;
+    }
+    input:focus { border-color: #818cf8; box-shadow: 0 0 10px rgba(129, 140, 248, 0.3); }
+    
+    button {
+      width: 100%; padding: 13px;
+      background: var(--accent-gradient);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px; color: #ffffff;
+      font-size: 14.5px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45); }
+    
+    button.btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      color: var(--text); box-shadow: none;
+    }
+    button.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); }
+
+    button.btn-danger {
+      background: rgba(248, 113, 113, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171; box-shadow: none; font-size: 12px; padding: 6px 12px; width: auto;
+    }
+    button.btn-danger:hover { background: rgba(248, 113, 113, 0.25); }
+
+    .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; }
+    .status-msg.error { color: #f87171; }
+
+    .section-title {
+      font-size: 14px; font-weight: 700; color: #a5b4fc;
+      margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .list-container {
+      max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
+    }
+    .list-container::-webkit-scrollbar { width: 4px; }
+    .list-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+
+    .list-item {
+      background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border);
+      border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+    }
+    .status-used { color: #f87171; font-size: 12px; font-weight: 600; }
+    .status-active { color: #34d399; font-size: 12px; font-weight: 600; }
+
+    .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
+    .back-link:hover { color: #a5b4fc; }
   </style>
 </head>
 <body>
+
   <div class="card">
-    <h1>Panel Mentor</h1>
+    
+    <!-- AUTH SECTION -->
     <div id="authSection">
+      <div class="header">
+        <img src="/icon.png" alt="TradeNotify Logo">
+        <h1>Panel Mentor</h1>
+        <p>Introduce tu token de mentor para gestionar tus códigos y alumnos.</p>
+      </div>
+
       <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor">
-      <button onclick="verificarMentor()">Acceder</button>
+      <button onclick="verificarMentor()">Acceder al Panel</button>
+      <div id="authStatus" class="status-msg"></div>
+
+      <a href="/app" class="back-link">← Ir a la App de Alertas</a>
     </div>
+
+    <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
-      <button onclick="generarCodigo()">+ Generar Nuevo Código</button>
-      <div id="codesList" style="margin-top:20px;"></div>
+      <div class="header" style="margin-bottom: 16px;">
+        <h1 style="font-size: 18px;">⚡ Gestión de Mentoría</h1>
+        <p style="font-size: 12px;">Controla accesos y altas de alumnos</p>
+      </div>
+
+      <button onclick="generarCodigo()" style="margin-bottom: 16px;">+ Generar Nuevo Código de Invitación</button>
+
+      <div class="section-title"><span>🎟️ Códigos Generados</span></div>
+      <div id="codesList" class="list-container"></div>
+
+      <div class="section-title" style="margin-top: 18px;"><span>🎓 Alumnos Activos</span></div>
+      <div id="studentsList" class="list-container"></div>
+
+      <button class="btn-secondary" style="margin-top: 20px; font-size: 13px; padding: 10px;" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
+
   </div>
 
   <script>
-    async function verificarMentor() {
+    const savedMentorToken = localStorage.getItem('mentor_token');
+    if (savedMentorToken) {
+      document.getElementById('mentorToken').value = savedMentorToken;
+      verificarMentor(true);
+    }
+
+    async function verificarMentor(auto = false) {
       const token = document.getElementById('mentorToken').value.trim();
-      const res = await fetch(`/api/alerts?token=${token}`);
-      const data = await res.json();
-      if (res.ok && data.channel.role === 'mentor') {
-        localStorage.setItem('mentor_token', token);
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('dashboardSection').style.display = 'block';
-        cargarCodigos(token);
-      } else {
-        alert('Acceso denegado: No eres mentor.');
+      const status = document.getElementById('authStatus');
+
+      if (!token) return;
+
+      try {
+        const res = await fetch(`/api/alerts?token=${token}`);
+        const data = await res.json();
+
+        if (res.ok && data.channel.role === 'mentor') {
+          localStorage.setItem('mentor_token', token);
+          document.getElementById('authSection').style.display = 'none';
+          document.getElementById('dashboardSection').style.display = 'block';
+          cargarDatosMentor(token);
+        } else {
+          if (!auto) {
+            status.className = 'status-msg error';
+            status.innerText = '❌ Acceso denegado: El token no pertenece a un mentor.';
+          }
+        }
+      } catch (e) {
+        if (!auto) {
+          status.className = 'status-msg error';
+          status.innerText = '❌ Error de conexión.';
+        }
       }
     }
 
-    async function cargarCodigos(token) {
-      const res = await fetch(`/api/list-codes?token=${token}`);
-      const data = await res.json();
-      const list = document.getElementById('codesList');
-      list.innerHTML = data.codes.map(c => `
-        <div class="code-item">
-          <span>${c.code}</span>
-          <span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span>
-        </div>
-      `).join('');
+    async function cargarDatosMentor(token) {
+      // 1. Cargar Códigos
+      const resCodes = await fetch(`/api/list-codes?token=${token}`);
+      const dataCodes = await resCodes.json();
+      const codesList = document.getElementById('codesList');
+      
+      if (!dataCodes.codes || dataCodes.codes.length === 0) {
+        codesList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">No hay códigos generados.</div>';
+      } else {
+        codesList.innerHTML = dataCodes.codes.map(c => `
+          <div class="list-item">
+            <span style="font-family:var(--mono); color:#93c5fd;">${c.code}</span>
+            <span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span>
+          </div>
+        `).join('');
+      }
+
+      // 2. Cargar Alumnos
+      const resStudents = await fetch(`/api/mentor-students?token=${token}`);
+      const dataStudents = await resStudents.json();
+      const studentsList = document.getElementById('studentsList');
+
+      if (!dataStudents.students || dataStudents.students.length === 0) {
+        studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">No tienes alumnos vinculados.</div>';
+      } else {
+        studentsList.innerHTML = dataStudents.students.map(s => `
+          <div class="list-item">
+            <div>
+              <div style="font-weight:600; color:#fff;">${s.channels?.name || 'Alumno sin nombre'}</div>
+              <div style="font-size:11px; color:var(--text-muted);">Vinculado: ${new Date(s.created_at).toLocaleDateString()}</div>
+            </div>
+            <button class="btn-danger" onclick="revocarAcceso('${s.id}')">Revocar</button>
+          </div>
+        `).join('');
+      }
     }
 
     async function generarCodigo() {
       const token = localStorage.getItem('mentor_token');
       await fetch(`/api/generate-code?token=${token}`);
-      cargarCodigos(token);
+      cargarDatosMentor(token);
+    }
+
+    async function revocarAcceso(mentorshipId) {
+      if (!confirm('¿Seguro que deseas revocar el acceso a este alumno?')) return;
+      const token = localStorage.getItem('mentor_token');
+      
+      await fetch('/api/mentor-students', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, mentorship_id: mentorshipId })
+      });
+
+      cargarDatosMentor(token);
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem('mentor_token');
+      location.reload();
     }
   </script>
 </body>

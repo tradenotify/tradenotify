@@ -13,14 +13,11 @@
   <meta name="apple-mobile-web-app-title" content="TradeNotify">
   <meta name="theme-color" content="#070913">
 
-  <!-- OneSignal SDK Web -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "fbb3e9f0-75f8-49d5-bdad-296daa278ad0",
-      });
+      await OneSignal.init({ appId: "fbb3e9f0-75f8-49d5-bdad-296daa278ad0" });
     });
   </script>
 
@@ -83,39 +80,27 @@
 
     .header { text-align: center; margin-bottom: 22px; }
     .header img {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      box-shadow: 0 0 20px var(--accent-glow);
-      margin-bottom: 8px;
+      width: 54px; height: 54px; border-radius: 14px;
+      box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;
     }
     .header h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
     .header p { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; line-height: 1.45; }
     
     input {
-      width: 100%;
-      padding: 14px;
+      width: 100%; padding: 14px;
       background: rgba(10, 14, 23, 0.75);
       border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14.5px;
-      margin-bottom: 12px;
-      outline: none;
-      transition: border-color 0.2s;
+      border-radius: 10px; color: #fff; font-size: 14.5px;
+      margin-bottom: 12px; outline: none; transition: border-color 0.2s;
     }
     input:focus { border-color: #818cf8; box-shadow: 0 0 10px rgba(129, 140, 248, 0.3); }
     
     button {
-      width: 100%;
-      padding: 13px;
+      width: 100%; padding: 13px;
       background: var(--accent-gradient);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      color: #ffffff;
-      font-size: 14.5px;
-      font-weight: 600;
-      cursor: pointer;
+      border-radius: 10px; color: #ffffff;
+      font-size: 14.5px; font-weight: 600; cursor: pointer;
       box-shadow: 0 4px 15px var(--accent-glow);
       transition: all 0.2s ease;
     }
@@ -125,8 +110,7 @@
     button.btn-secondary {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--glass-border);
-      color: var(--text);
-      box-shadow: none;
+      color: var(--text); box-shadow: none;
     }
     button.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-1px); }
     
@@ -135,32 +119,17 @@
     .status-msg.success { color: #34d399; }
 
     .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--glass-border);
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 14px; border-bottom: 1px solid var(--glass-border); margin-bottom: 16px;
     }
     .live-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--green);
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 4px 10px;
-      border-radius: 20px;
+      display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+      color: var(--green); background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 20px;
     }
     .pulse-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      animation: pulse 1.8s infinite;
+      width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse 1.8s infinite;
     }
     @keyframes pulse {
       0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
@@ -169,134 +138,65 @@
     }
 
     .feed-container {
-      max-height: 280px;
-      overflow-y: auto;
-      margin: 14px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-right: 4px;
+      max-height: 280px; overflow-y: auto; margin: 14px 0;
+      display: flex; flex-direction: column; gap: 10px; padding-right: 4px;
     }
     .feed-container::-webkit-scrollbar { width: 4px; }
     .feed-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
 
     .alert-card {
-      background: rgba(10, 14, 23, 0.75);
-      border: 1px solid var(--glass-border);
-      border-left: 3px solid #818cf8;
-      border-radius: 10px;
-      padding: 12px 14px;
-      text-align: left;
+      background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border);
+      border-left: 3px solid #818cf8; border-radius: 10px; padding: 12px 14px; text-align: left;
     }
     .alert-card .alert-time { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
     .alert-card .alert-title { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 3px; }
     .alert-card .alert-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; white-space: pre-wrap; font-family: var(--mono); }
     
     .guide-btn {
-      width: 100%;
-      background: rgba(99, 102, 241, 0.08);
-      border: 1px dashed rgba(129, 140, 248, 0.4);
-      color: #c7d2fe;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      box-shadow: none;
+      width: 100%; background: rgba(99, 102, 241, 0.08);
+      border: 1px dashed rgba(129, 140, 248, 0.4); color: #c7d2fe;
+      font-size: 13px; font-weight: 600; padding: 10px; border-radius: 10px;
+      cursor: pointer; margin-bottom: 12px; display: flex; align-items: center;
+      justify-content: center; gap: 6px; box-shadow: none;
     }
     .guide-btn:hover { background: rgba(99, 102, 241, 0.15); border-color: #818cf8; transform: none; }
 
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 100;
-      backdrop-filter: blur(8px);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+      display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px);
     }
     .modal-content {
-      background: rgba(18, 24, 38, 0.95);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
-      border-radius: 18px;
-      padding: 24px;
-      max-width: 500px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      text-align: left;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+      background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top); border-radius: 18px;
+      padding: 24px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; text-align: left; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
     }
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--glass-border);
-      padding-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;
     }
     .modal-header h2 { font-size: 17px; color: #fff; font-weight: 700; }
-    .btn-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 22px;
-      width: auto;
-      padding: 0 4px;
-      cursor: pointer;
-      box-shadow: none;
-    }
+    .btn-close { background: none; border: none; color: var(--text-muted); font-size: 22px; width: auto; padding: 0 4px; cursor: pointer; box-shadow: none; }
     .btn-close:hover { color: #fff; transform: none; }
     .step-box {
-      margin-bottom: 14px;
-      background: rgba(10, 14, 23, 0.7);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      padding: 12px;
+      margin-bottom: 14px; background: rgba(10, 14, 23, 0.7);
+      border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px;
     }
     .step-box h4 { font-size: 13px; color: #a5b4fc; margin-bottom: 6px; }
     .step-box p { font-size: 12px; color: var(--text-muted); line-height: 1.45; margin-bottom: 8px; }
     .code-snippet {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--glass-border);
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: #93c5fd;
-      white-space: pre-wrap;
-      word-break: break-all;
+      background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border);
+      border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; color: #93c5fd; white-space: pre-wrap; word-break: break-all;
     }
     .copy-btn-sm {
-      padding: 5px 10px;
-      font-size: 11px;
-      margin-top: 6px;
-      width: auto;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--glass-border);
-      color: #e2e8f0;
-      box-shadow: none;
-      border-radius: 6px;
+      padding: 5px 10px; font-size: 11px; margin-top: 6px; width: auto;
+      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); color: #e2e8f0; box-shadow: none; border-radius: 6px;
     }
     .copy-btn-sm:hover { background: rgba(255, 255, 255, 0.12); transform: none; }
 
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
-    }
+    .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
     .back-link:hover { color: #a5b4fc; }
+
+    .divider { border: 0; height: 1px; background: var(--glass-border); margin: 20px 0; }
+    .register-box { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px; margin-top: 15px; }
   </style>
 </head>
 <body>
@@ -316,6 +216,12 @@
       
       <button id="btnSub" onclick="vincularCanal()">Activar Alertas en este Dispositivo</button>
       <div id="statusMsg" class="status-msg"></div>
+
+      <div class="register-box">
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; text-align: center;">¿Eres alumno nuevo y no tienes token?</p>
+        <input type="text" id="newNameInput" placeholder="Nombre de tu Canal o Alias" style="margin-bottom: 8px; font-size: 13px; padding: 10px;">
+        <button class="btn-secondary" style="font-size: 13px; padding: 10px;" onclick="crearCanalAlumno()">🚀 Crear mi Canal Gratis</button>
+      </div>
       
       <button class="guide-btn" style="margin-top: 16px;" onclick="abrirModal()">
         📖 ¿Cómo configurar TradingView?
@@ -438,6 +344,38 @@
       alert('¡Copiado al portapapeles!');
     }
 
+    async function crearCanalAlumno() {
+      const name = document.getElementById('newNameInput').value.trim();
+      const status = document.getElementById('statusMsg');
+
+      if (!name) {
+        status.className = 'status-msg error';
+        status.innerText = 'Escribe un nombre para tu canal.';
+        return;
+      }
+
+      try {
+        status.className = 'status-msg';
+        status.innerText = 'Creando tu canal...';
+
+        const res = await fetch('/api/register-channel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Error al crear canal');
+
+        document.getElementById('tokenInput').value = data.token;
+        status.className = 'status-msg success';
+        status.innerText = '¡Canal creado! Tu token se ha rellenado arriba.';
+      } catch (err) {
+        status.className = 'status-msg error';
+        status.innerText = '❌ ' + err.message;
+      }
+    }
+
     async function vincularCanal() {
       const token = document.getElementById('tokenInput').value.trim();
       const inviteCode = document.getElementById('inviteCodeInput').value.trim();
@@ -455,7 +393,6 @@
         status.className = 'status-msg';
         status.innerText = 'Validando canal y permisos...';
 
-        // Si introduce un código de invitación, lo canjeamos primero
         if (inviteCode) {
           const redeemRes = await fetch('/api/redeem-code', {
             method: 'POST',
@@ -469,9 +406,7 @@
         }
 
         const res = await fetch(`/api/alerts?token=${token}`);
-        if (!res.ok) {
-          throw new Error('Token inválido o canal no encontrado.');
-        }
+        if (!res.ok) throw new Error('Token inválido o canal no encontrado.');
 
         localStorage.setItem('tradenotify_token', token);
         actualizarWebhookModal(token);
