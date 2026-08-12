@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeNotify - Panel Mentor</title>
+  <link rel="icon" type="image/png" href="/icon.png">
+  <style>
+    :root {
+      --bg: #070913;
+      --glass-bg: rgba(18, 24, 38, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --text: #f8fafc;
+    }
+    body { background: var(--bg); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+    .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 26px; width: 100%; max-width: 500px; }
+    input { width: 100%; padding: 12px; background: #0a0e17; border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; margin-bottom: 10px; }
+    button { width: 100%; padding: 12px; background: var(--accent-gradient); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; }
+    .code-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--glass-border); font-family: monospace; }
+    .status-used { color: #f87171; }
+    .status-active { color: #34d399; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Panel Mentor</h1>
+    <div id="authSection">
+      <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor">
+      <button onclick="verificarMentor()">Acceder</button>
+    </div>
+    <div id="dashboardSection" style="display:none;">
+      <button onclick="generarCodigo()">+ Generar Nuevo Código</button>
+      <div id="codesList" style="margin-top:20px;"></div>
+    </div>
+  </div>
+
+  <script>
+    async function verificarMentor() {
+      const token = document.getElementById('mentorToken').value.trim();
+      const res = await fetch(`/api/alerts?token=${token}`);
+      const data = await res.json();
+      if (res.ok && data.channel.role === 'mentor') {
+        localStorage.setItem('mentor_token', token);
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        cargarCodigos(token);
+      } else {
+        alert('Acceso denegado: No eres mentor.');
+      }
+    }
+
+    async function cargarCodigos(token) {
+      const res = await fetch(`/api/list-codes?token=${token}`);
+      const data = await res.json();
+      const list = document.getElementById('codesList');
+      list.innerHTML = data.codes.map(c => `
+        <div class="code-item">
+          <span>${c.code}</span>
+          <span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span>
+        </div>
+      `).join('');
+    }
+
+    async function generarCodigo() {
+      const token = localStorage.getItem('mentor_token');
+      await fetch(`/api/generate-code?token=${token}`);
+      cargarCodigos(token);
+    }
+  </script>
+</body>
+</html>

@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     const { data: invite, error: inviteError } = await supabase
       .from('invitation_codes')
       .select('id, mentor_id, is_used')
-      .eq('code', code)
+      .eq('code', code.trim().toUpperCase()) // Añadido trim() y toUpperCase()
       .eq('is_used', false)
       .single();
 

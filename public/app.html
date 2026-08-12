@@ -308,10 +308,12 @@
       <div class="header">
         <img src="/icon.png" alt="TradeNotify Logo">
         <h1>TradeNotify</h1>
-        <p>Introduce tu token para acceder al historial y activar las notificaciones nativas.</p>
+        <p>Introduce tu token y opcionalmente el código de invitación de tu mentor.</p>
       </div>
 
       <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
+      <input type="text" id="inviteCodeInput" placeholder="Código de Invitación (Opcional)">
+      
       <button id="btnSub" onclick="vincularCanal()">Activar Alertas en este Dispositivo</button>
       <div id="statusMsg" class="status-msg"></div>
       
@@ -438,6 +440,7 @@
 
     async function vincularCanal() {
       const token = document.getElementById('tokenInput').value.trim();
+      const inviteCode = document.getElementById('inviteCodeInput').value.trim();
       const status = document.getElementById('statusMsg');
       const btn = document.getElementById('btnSub');
 
@@ -450,7 +453,20 @@
       try {
         btn.disabled = true;
         status.className = 'status-msg';
-        status.innerText = 'Validando canal...';
+        status.innerText = 'Validando canal y permisos...';
+
+        // Si introduce un código de invitación, lo canjeamos primero
+        if (inviteCode) {
+          const redeemRes = await fetch('/api/redeem-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ student_token: token, code: inviteCode })
+          });
+          const redeemData = await redeemRes.json();
+          if (!redeemRes.ok) {
+            throw new Error(redeemData.error || 'Error al canjear el código de invitación.');
+          }
+        }
 
         const res = await fetch(`/api/alerts?token=${token}`);
         if (!res.ok) {
@@ -498,12 +514,11 @@
         if (res.ok) {
           document.getElementById('channelTitle').innerText = data.channel.name;
 
-          // LOGICA DE OCULTACIÓN DEL BOTÓN DE GUÍA POR ROL
           const guideBtn = document.querySelector('.guide-btn');
           if (data.channel.role !== 'mentor') {
-            guideBtn.style.display = 'none'; // Oculta si no es mentor
+            guideBtn.style.display = 'none';
           } else {
-            guideBtn.style.display = 'flex'; // Muestra si es mentor
+            guideBtn.style.display = 'flex';
           }
 
           if (data.channel.is_expired) {
