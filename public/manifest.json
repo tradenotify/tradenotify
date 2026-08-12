@@ -1,16 +1,16 @@
 {
   "name": "TradeNotify",
   "short_name": "TradeNotify",
-  "start_url": "/",
+  "description": "Alertas instantáneas de TradingView con latencia cero",
+  "start_url": "/app",
   "display": "standalone",
-  "background_color": "#0b0e14",
-  "theme_color": "#0b0e14",
-  "orientation": "portrait",
+  "background_color": "#070913",
+  "theme_color": "#070913",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "src": "/icon.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ]

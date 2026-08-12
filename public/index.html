@@ -7,6 +7,12 @@
   
   <meta name="description" content="Recibe notificaciones instantáneas de TradingView directamente en la pantalla de bloqueo de tu iPhone o PC sin retrasos.">
   
+  <!-- Iconos de Aplicación y Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#070913">
+
   <style>
     :root {
       --bg: #070913;
@@ -58,18 +64,17 @@
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       font-size: 19px;
       font-weight: 800;
       color: #fff;
       text-decoration: none;
       letter-spacing: -0.02em;
     }
-    .brand-icon {
-      background: var(--accent-gradient);
-      padding: 4px 8px;
+    .brand img {
+      width: 32px;
+      height: 32px;
       border-radius: 8px;
-      font-size: 14px;
       box-shadow: 0 0 12px var(--accent-glow);
     }
     .nav-actions {
@@ -306,11 +311,11 @@
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Navbar con Isotipo Vectorial -->
   <div class="container">
     <nav>
       <a href="#" class="brand">
-        <span class="brand-icon">⚡</span>
+        <img src="/icon.svg" alt="TradeNotify Logo">
         TradeNotify
       </a>
       <div class="nav-actions">
@@ -323,7 +328,7 @@
     </nav>
   </div>
 
-  <!-- Hero -->
+  <!-- Hero Section -->
   <header class="hero container">
     <div class="badge" data-i18n="hero.badge">⚡ Latencia Cero en iOS & PC</div>
     <h1>
@@ -380,7 +385,7 @@
     </div>
   </section>
 
-  <!-- Planes -->
+  <!-- Planes y Precios -->
   <section id="planes" class="section-wrap container">
     <div class="section-header">
       <h2 data-i18n="pricing.title">Planes y Precios</h2>
@@ -430,6 +435,7 @@
     </div>
   </footer>
 
+  <!-- SCRIPT DE TRADUCCIÓN REACTIVO -->
   <script>
     const translations = {
       es: {
