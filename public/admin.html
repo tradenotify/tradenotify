@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeNotify - Panel de Administración</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0b0e14;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #30363d;
+    }
+    h1 { font-size: 24px; color: #58a6ff; }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 120px;
+      gap: 12px;
+      align-items: end;
+    }
+    label { font-size: 13px; color: #8b949e; display: block; margin-bottom: 6px; }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    button {
+      padding: 10px 16px;
+      background: #238636;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #2ea043; }
+    button.btn-danger { background: #da3633; }
+    button.btn-danger:hover { background: #f85149; }
+    button.btn-secondary { background: #30363d; }
+    button.btn-secondary:hover { background: #484f58; }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      text-align: left;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #21262d;
+      font-size: 14px;
+    }
+    th { color: #8b949e; font-weight: 500; font-size: 13px; }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-active { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+    .badge-paused { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+    .token-box {
+      background: #0d1117;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #79c0ff;
+      cursor: pointer;
+      user-select: all;
+    }
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: #0b0e14;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .login-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pantalla de Login con Clave Maestra -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2 style="margin-bottom: 16px; color: #58a6ff;">🔒 Acceso Administrador</h2>
+      <input type="password" id="secretInput" placeholder="Clave Maestra ADMIN_SECRET" style="margin-bottom: 16px;">
+      <button onclick="login()" style="width: 100%;">Entrar al Panel</button>
+      <div id="loginError" style="color: #f85149; font-size: 13px; margin-top: 12px;"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>⚡ TradeNotify Admin</h1>
+      <button class="btn-secondary" onclick="logout()">Cerrar Sesión</button>
+    </header>
+
+    <!-- Crear Nuevo Canal -->
+    <div class="card">
+      <h2 style="font-size: 16px; margin-bottom: 16px;">Crear Nuevo Canal / Cliente</h2>
+      <div class="form-grid">
+        <div>
+          <label>Nombre del Canal</label>
+          <input type="text" id="chName" placeholder="Ej: Estrategia NQ 5m o Cliente Juan">
+        </div>
+        <div>
+          <label>Tipo de Plan</label>
+          <select id="chPlan">
+            <option value="individual">Individual (Uso Personal)</option>
+            <option value="community">Comunidad (Mentor / Multidispositivo)</option>
+          </select>
+        </div>
+        <div>
+          <label>Cupo Dispositivos</label>
+          <input type="number" id="chLimit" value="1" min="1" max="1000">
+        </div>
+        <button onclick="crearCanal()">Crear</button>
+      </div>
+    </div>
+
+    <!-- Lista de Canales -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 16px;">Canales Activos</h2>
+        <button class="btn-secondary" onclick="cargarCanales()">🔄 Actualizar</button>
+      </div>
+
+      <table id="channelsTable">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Dispositivos</th>
+            <th>Token / Webhook</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="channelsBody">
+          <!-- Se rellena con JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let adminSecret = sessionStorage.getItem('admin_secret') || '';
+
+    if (adminSecret) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      cargarCanales();
+    }
+
+    async function login() {
+      const key = document.getElementById('secretInput').value.trim();
+      if (!key) return;
+
+      try {
+        const res = await fetch('/api/admin', {
+          headers: { 'x-admin-secret': key }
+        });
+
+        if (res.ok) {
+          adminSecret = key;
+          sessionStorage.setItem('admin_secret', key);
+          document.getElementById('loginOverlay').style.display = 'none';
+          cargarCanales();
+        } else {
+          document.getElementById('loginError').innerText = 'Clave incorrecta.';
+        }
+      } catch (e) {
+        document.getElementById('loginError').innerText = 'Error de conexión.';
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin_secret');
+      location.reload();
+    }
+
+    async function cargarCanales() {
+      try {
+        const res = await fetch('/api/admin', {
+          headers: { 'x-admin-secret': adminSecret }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('channelsBody');
+        tbody.innerHTML = '';
+
+        if (!data.channels || data.channels.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#8b949e;">No hay canales creados.</td></tr>';
+          return;
+        }
+
+        data.channels.forEach(ch => {
+          const webhookUrl = `${window.location.origin}/api/webhook?token=${ch.webhook_token}`;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-weight:600;">${ch.name}</td>
+            <td><span style="text-transform:capitalize;">${ch.plan_type}</span></td>
+            <td>${ch.current_subscribers} / ${ch.max_subscribers}</td>
+            <td>
+              <span class="token-box" title="Clic para copiar Webhook" onclick="copiar('${webhookUrl}')">
+                📋 Copiar URL Webhook
+              </span>
+            </td>
+            <td>
+              <span class="badge ${ch.is_active ? 'badge-active' : 'badge-paused'}">
+                ${ch.is_active ? 'Activo' : 'Pausado'}
+              </span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding:4px 8px; font-size:12px;" onclick="toggleCanal('${ch.id}', ${!ch.is_active})">
+                ${ch.is_active ? 'Pausar' : 'Activar'}
+              </button>
+              <button class="btn-danger" style="padding:4px 8px; font-size:12px;" onclick="eliminarCanal('${ch.id}')">
+                Eliminar
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        alert('Error al cargar canales: ' + err.message);
+      }
+    }
+
+    async function crearCanal() {
+      const name = document.getElementById('chName').value.trim();
+      const plan_type = document.getElementById('chPlan').value;
+      const max_subscribers = document.getElementById('chLimit').value;
+
+      if (!name) return alert('Introduce un nombre para el canal');
+
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-secret': adminSecret
+        },
+        body: JSON.stringify({ name, plan_type, max_subscribers })
+      });
+
+      if (res.ok) {
+        document.getElementById('chName').value = '';
+        cargarCanales();
+      } else {
+        const err = await res.json();
+        alert('Error: ' + err.error);
+      }
+    }
+
+    async function toggleCanal(channel_id, is_active) {
+      await fetch('/api/admin', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-secret': adminSecret
+        },
+        body: JSON.stringify({ channel_id, is_active })
+      });
+      cargarCanales();
+    }
+
+    async function eliminarCanal(channel_id) {
+      if (!confirm('¿Seguro que quieres eliminar este canal y todos sus suscriptores?')) return;
+
+      await fetch('/api/admin', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-secret': adminSecret
+        },
+        body: JSON.stringify({ channel_id })
+      });
+      cargarCanales();
+    }
+
+    function copiar(texto) {
+      navigator.clipboard.writeText(texto);
+      alert('¡URL del Webhook copiada al portapapeles!');
+    }
+  </script>
+</body>
+</html>
