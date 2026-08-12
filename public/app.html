@@ -316,10 +316,10 @@
     <!-- VISTA 2: PANEL EN VIVO CON HISTORIAL -->
     <div id="viewLive" style="display: none;">
       
-      <!-- Banner de Trial Activo -->
+      <!-- Banner de Trial Activo (Lleva a la sección de planes en la portada) -->
       <div id="trialBanner" class="trial-banner" style="display: none;">
         <span>⏳ <b>Prueba de 14 días</b>: Te quedan <b id="trialDaysCount">14</b> días</span>
-        <a href="https://buy.stripe.com/test_cNibJ07cJ9qKd3KgOM6Zy00" style="color:#34d399; font-weight:bold; text-decoration:none; font-size:11.5px; border-bottom: 1px solid #34d399;">Activar Plan Real →</a>
+        <a href="/#planes" style="color:#34d399; font-weight:bold; text-decoration:none; font-size:11.5px; border-bottom: 1px solid #34d399;">Activar Plan Real →</a>
       </div>
 
       <div class="dashboard-header">
@@ -384,14 +384,14 @@
       <div style="font-size: 42px; margin-bottom: 10px;">⏳</div>
       <h2 style="color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Tu prueba de 14 días ha finalizado</h2>
       <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 24px; line-height: 1.5;">
-        Para seguir recibiendo señales instantáneas de TradingView en tu iPhone y PC sin interrupciones, activa tu suscripción.
+        Para seguir recibiendo señales instantáneas de TradingView en tu iPhone y PC sin interrupciones, elige tu plan y activa tu suscripción.
       </p>
 
-      <a href="https://buy.stripe.com/test_cNibJ07cJ9qKd3KgOM6Zy00" style="display: block; width: 100%; padding: 14px; background: var(--accent-gradient); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px var(--accent-glow);">
-        Suscribirme por 9 € / mes
+      <a href="/#planes" style="display: block; width: 100%; padding: 14px; background: var(--accent-gradient); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px var(--accent-glow);">
+        Ver Planes y Suscribirme
       </a>
       
-      <a href="/" class="back-link" style="margin-top: 16px;">Ver todos los planes</a>
+      <a href="/" class="back-link" style="margin-top: 16px;">← Volver a la portada</a>
     </div>
   </div>
 
@@ -526,13 +526,11 @@
         if (res.ok) {
           document.getElementById('channelTitle').innerText = data.channel.name;
 
-          // Si el trial expiró, mostrar paywall de bloqueo
           if (data.channel.is_expired) {
             document.getElementById('expiredModal').style.display = 'flex';
             return;
           }
 
-          // Si es un trial activo, mostrar banner de días restantes
           if (data.channel.is_trial) {
             document.getElementById('trialBanner').style.display = 'flex';
             document.getElementById('trialDaysCount').innerText = data.channel.days_left;
