@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "Key nsjpxewfjuulu7rvygiyjmun6"
+        "Authorization": "Key os_v2_app_7oz6t4dv7be5lpnnffw2uj4k2dcpwvdgqziuge4bpv5cv23hntc2cx2ujipmhn26dfi64gibgsjhvq66ccitm5qoaqaer5o4sft3a5i"
       },
       body: JSON.stringify(onesignalPayload)
     });
