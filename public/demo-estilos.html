@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelos Visuales - TradeNotify</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #06080c;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 40px 20px;
+    }
+    .wrapper { max-width: 1100px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 28px; margin-bottom: 8px; }
+    p.sub { text-align: center; color: #64748b; margin-bottom: 40px; font-size: 15px; }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .style-card {
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ESTILO 1: LINEAR / MINIMAL */
+    .style-linear {
+      background: #0b0f17;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .style-linear .tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      align-self: flex-start;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .style-linear .hero-preview {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    /* ESTILO 2: TERMINAL QUANT */
+    .style-terminal {
+      background: #050505;
+      border: 1px solid #1f2937;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .style-terminal .tag {
+      font-size: 11px;
+      color: #22c55e;
+      background: #022c12;
+      padding: 4px 8px;
+      border-radius: 2px;
+      align-self: flex-start;
+      border: 1px solid #15803d;
+    }
+    .style-terminal .hero-preview {
+      background: #000;
+      border: 1px dashed #374151;
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    /* ESTILO 3: FINTECH GLASS */
+    .style-glass {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+    .style-glass .tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #a855f7;
+      background: rgba(168, 85, 247, 0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+      align-self: flex-start;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .style-glass .hero-preview {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .btn-preview {
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Modelos Visuales de Nueva Generación</h1>
+    <p class="sub">Compara las tres direcciones estéticas posibles para el rediseño final de TradeNotify</p>
+
+    <div class="showcase-grid">
+
+      <!-- MODELO 1 -->
+      <div class="style-card style-linear">
+        <span class="tag">01. LINEAR MINIMAL</span>
+        <h3 style="font-size: 18px;">Minimalismo Técnico</h3>
+        <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">Bordes sutiles, espaciado generoso y aspecto SaaS pulido (tipo Supabase / Linear / Vercel).</p>
+        
+        <div class="hero-preview">
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">PUSH NOTIFICATION</div>
+          <div style="font-weight: 600; font-size: 13px; color: #38bdf8;">NQ100 - Breakout Entry</div>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Volumen superior a media móvil de 20 periodos.</div>
+        </div>
+
+        <button class="btn-preview" style="background: #2563eb; color: #fff;">Elegir Estilo Linear</button>
+      </div>
+
+      <!-- MODELO 2 -->
+      <div class="style-card style-terminal">
+        <span class="tag">02. TERMINAL QUANT</span>
+        <h3 style="font-size: 18px;">Consola Institucional</h3>
+        <p style="font-size: 13px; color: #9ca3af; line-height: 1.5;">Enfocado en métricas duras, latencia de red, tiempo de respuesta en milisegundos y alto contraste.</p>
+        
+        <div class="hero-preview">
+          <div style="color: #22c55e;">[OK] 2026-08-12 10:45:00.124</div>
+          <div style="color: #f3f4f6; margin-top: 4px;">SIGNAL: BUY NQ1! @ 19,850.50</div>
+          <div style="color: #6b7280; font-size: 11px; margin-top: 4px;">Latency: 38ms | Fan-out: 12 subs</div>
+        </div>
+
+        <button class="btn-preview" style="background: #16a34a; color: #000; font-family: monospace;">Elegir Estilo Terminal</button>
+      </div>
+
+      <!-- MODELO 3 -->
+      <div class="style-card style-glass">
+        <span class="tag">03. FINTECH GLASS</span>
+        <h3 style="font-size: 18px;">Glassmorphism Moderno</h3>
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">Gradientes profundos, transparencias con desenfoque de fondo y estilo de producto premium.</p>
+        
+        <div class="hero-preview">
+          <div style="font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between;">
+            <span>⚡ TradeNotify Pro</span>
+            <span style="color: #4ade80;">● Direct Push</span>
+          </div>
+          <div style="font-weight: 700; font-size: 14px; margin-top: 4px; color: #f8fafc;">NASDAQ 100 Long Signal</div>
+          <div style="font-size: 12px; color: #cbd5e1; margin-top: 2px;">SL: 19,800.00 | TP: 19,950.00</div>
+        </div>
+
+        <button class="btn-preview" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: #fff;">Elegir Estilo Glass</button>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
