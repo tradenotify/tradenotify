@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de icon.png</title>
+</head>
+<body style="background: #111; color: #fff; font-family: sans-serif; text-align: center; padding: 50px;">
+  <h2>Generador de Icono PNG para iOS / Safari</h2>
+  <canvas id="canvas" width="512" height="512" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin: 20px 0;"></canvas>
+  <br>
+  <button onclick="descargar()" style="background: #6366f1; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer;">
+    📥 Descargar icon.png
+  </button>
+
+  <script>
+    const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+      <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0f172a"/>
+          <stop offset="100%" stop-color="#020617"/>
+        </linearGradient>
+        <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#38bdf8"/>
+          <stop offset="40%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+        <linearGradient id="bullGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#34d399"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="512" height="512" rx="120" fill="url(#bgGrad)"/>
+      <circle cx="256" cy="240" r="160" fill="#6366f1" opacity="0.25"/>
+      <rect x="135" y="270" width="18" height="70" rx="9" fill="rgba(255,255,255,0.1)"/>
+      <rect x="360" y="170" width="18" height="110" rx="9" fill="url(#bullGrad)" opacity="0.9"/>
+      <path d="M 295 85 L 175 265 L 245 265 L 205 425 L 345 235 L 275 235 Z" fill="url(#boltGrad)"/>
+      <circle cx="369" cy="140" r="12" fill="#10b981"/>
+    </svg>`;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0);
+    };
+
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgCode)));
+
+    function descargar() {
+      const link = document.createElement('a');
+      link.download = 'icon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

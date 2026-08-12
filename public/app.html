@@ -5,18 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Alertas en Vivo</title>
 
-  <!-- PWA iOS -->
+  <!-- PWA iOS y Favicon en PNG -->
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TradeNotify">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+  <meta name="theme-color" content="#070913">
 
   <style>
+    :root {
+      --bg: #070913;
+      --glass-bg: rgba(18, 24, 38, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-border-top: rgba(255, 255, 255, 0.18);
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --green: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background-color: #0b0e14;
-      color: #e6edf3;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       justify-content: center;
@@ -24,52 +44,72 @@
       min-height: 100vh;
       padding: 16px;
     }
+
     .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 16px;
-      padding: 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 20px;
+      padding: 26px;
       max-width: 480px;
       width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { font-size: 22px; color: #58a6ff; font-weight: 700; margin-top: 6px; }
-    .header p { color: #8b949e; font-size: 13px; margin-top: 4px; }
+
+    .header { text-align: center; margin-bottom: 22px; }
+    .header img {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      box-shadow: 0 0 20px var(--accent-glow);
+      margin-bottom: 8px;
+    }
+    .header h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    .header p { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; line-height: 1.45; }
     
     input {
       width: 100%;
       padding: 14px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
+      background: rgba(10, 14, 23, 0.75);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14.5px;
       margin-bottom: 12px;
       outline: none;
+      transition: border-color 0.2s;
     }
-    input:focus { border-color: #58a6ff; }
+    input:focus { border-color: #818cf8; box-shadow: 0 0 10px rgba(129, 140, 248, 0.3); }
     
     button {
       width: 100%;
-      padding: 14px;
-      background: #238636;
-      border: none;
-      border-radius: 8px;
+      padding: 13px;
+      background: var(--accent-gradient);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
       color: #ffffff;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      transition: all 0.2s ease;
     }
-    button:hover { background: #2ea043; }
-    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
-    button.btn-secondary { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; }
-    button.btn-secondary:hover { background: #30363d; }
+    button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45); }
+    button:disabled { background: rgba(255, 255, 255, 0.05); color: #64748b; cursor: not-allowed; box-shadow: none; }
+    
+    button.btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      box-shadow: none;
+    }
+    button.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-1px); }
     
     .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; word-break: break-word; }
-    .status-msg.error { color: #f85149; }
-    .status-msg.success { color: #3fb950; }
+    .status-msg.error { color: #f87171; }
+    .status-msg.success { color: #34d399; }
 
     /* Panel Conectado */
     .dashboard-header {
@@ -77,36 +117,37 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 14px;
-      border-bottom: 1px solid #30363d;
+      border-bottom: 1px solid var(--glass-border);
       margin-bottom: 16px;
     }
     .live-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      color: #3fb950;
-      background: rgba(63, 185, 80, 0.1);
+      color: var(--green);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       padding: 4px 10px;
       border-radius: 20px;
     }
     .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: #3fb950;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
       border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       animation: pulse 1.8s infinite;
     }
     @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(63, 185, 80, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0); }
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
     .feed-container {
-      max-height: 340px;
+      max-height: 330px;
       overflow-y: auto;
       margin: 14px 0;
       display: flex;
@@ -115,118 +156,126 @@
       padding-right: 4px;
     }
     .feed-container::-webkit-scrollbar { width: 4px; }
-    .feed-container::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+    .feed-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
 
     .alert-card {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-left: 4px solid #58a6ff;
-      border-radius: 8px;
+      background: rgba(10, 14, 23, 0.75);
+      border: 1px solid var(--glass-border);
+      border-left: 3px solid #818cf8;
+      border-radius: 10px;
       padding: 12px 14px;
       text-align: left;
     }
-    .alert-card .alert-time { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
-    .alert-card .alert-title { font-size: 14px; font-weight: 600; color: #e6edf3; margin-bottom: 4px; }
-    .alert-card .alert-body { font-size: 13px; color: #8b949e; line-height: 1.4; white-space: pre-wrap; }
+    .alert-card .alert-time { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .alert-card .alert-title { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .alert-card .alert-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; white-space: pre-wrap; font-family: var(--mono); }
     
     .guide-btn {
       width: 100%;
-      background: rgba(88, 166, 255, 0.08);
-      border: 1px dashed #388bfd;
-      color: #58a6ff;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px dashed rgba(129, 140, 248, 0.4);
+      color: #c7d2fe;
       font-size: 13px;
       font-weight: 600;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      box-shadow: none;
     }
-    .guide-btn:hover { background: rgba(88, 166, 255, 0.15); }
+    .guide-btn:hover { background: rgba(99, 102, 241, 0.15); border-color: #818cf8; transform: none; }
 
-    /* Modal Guía */
+    /* Modal Guía Glass */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.82);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
       z-index: 100;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
     }
     .modal-content {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 14px;
+      background: rgba(18, 24, 38, 0.95);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 18px;
       padding: 22px;
-      max-width: 520px;
+      max-width: 500px;
       width: 100%;
       max-height: 85vh;
       overflow-y: auto;
       text-align: left;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
-      border-bottom: 1px solid #30363d;
+      border-bottom: 1px solid var(--glass-border);
       padding-bottom: 10px;
     }
-    .modal-header h2 { font-size: 17px; color: #fff; }
+    .modal-header h2 { font-size: 17px; color: #fff; font-weight: 700; }
     .btn-close {
       background: none;
       border: none;
-      color: #8b949e;
-      font-size: 20px;
+      color: var(--text-muted);
+      font-size: 22px;
       width: auto;
       padding: 0 4px;
       cursor: pointer;
+      box-shadow: none;
     }
+    .btn-close:hover { color: #fff; transform: none; }
     .step-box {
-      margin-bottom: 16px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
+      margin-bottom: 14px;
+      background: rgba(10, 14, 23, 0.7);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
       padding: 12px;
     }
-    .step-box h4 { font-size: 13px; color: #58a6ff; margin-bottom: 6px; }
-    .step-box p { font-size: 12px; color: #8b949e; line-height: 1.4; margin-bottom: 8px; }
+    .step-box h4 { font-size: 13px; color: #a5b4fc; margin-bottom: 6px; }
+    .step-box p { font-size: 12px; color: var(--text-muted); line-height: 1.45; margin-bottom: 8px; }
     .code-snippet {
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--glass-border);
       border-radius: 6px;
-      padding: 8px;
-      font-family: monospace;
+      padding: 8px 10px;
+      font-family: var(--mono);
       font-size: 11px;
-      color: #79c0ff;
+      color: #93c5fd;
       white-space: pre-wrap;
       word-break: break-all;
     }
     .copy-btn-sm {
-      padding: 4px 8px;
+      padding: 5px 10px;
       font-size: 11px;
       margin-top: 6px;
       width: auto;
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #c9d1d9;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      color: #e2e8f0;
+      box-shadow: none;
+      border-radius: 6px;
     }
+    .copy-btn-sm:hover { background: rgba(255, 255, 255, 0.12); transform: none; }
 
     .back-link {
       display: block;
       text-align: center;
       margin-top: 14px;
       font-size: 13px;
-      color: #8b949e;
+      color: var(--text-muted);
       text-decoration: none;
     }
-    .back-link:hover { color: #58a6ff; }
+    .back-link:hover { color: #a5b4fc; }
   </style>
 </head>
 <body>
@@ -236,7 +285,7 @@
     <!-- VISTA 1: VINCULAR DISPOSITIVO -->
     <div id="viewSubscribe">
       <div class="header">
-        <div style="font-size: 36px;">⚡</div>
+        <img src="/icon.png" alt="TradeNotify Logo">
         <h1>TradeNotify</h1>
         <p>Introduce tu token para recibir alertas en tiempo real en este dispositivo.</p>
       </div>
@@ -256,8 +305,8 @@
     <div id="viewLive" style="display: none;">
       <div class="dashboard-header">
         <div>
-          <div style="font-size: 11px; color: #8b949e; text-transform: uppercase;">Canal Activo</div>
-          <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #58a6ff;">-</div>
+          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Canal Activo</div>
+          <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #a5b4fc;">-</div>
         </div>
         <div class="live-badge">
           <div class="pulse-dot"></div> En vivo
@@ -268,12 +317,12 @@
         📖 Ver mi Webhook y Guía TradingView
       </button>
 
-      <div style="font-size: 13px; color: #8b949e; margin-bottom: 8px;">Registro de Alertas</div>
+      <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;">Registro de Alertas</div>
       <div id="feedList" class="feed-container"></div>
 
       <div style="display: flex; gap: 8px; margin-top: 12px;">
         <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
-        <button class="btn-secondary" style="padding: 10px; color: #f85149;" onclick="desvincular()">Desconectar</button>
+        <button class="btn-secondary" style="padding: 10px; color: #f87171;" onclick="desvincular()">Desconectar</button>
       </div>
     </div>
 
@@ -290,7 +339,7 @@
       <!-- Paso 1 -->
       <div class="step-box">
         <h4>1. Copia tu URL de Webhook</h4>
-        <p>En TradingView, al crear una alerta, ve a la pestaña <b>Notificaciones</b> y activa la casilla <b>URL del webhook</b>:</p>
+        <p>En TradingView, al crear una alerta, entra a la pestaña <b>Notificaciones</b> y activa la casilla <b>URL del webhook</b>:</p>
         <div class="code-snippet" id="modalWebhookUrl">https://tradenotify-lac.vercel.app/api/webhook?token=TU_TOKEN</div>
         <button class="copy-btn-sm" onclick="copiarTexto('modalWebhookUrl')">📋 Copiar Webhook</button>
       </div>
@@ -298,15 +347,15 @@
       <!-- Paso 2 -->
       <div class="step-box">
         <h4>2. Formato del Mensaje (JSON)</h4>
-        <p>En el campo <b>Mensaje</b> de tu alerta en TradingView, pega este bloque para que la notificación incluya el ticker y precio exacto:</p>
+        <p>En el campo <b>Mensaje</b> de tu alerta en TradingView, pega este bloque:</p>
         <div class="code-snippet" id="modalJsonSnippet">{"title": "🟢 SEÑAL {{ticker}}", "message": "Precio: {{close}} | Tiempo: {{time}}"}</div>
         <button class="copy-btn-sm" onclick="copiarTexto('modalJsonSnippet')">📋 Copiar JSON</button>
       </div>
 
       <!-- Paso 3 -->
       <div class="step-box">
-        <h4>3. Listo para operar</h4>
-        <p>Guarda la alerta. En el milisegundo en que se cumpla la condición, tu móvil sonará y vibrará instantáneamente.</p>
+        <h4>3. Guardar Alerta</h4>
+        <p>Guarda los cambios. En cuanto se active la condición, recibirás la notificación con sonido y vibración instantáneos.</p>
       </div>
 
       <button class="btn-secondary" style="margin-top: 6px;" onclick="cerrarModal()">Entendido</button>
@@ -447,7 +496,7 @@
           feed.innerHTML = '';
 
           if (!data.alerts || data.alerts.length === 0) {
-            feed.innerHTML = '<div style="text-align:center; color:#8b949e; font-size:13px; padding:30px 0;">No hay alertas recientes en este canal.</div>';
+            feed.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:30px 0;">No hay alertas recientes en este canal.</div>';
             return;
           }
 
