@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TradeNotify - Alertas en Vivo</title>
+
+  <!-- PWA iOS -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TradeNotify">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0b0e14;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .header { text-align: center; margin-bottom: 20px; }
+    .header h1 { font-size: 22px; color: #58a6ff; font-weight: 700; margin-top: 6px; }
+    .header p { color: #8b949e; font-size: 13px; margin-top: 4px; }
+    
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    input:focus { border-color: #58a6ff; }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #238636;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #2ea043; }
+    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+    button.btn-secondary { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; }
+    button.btn-secondary:hover { background: #30363d; }
+    
+    .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; word-break: break-word; }
+    .status-msg.error { color: #f85149; }
+    .status-msg.success { color: #3fb950; }
+
+    /* Panel Conectado */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #30363d;
+      margin-bottom: 16px;
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3fb950;
+      background: rgba(63, 185, 80, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #3fb950;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(63, 185, 80, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0); }
+    }
+
+    .feed-container {
+      max-height: 380px;
+      overflow-y: auto;
+      margin: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+    .feed-container::-webkit-scrollbar { width: 4px; }
+    .feed-container::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+
+    .alert-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-left: 4px solid #58a6ff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .alert-card .alert-time {
+      font-size: 11px;
+      color: #8b949e;
+      margin-bottom: 4px;
+    }
+    .alert-card .alert-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 4px;
+    }
+    .alert-card .alert-body {
+      font-size: 13px;
+      color: #8b949e;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #8b949e;
+      text-decoration: none;
+    }
+    .back-link:hover { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    
+    <!-- VISTA 1: VINCULAR DISPOSITIVO -->
+    <div id="viewSubscribe">
+      <div class="header">
+        <div style="font-size: 36px;">⚡</div>
+        <h1>TradeNotify</h1>
+        <p>Introduce el token de tu canal para vincular este dispositivo y recibir alertas instantáneas.</p>
+      </div>
+
+      <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
+      <button id="btnSub" onclick="activarAlertas()">Activar Alertas en este Móvil</button>
+      <div id="statusMsg" class="status-msg"></div>
+      <a href="/" class="back-link">← Volver a la portada</a>
+    </div>
+
+    <!-- VISTA 2: PANEL EN VIVO CON HISTORIAL -->
+    <div id="viewLive" style="display: none;">
+      <div class="dashboard-header">
+        <div>
+          <div style="font-size: 12px; color: #8b949e;">Canal Activo</div>
+          <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #58a6ff;">-</div>
+        </div>
+        <div class="live-badge">
+          <div class="pulse-dot"></div> En vivo
+        </div>
+      </div>
+
+      <div style="font-size: 13px; color: #8b949e; margin-bottom: 8px;">Registro de Alertas</div>
+      <div id="feedList" class="feed-container">
+        <!-- Rellenado por JS -->
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
+        <button class="btn-secondary" style="padding: 10px; color: #f85149;" onclick="desvincular()">Desconectar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const savedToken = localStorage.getItem('tradenotify_token');
+
+    if (savedToken) {
+      mostrarPanelLive(savedToken);
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    async function activarAlertas() {
+      const token = document.getElementById('tokenInput').value.trim();
+      const status = document.getElementById('statusMsg');
+      const btn = document.getElementById('btnSub');
+
+      if (!token) {
+        status.className = 'status-msg error';
+        status.innerText = 'Por favor, introduce el token del canal.';
+        return;
+      }
+
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        status.className = 'status-msg error';
+        status.innerText = 'Navegador no compatible. Abre la app desde el icono de inicio en iOS.';
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        status.className = 'status-msg';
+        status.innerText = 'Solicitando permisos...';
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          status.className = 'status-msg error';
+          status.innerText = 'Permiso de notificaciones denegado.';
+          btn.disabled = false;
+          return;
+        }
+
+        status.innerText = 'Conectando con el servidor...';
+        const keyRes = await fetch('/api/vapid-key');
+        const keyData = await keyRes.json();
+
+        status.innerText = 'Activando Service Worker...';
+        await navigator.serviceWorker.register('/sw.js');
+        const registration = await navigator.serviceWorker.ready;
+
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
+        });
+
+        status.innerText = 'Vinculando dispositivo...';
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channel_token: token,
+            subscription: subscription,
+            device_info: navigator.userAgent
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('tradenotify_token', token);
+          mostrarPanelLive(token);
+        } else {
+          status.className = 'status-msg error';
+          status.innerText = '❌ ' + (data.error || 'Error al vincular.');
+          btn.disabled = false;
+        }
+      } catch (err) {
+        status.className = 'status-msg error';
+        status.innerText = 'Error: ' + err.message;
+        btn.disabled = false;
+      }
+    }
+
+    async function mostrarPanelLive(token) {
+      document.getElementById('viewSubscribe').style.display = 'none';
+      document.getElementById('viewLive').style.display = 'block';
+      await cargarHistorial(token);
+      setInterval(() => cargarHistorial(token), 15000);
+    }
+
+    async function cargarHistorial(tokenParam) {
+      const token = tokenParam || localStorage.getItem('tradenotify_token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(`/api/alerts?token=${token}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          document.getElementById('channelTitle').innerText = data.channel.name;
+          const feed = document.getElementById('feedList');
+          feed.innerHTML = '';
+
+          if (!data.alerts || data.alerts.length === 0) {
+            feed.innerHTML = '<div style="text-align:center; color:#8b949e; font-size:13px; padding:30px 0;">No hay alertas recientes en este canal.</div>';
+            return;
+          }
+
+          data.alerts.forEach(al => {
+            const date = new Date(al.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const title = al.payload?.title || '🚨 Alerta de Mercado';
+            const body = al.payload?.message || (typeof al.payload === 'string' ? al.payload : JSON.stringify(al.payload));
+
+            const div = document.createElement('div');
+            div.className = 'alert-card';
+            div.innerHTML = `
+              <div class="alert-time">⏱️ ${date}</div>
+              <div class="alert-title">${title}</div>
+              <div class="alert-body">${body}</div>
+            `;
+            feed.appendChild(div);
+          });
+        }
+      } catch (e) {
+        console.error('Error al cargar historial:', e);
+      }
+    }
+
+    function desvincular() {
+      if (confirm('¿Quieres desconectar este dispositivo del canal?')) {
+        localStorage.removeItem('tradenotify_token');
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

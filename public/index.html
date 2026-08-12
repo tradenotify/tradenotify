@@ -2,331 +2,492 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TradeNotify - Alertas en Vivo</title>
-
-  <!-- PWA iOS -->
-  <link rel="manifest" href="/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="TradeNotify">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeNotify - Alertas de TradingView en tu iPhone con Latencia Cero</title>
+  
+  <meta name="description" content="Recibe notificaciones instantáneas de TradingView directamente en la pantalla de bloqueo de tu iPhone o PC sin retrasos.">
+  
   <style>
+    :root {
+      --bg: #090d14;
+      --card-bg: rgba(22, 27, 34, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #58a6ff;
+      --green: #238636;
+      --green-hover: #2ea043;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0b0e14;
-      color: #e6edf3;
+      background-color: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
+      line-height: 1.55;
+      overflow-x: hidden;
     }
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 460px;
-      width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { font-size: 22px; color: #58a6ff; font-weight: 700; margin-top: 6px; }
-    .header p { color: #8b949e; font-size: 13px; margin-top: 4px; }
-    
-    input {
-      width: 100%;
-      padding: 14px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 15px;
-      margin-bottom: 12px;
-      outline: none;
-    }
-    input:focus { border-color: #58a6ff; }
-    
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #238636;
-      border: none;
-      border-radius: 8px;
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover { background: #2ea043; }
-    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
-    button.btn-secondary { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; }
-    button.btn-secondary:hover { background: #30363d; }
-    
-    .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; word-break: break-word; }
-    .status-msg.error { color: #f85149; }
-    .status-msg.success { color: #3fb950; }
 
-    /* Panel Conectado */
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 14px;
-      border-bottom: 1px solid #30363d;
-      margin-bottom: 16px;
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
-    .live-badge {
+
+    /* Navbar */
+    nav {
+      height: 64px;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #3fb950;
-      background: rgba(63, 185, 80, 0.1);
-      padding: 4px 10px;
-      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.02em;
     }
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: #3fb950;
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7);
-      animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(63, 185, 80, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(63, 185, 80, 0); }
-    }
-
-    .feed-container {
-      max-height: 380px;
-      overflow-y: auto;
-      margin: 16px 0;
+    .nav-actions {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-right: 4px;
+      align-items: center;
+      gap: 12px;
     }
-    .feed-container::-webkit-scrollbar { width: 4px; }
-    .feed-container::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+    .lang-select {
+      background: #111620;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+    .nav-btn {
+      padding: 7px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
 
-    .alert-card {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-left: 4px solid #58a6ff;
-      border-radius: 8px;
-      padding: 12px 14px;
-      text-align: left;
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 72px 0 48px;
     }
-    .alert-card .alert-time {
-      font-size: 11px;
-      color: #8b949e;
-      margin-bottom: 4px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px solid rgba(88, 166, 255, 0.25);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 20px;
     }
-    .alert-card .alert-title {
+    h1 {
+      font-size: clamp(28px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      max-width: 780px;
+      margin: 0 auto 16px;
+    }
+    h1 .accent-text {
+      color: #58a6ff;
+    }
+    .hero p {
+      font-size: clamp(15px, 1.8vw, 17px);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 28px;
+    }
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 12px 22px;
+      background: var(--green);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: #fff;
       font-size: 14px;
       font-weight: 600;
-      color: #e6edf3;
-      margin-bottom: 4px;
+      text-decoration: none;
+      transition: background 0.15s;
     }
-    .alert-card .alert-body {
+    .btn-primary:hover { background: var(--green-hover); }
+
+    /* Mockup */
+    .preview-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 480px;
+      margin: 36px auto 0;
+      backdrop-filter: blur(8px);
+      text-align: left;
+    }
+    .mock-notif {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-left: 3px solid #3fb950;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    /* Grid Secciones */
+    .section-wrap {
+      padding: 64px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-header h2 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .card-feature {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card-feature .icon { font-size: 24px; margin-bottom: 12px; }
+    .card-feature h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .card-feature p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+
+    /* Precios */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 740px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: rgba(88, 166, 255, 0.4);
+      background: rgba(22, 27, 34, 0.95);
+    }
+    .tag-featured {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: #1f6feb;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+    }
+    .price-name { font-size: 18px; font-weight: 700; }
+    .price-desc { color: var(--text-muted); font-size: 13px; margin: 4px 0 16px; min-height: 38px; }
+    .price-cost { font-size: 34px; font-weight: 800; color: #fff; margin-bottom: 20px; }
+    .price-cost span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+
+    .feature-list { list-style: none; margin-bottom: 24px; flex-grow: 1; }
+    .feature-list li {
       font-size: 13px;
-      color: #8b949e;
-      line-height: 1.4;
-      white-space: pre-wrap;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #c9d1d9;
+    }
+    .feature-list li::before {
+      content: "✓";
+      color: #3fb950;
+      font-weight: 700;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    
-    <!-- VISTA 1: VINCULAR DISPOSITIVO -->
-    <div id="viewSubscribe">
-      <div class="header">
-        <div style="font-size: 36px;">⚡</div>
-        <h1>TradeNotify</h1>
-        <p>Introduce el token de tu canal para vincular este dispositivo y recibir alertas instantáneas.</p>
+  <!-- Navbar -->
+  <div class="container">
+    <nav>
+      <a href="#" class="brand">⚡ TradeNotify</a>
+      <div class="nav-actions">
+        <select id="langSelector" class="lang-select">
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇬🇧 English</option>
+        </select>
+        <a href="/app" class="nav-btn" data-i18n="nav.app_btn">Acceder a mi App</a>
       </div>
-
-      <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
-      <button id="btnSub" onclick="activarAlertas()">Activar Alertas en este Móvil</button>
-      <div id="statusMsg" class="status-msg"></div>
-    </div>
-
-    <!-- VISTA 2: PANEL EN VIVO CON HISTORIAL -->
-    <div id="viewLive" style="display: none;">
-      <div class="dashboard-header">
-        <div>
-          <div style="font-size: 12px; color: #8b949e;">Canal Activo</div>
-          <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #58a6ff;">-</div>
-        </div>
-        <div class="live-badge">
-          <div class="pulse-dot"></div> En vivo
-        </div>
-      </div>
-
-      <div style="font-size: 13px; color: #8b949e; margin-bottom: 8px;">Registro de Alertas</div>
-      <div id="feedList" class="feed-container">
-        <!-- Rellenado por JS -->
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-top: 12px;">
-        <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
-        <button class="btn-secondary" style="padding: 10px; color: #f85149;" onclick="desvincular()">Desconectar</button>
-      </div>
-    </div>
-
+    </nav>
   </div>
 
+  <!-- Hero -->
+  <header class="hero container">
+    <div class="badge" data-i18n="hero.badge">⚡ Latencia Cero en iOS & PC</div>
+    <h1>
+      <span data-i18n="hero.title_start">Alertas de TradingView en tu móvil</span>
+      <span class="accent-text" data-i18n="hero.title_end">al milisegundo</span>
+    </h1>
+    <p data-i18n="hero.description">
+      Elimina los retrasos de Telegram y el correo. Recibe señales de tus indicadores y estrategias directamente en tu pantalla de bloqueo con sonido y vibración en tiempo real.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#planes" class="btn-primary" data-i18n="hero.btn_pricing">Ver Planes</a>
+      <a href="/app" class="nav-btn" style="padding: 12px 18px;" data-i18n="hero.btn_token">Tengo un Token</a>
+    </div>
+
+    <!-- Mockup Preview -->
+    <div class="preview-box">
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; display:flex; justify-content:space-between;">
+        <span data-i18n="preview.badge">📱 Web Push Directo</span>
+        <span style="color: #3fb950;">● 0ms delay</span>
+      </div>
+      <div class="mock-notif">
+        <div style="font-size: 13px; font-weight: 700;" data-i18n="preview.signal_title">🟢 NASDAQ 100 - BUY SIGNAL</div>
+        <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 4px;" data-i18n="preview.signal_body">
+          Entrada: 19,850.50 | SL: 19,800.00 | TP: 19,950.00
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Por qué TradeNotify -->
+  <section class="section-wrap container">
+    <div class="section-header">
+      <h2 data-i18n="why.title">¿Por qué TradeNotify?</h2>
+      <p data-i18n="why.subtitle">Infraestructura directa para traders que necesitan reaccionar en el segundo exacto.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card-feature">
+        <div class="icon">⚡</div>
+        <h3 data-i18n="why.f1_title">Latencia Cero</h3>
+        <p data-i18n="why.f1_desc">Conexión directa con los servidores de notificación de Apple y Google. Sin cuellos de botella.</p>
+      </div>
+      <div class="card-feature">
+        <div class="icon">📲</div>
+        <h3 data-i18n="why.f2_title">Sin Apps de Terceros</h3>
+        <p data-i18n="why.f2_desc">Funciona con la tecnología PWA nativa de Safari y Chrome. Se añade a la pantalla de inicio en un clic.</p>
+      </div>
+      <div class="card-feature">
+        <div class="icon">👥</div>
+        <h3 data-i18n="why.f3_title">Traders & Mentores</h3>
+        <p data-i18n="why.f3_desc">Válido para uso personal o para emitir señales instantáneas a comunidades completas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Planes -->
+  <section id="planes" class="section-wrap container">
+    <div class="section-header">
+      <h2 data-i18n="pricing.title">Planes y Precios</h2>
+      <p data-i18n="pricing.subtitle">Suscripción sin permanencia ni límites de volumen.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Plan Trader -->
+      <div class="price-card featured">
+        <div class="tag-featured" data-i18n="pricing.trader_badge">MÁS POPULAR</div>
+        <div class="price-name" data-i18n="pricing.trader_title">Plan Trader</div>
+        <div class="price-desc" data-i18n="pricing.trader_desc">Para traders individuales que buscan rapidez en sus entradas.</div>
+        <div class="price-cost" data-i18n="pricing.trader_cost">9 € <span>/ mes</span></div>
+
+        <ul class="feature-list">
+          <li data-i18n="pricing.trader_feat1">Alertas ilimitadas</li>
+          <li data-i18n="pricing.trader_feat2">Hasta 2 dispositivos (iPhone + PC)</li>
+          <li data-i18n="pricing.trader_feat3">Webhook privado de alta velocidad</li>
+          <li data-i18n="pricing.trader_feat4">Historial en tiempo real</li>
+        </ul>
+
+        <a href="https://buy.stripe.com/test_cNibJ07cJ9qKd3KgOM6Zy00" class="btn-primary" style="text-align:center;" data-i18n="pricing.trader_btn">Suscribirme Ahora</a>
+      </div>
+
+      <!-- Plan Mentor -->
+      <div class="price-card">
+        <div class="price-name" data-i18n="pricing.mentor_title">Plan Mentor</div>
+        <div class="price-desc" data-i18n="pricing.mentor_desc">Para academias y creadores que transmiten a su comunidad.</div>
+        <div class="price-cost" data-i18n="pricing.mentor_cost">49 € <span>/ mes</span></div>
+
+        <ul class="feature-list">
+          <li data-i18n="pricing.mentor_feat1">Alertas ilimitadas</li>
+          <li data-i18n="pricing.mentor_feat2">Hasta 50 alumnos / dispositivos</li>
+          <li data-i18n="pricing.mentor_feat3">1 Webhook ➔ Retransmisión en paralelo</li>
+          <li data-i18n="pricing.mentor_feat4">Panel de administración de cupos</li>
+        </ul>
+
+        <a href="https://buy.stripe.com/test_eVq9AS2WtbyS8Nucyw6Zy01" class="btn-primary" style="text-align:center; background: rgba(255,255,255,0.06); border-color: var(--border);" data-i18n="pricing.mentor_btn">Suscribirme Ahora</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p data-i18n="footer.rights">© 2026 TradeNotify. Todos los derechos reservados. Plataforma de software independiente.</p>
+    </div>
+  </footer>
+
   <script>
-    const savedToken = localStorage.getItem('tradenotify_token');
-
-    if (savedToken) {
-      mostrarPanelLive(savedToken);
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-      const padding = '='.repeat((4 - base64String.length % 4) % 4);
-      const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-      const rawData = window.atob(base64);
-      const outputArray = new Uint8Array(rawData.length);
-      for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
+    const translations = {
+      es: {
+        "nav.app_btn": "Acceder a mi App",
+        "hero.badge": "⚡ Latencia Cero en iOS & PC",
+        "hero.title_start": "Alertas de TradingView en tu móvil",
+        "hero.title_end": "al milisegundo",
+        "hero.description": "Elimina los retrasos de Telegram y el correo. Recibe señales de tus indicadores y estrategias directamente en tu pantalla de bloqueo con sonido y vibración en tiempo real.",
+        "hero.btn_pricing": "Ver Planes",
+        "hero.btn_token": "Tengo un Token",
+        "preview.badge": "📱 Web Push Directo",
+        "preview.signal_title": "🟢 NASDAQ 100 - BUY SIGNAL",
+        "preview.signal_body": "Entrada: 19,850.50 | SL: 19,800.00 | TP: 19,950.00",
+        "why.title": "¿Por qué TradeNotify?",
+        "why.subtitle": "Infraestructura directa para traders que necesitan reaccionar en el segundo exacto.",
+        "why.f1_title": "Latencia Cero",
+        "why.f1_desc": "Conexión directa con los servidores de notificación de Apple y Google. Sin cuellos de botella.",
+        "why.f2_title": "Sin Apps de Terceros",
+        "why.f2_desc": "Funciona con la tecnología PWA nativa de Safari y Chrome. Se añade a la pantalla de inicio en un clic.",
+        "why.f3_title": "Traders & Mentores",
+        "why.f3_desc": "Válido para uso personal o para emitir señales instantáneas a comunidades completas.",
+        "pricing.title": "Planes y Precios",
+        "pricing.subtitle": "Suscripción sin permanencia ni límites de volumen.",
+        "pricing.trader_badge": "MÁS POPULAR",
+        "pricing.trader_title": "Plan Trader",
+        "pricing.trader_desc": "Para traders individuales que buscan rapidez en sus entradas.",
+        "pricing.trader_cost": "9 € <span>/ mes</span>",
+        "pricing.trader_feat1": "Alertas ilimitadas",
+        "pricing.trader_feat2": "Hasta 2 dispositivos (iPhone + PC)",
+        "pricing.trader_feat3": "Webhook privado de alta velocidad",
+        "pricing.trader_feat4": "Historial en tiempo real",
+        "pricing.trader_btn": "Suscribirme Ahora",
+        "pricing.mentor_title": "Plan Mentor",
+        "pricing.mentor_desc": "Para academias y creadores que transmiten a su comunidad.",
+        "pricing.mentor_cost": "49 € <span>/ mes</span>",
+        "pricing.mentor_feat1": "Alertas ilimitadas",
+        "pricing.mentor_feat2": "Hasta 50 alumnos / dispositivos",
+        "pricing.mentor_feat3": "1 Webhook ➔ Retransmisión en paralelo",
+        "pricing.mentor_feat4": "Panel de administración de cupos",
+        "pricing.mentor_btn": "Suscribirme Ahora",
+        "footer.rights": "© 2026 TradeNotify. Todos los derechos reservados. Plataforma de software independiente."
+      },
+      en: {
+        "nav.app_btn": "Open App",
+        "hero.badge": "⚡ Zero Latency on iOS & PC",
+        "hero.title_start": "TradingView alerts on your lockscreen",
+        "hero.title_end": "in milliseconds",
+        "hero.description": "Eliminate Telegram and email delays. Receive indicator and strategy signals straight to your lock screen with instant sound and vibration.",
+        "hero.btn_pricing": "View Plans",
+        "hero.btn_token": "I have a Token",
+        "preview.badge": "📱 Direct Web Push",
+        "preview.signal_title": "🟢 NASDAQ 100 - BUY SIGNAL",
+        "preview.signal_body": "Entry: 19,850.50 | SL: 19,800.00 | TP: 19,950.00",
+        "why.title": "Why TradeNotify?",
+        "why.subtitle": "Direct infrastructure built for traders who need sub-second execution alerts.",
+        "why.f1_title": "Zero Latency",
+        "why.f1_desc": "Direct connection to Apple and Google push notification servers. No bottlenecks.",
+        "why.f2_title": "No Bloated Apps",
+        "why.f2_desc": "Runs on native PWA technology in Safari and Chrome. Add to home screen in one tap.",
+        "why.f3_title": "Traders & Mentors",
+        "why.f3_desc": "Perfect for single traders or broadcasting instant signals to entire trading communities.",
+        "pricing.title": "Simple Pricing",
+        "pricing.subtitle": "Transparent subscription with no signal volume limits.",
+        "pricing.trader_badge": "MOST POPULAR",
+        "pricing.trader_title": "Trader Plan",
+        "pricing.trader_desc": "For individual traders requiring instant trade signal delivery.",
+        "pricing.trader_cost": "9 € <span>/ month</span>",
+        "pricing.trader_feat1": "Unlimited alerts",
+        "pricing.trader_feat2": "Up to 2 devices (iPhone + PC)",
+        "pricing.trader_feat3": "Private high-speed webhook",
+        "pricing.trader_feat4": "Real-time alert history",
+        "pricing.trader_btn": "Subscribe Now",
+        "pricing.mentor_title": "Mentor Plan",
+        "pricing.mentor_desc": "For trading academies and signal providers.",
+        "pricing.mentor_cost": "49 € <span>/ month</span>",
+        "pricing.mentor_feat1": "Unlimited alerts",
+        "pricing.mentor_feat2": "Up to 50 members / devices",
+        "pricing.mentor_feat3": "1 Webhook ➔ Parallel fan-out",
+        "pricing.mentor_feat4": "Channel management dashboard",
+        "pricing.mentor_btn": "Subscribe Now",
+        "footer.rights": "© 2026 TradeNotify. All rights reserved. Independent software tool."
       }
-      return outputArray;
-    }
+    };
 
-    async function activarAlertas() {
-      const token = document.getElementById('tokenInput').value.trim();
-      const status = document.getElementById('statusMsg');
-      const btn = document.getElementById('btnSub');
+    function applyLanguage(lang) {
+      const selectedLang = (lang === 'en') ? 'en' : 'es';
+      localStorage.setItem('tradeNotify_lang', selectedLang);
+      document.documentElement.lang = selectedLang;
 
-      if (!token) {
-        status.className = 'status-msg error';
-        status.innerText = 'Por favor, introduce el token del canal.';
-        return;
-      }
-
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        status.className = 'status-msg error';
-        status.innerText = 'Navegador no compatible. Abre la app desde el icono de inicio en iOS.';
-        return;
-      }
-
-      try {
-        btn.disabled = true;
-        status.className = 'status-msg';
-        status.innerText = 'Solicitando permisos...';
-
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-          status.className = 'status-msg error';
-          status.innerText = 'Permiso de notificaciones denegado.';
-          btn.disabled = false;
-          return;
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[selectedLang] && translations[selectedLang][key]) {
+          el.innerHTML = translations[selectedLang][key];
         }
+      });
 
-        status.innerText = 'Conectando con el servidor...';
-        const keyRes = await fetch('/api/vapid-key');
-        const keyData = await keyRes.json();
+      const selector = document.getElementById('langSelector');
+      if (selector) selector.value = selectedLang;
+    }
 
-        status.innerText = 'Activando Service Worker...';
-        await navigator.serviceWorker.register('/sw.js');
-        const registration = await navigator.serviceWorker.ready;
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('tradeNotify_lang') || 'es';
+      applyLanguage(savedLang);
 
-        const subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
+      const selector = document.getElementById('langSelector');
+      if (selector) {
+        selector.addEventListener('change', (e) => {
+          applyLanguage(e.target.value);
         });
-
-        status.innerText = 'Vinculando dispositivo...';
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            channel_token: token,
-            subscription: subscription,
-            device_info: navigator.userAgent
-          })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('tradenotify_token', token);
-          mostrarPanelLive(token);
-        } else {
-          status.className = 'status-msg error';
-          status.innerText = '❌ ' + (data.error || 'Error al vincular.');
-          btn.disabled = false;
-        }
-      } catch (err) {
-        status.className = 'status-msg error';
-        status.innerText = 'Error: ' + err.message;
-        btn.disabled = false;
       }
-    }
-
-    async function mostrarPanelLive(token) {
-      document.getElementById('viewSubscribe').style.display = 'none';
-      document.getElementById('viewLive').style.display = 'block';
-      await cargarHistorial(token);
-      // Auto-refrescar feed cada 15 segundos
-      setInterval(() => cargarHistorial(token), 15000);
-    }
-
-    async function cargarHistorial(tokenParam) {
-      const token = tokenParam || localStorage.getItem('tradenotify_token');
-      if (!token) return;
-
-      try {
-        const res = await fetch(`/api/alerts?token=${token}`);
-        const data = await res.json();
-
-        if (res.ok) {
-          document.getElementById('channelTitle').innerText = data.channel.name;
-          const feed = document.getElementById('feedList');
-          feed.innerHTML = '';
-
-          if (!data.alerts || data.alerts.length === 0) {
-            feed.innerHTML = '<div style="text-align:center; color:#8b949e; font-size:13px; padding:30px 0;">No hay alertas recientes en este canal.</div>';
-            return;
-          }
-
-          data.alerts.forEach(al => {
-            const date = new Date(al.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const title = al.payload?.title || '🚨 Alerta de Mercado';
-            const body = al.payload?.message || (typeof al.payload === 'string' ? al.payload : JSON.stringify(al.payload));
-
-            const div = document.createElement('div');
-            div.className = 'alert-card';
-            div.innerHTML = `
-              <div class="alert-time">⏱️ ${date}</div>
-              <div class="alert-title">${title}</div>
-              <div class="alert-body">${body}</div>
-            `;
-            feed.appendChild(div);
-          });
-        }
-      } catch (e) {
-        console.error('Error al cargar historial:', e);
-      }
-    }
-
-    function desvincular() {
-      if (confirm('¿Quieres desconectar este dispositivo del canal?')) {
-        localStorage.removeItem('tradenotify_token');
-        location.reload();
-      }
-    }
+    });
   </script>
 </body>
 </html>
