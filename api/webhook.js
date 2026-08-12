@@ -1,13 +1,11 @@
 const { createClient } = require('@supabase/supabase-js');
 const webpush = require('web-push');
 
-if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(
-    process.env.VAPID_MAIL || 'mailto:tradenotify@proton.me',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
-}
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT || 'mailto:soporte@tradenotify.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
 
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
@@ -18,70 +16,86 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
+    return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  const { token } = req.query;
-
+  const token = req.query.token;
   if (!token) {
-    return res.status(400).json({ error: 'Falta el token del canal' });
+    return res.status(400).json({ error: 'Falta el token del canal (?token=...)' });
   }
 
   try {
-    const { data: channel, error: channelErr } = await supabase
+    // 1. Validar el canal
+    const { data: channel, error: chError } = await supabase
       .from('channels')
-      .select('id, name, is_active')
+      .select('*')
       .eq('webhook_token', token)
       .single();
 
-    if (channelErr || !channel || !channel.is_active) {
-      return res.status(404).json({ error: 'Canal no encontrado o inactivo' });
+    if (chError || !channel) {
+      return res.status(404).json({ error: 'Canal no encontrado o token inválido' });
     }
 
-    const payload = req.body || {};
+    if (!channel.is_active) {
+      return res.status(403).json({ error: 'El canal está pausado' });
+    }
 
-    const { data: subscribers, error: subsErr } = await supabase
+    // 2. Comprobar si el periodo de prueba expiró
+    if (channel.is_trial && channel.trial_ends_at) {
+      const now = new Date();
+      const expiresAt = new Date(channel.trial_ends_at);
+      if (now > expiresAt) {
+        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado. Suscríbete para continuar.' });
+      }
+    }
+
+    const payload = req.body;
+    const alertTitle = payload.title || '🚨 TradeNotify Alerta';
+    const alertBody = payload.message || (typeof payload === 'string' ? payload : JSON.stringify(payload));
+
+    // 3. Registrar alerta en Supabase
+    await supabase.from('alerts').insert({
+      channel_id: channel.id,
+      payload: payload
+    });
+
+    // 4. Obtener suscriptores
+    const { data: subscribers, error: subError } = await supabase
       .from('subscribers')
-      .select('push_subscription')
+      .select('*')
       .eq('channel_id', channel.id);
 
-    if (subsErr) throw subsErr;
-
-    const notificationPayload = JSON.stringify({
-      title: payload.title || `🚨 Alerta: ${channel.name}`,
-      body: payload.message || (typeof payload === 'string' ? payload : JSON.stringify(payload)),
-      icon: '/icon.png',
-      badge: '/badge.png',
-      data: { url: '/' }
-    });
-
-    let sentCount = 0;
-    if (subscribers && subscribers.length > 0) {
-      const sendPromises = subscribers.map(async (sub) => {
-        try {
-          await webpush.sendNotification(sub.push_subscription, notificationPayload);
-          sentCount++;
-        } catch (err) {
-          console.error('Error al enviar a un dispositivo:', err.message);
-        }
-      });
-      await Promise.all(sendPromises);
+    if (subError || !subscribers || subscribers.length === 0) {
+      return res.status(200).json({ message: 'Alerta registrada (Sin dispositivos vinculados)' });
     }
 
-    await supabase.from('alert_logs').insert({
-      channel_id: channel.id,
-      payload: payload,
-      delivered_to: sentCount
+    // 5. Enviar Notificación Push
+    const notificationPayload = JSON.stringify({
+      title: alertTitle,
+      body: alertBody,
+      data: { url: '/app' }
     });
 
-    return res.status(200).json({
-      success: true,
-      delivered_to: sentCount,
-      message: 'Alerta procesada correctamente'
+    const pushPromises = subscribers.map((sub) => {
+      const pushConfig = {
+        endpoint: sub.endpoint,
+        keys: {
+          auth: sub.keys_auth,
+          p256dh: sub.keys_p256dh
+        }
+      };
+
+      return webpush.sendNotification(pushConfig, notificationPayload).catch((err) => {
+        if (err.statusCode === 404 || err.statusCode === 410) {
+          return supabase.from('subscribers').delete().eq('id', sub.id);
+        }
+      });
     });
+
+    await Promise.all(pushPromises);
+    return res.status(200).json({ success: true, count: subscribers.length });
 
   } catch (error) {
-    console.error('Error en el servidor:', error);
-    return res.status(500).json({ error: error.message || 'Error interno del servidor' });
+    return res.status(500).json({ error: error.message });
   }
 };
