@@ -29,7 +29,7 @@
       border: 1px solid #30363d;
       border-radius: 16px;
       padding: 24px;
-      max-width: 460px;
+      max-width: 480px;
       width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
@@ -106,9 +106,9 @@
     }
 
     .feed-container {
-      max-height: 380px;
+      max-height: 340px;
       overflow-y: auto;
-      margin: 16px 0;
+      margin: 14px 0;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -125,27 +125,103 @@
       padding: 12px 14px;
       text-align: left;
     }
-    .alert-card .alert-time {
-      font-size: 11px;
-      color: #8b949e;
-      margin-bottom: 4px;
-    }
-    .alert-card .alert-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e6edf3;
-      margin-bottom: 4px;
-    }
-    .alert-card .alert-body {
+    .alert-card .alert-time { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
+    .alert-card .alert-title { font-size: 14px; font-weight: 600; color: #e6edf3; margin-bottom: 4px; }
+    .alert-card .alert-body { font-size: 13px; color: #8b949e; line-height: 1.4; white-space: pre-wrap; }
+    
+    .guide-btn {
+      width: 100%;
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px dashed #388bfd;
+      color: #58a6ff;
       font-size: 13px;
-      color: #8b949e;
-      line-height: 1.4;
-      white-space: pre-wrap;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+    .guide-btn:hover { background: rgba(88, 166, 255, 0.15); }
+
+    /* Modal Guía */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      padding: 22px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 10px;
+    }
+    .modal-header h2 { font-size: 17px; color: #fff; }
+    .btn-close {
+      background: none;
+      border: none;
+      color: #8b949e;
+      font-size: 20px;
+      width: auto;
+      padding: 0 4px;
+      cursor: pointer;
+    }
+    .step-box {
+      margin-bottom: 16px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .step-box h4 { font-size: 13px; color: #58a6ff; margin-bottom: 6px; }
+    .step-box p { font-size: 12px; color: #8b949e; line-height: 1.4; margin-bottom: 8px; }
+    .code-snippet {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #79c0ff;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .copy-btn-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+      margin-top: 6px;
+      width: auto;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+    }
+
     .back-link {
       display: block;
       text-align: center;
-      margin-top: 16px;
+      margin-top: 14px;
       font-size: 13px;
       color: #8b949e;
       text-decoration: none;
@@ -162,12 +238,17 @@
       <div class="header">
         <div style="font-size: 36px;">⚡</div>
         <h1>TradeNotify</h1>
-        <p>Introduce el token de tu canal para vincular este dispositivo y recibir alertas instantáneas.</p>
+        <p>Introduce tu token para recibir alertas en tiempo real en este dispositivo.</p>
       </div>
 
       <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
-      <button id="btnSub" onclick="activarAlertas()">Activar Alertas en este Móvil</button>
+      <button id="btnSub" onclick="activarAlertas()">Activar Alertas en este Dispositivo</button>
       <div id="statusMsg" class="status-msg"></div>
+      
+      <button class="guide-btn" style="margin-top: 16px;" onclick="abrirModal()">
+        📖 ¿Cómo configurar TradingView?
+      </button>
+
       <a href="/" class="back-link">← Volver a la portada</a>
     </div>
 
@@ -175,7 +256,7 @@
     <div id="viewLive" style="display: none;">
       <div class="dashboard-header">
         <div>
-          <div style="font-size: 12px; color: #8b949e;">Canal Activo</div>
+          <div style="font-size: 11px; color: #8b949e; text-transform: uppercase;">Canal Activo</div>
           <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #58a6ff;">-</div>
         </div>
         <div class="live-badge">
@@ -183,10 +264,12 @@
         </div>
       </div>
 
+      <button class="guide-btn" onclick="abrirModal()">
+        📖 Ver mi Webhook y Guía TradingView
+      </button>
+
       <div style="font-size: 13px; color: #8b949e; margin-bottom: 8px;">Registro de Alertas</div>
-      <div id="feedList" class="feed-container">
-        <!-- Rellenado por JS -->
-      </div>
+      <div id="feedList" class="feed-container"></div>
 
       <div style="display: flex; gap: 8px; margin-top: 12px;">
         <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
@@ -196,11 +279,68 @@
 
   </div>
 
+  <!-- MODAL DE CONFIGURACIÓN TRADINGVIEW -->
+  <div id="guideModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚡ Conectar con TradingView</h2>
+        <button class="btn-close" onclick="cerrarModal()">×</button>
+      </div>
+
+      <!-- Paso 1 -->
+      <div class="step-box">
+        <h4>1. Copia tu URL de Webhook</h4>
+        <p>En TradingView, al crear una alerta, ve a la pestaña <b>Notificaciones</b> y activa la casilla <b>URL del webhook</b>:</p>
+        <div class="code-snippet" id="modalWebhookUrl">https://tradenotify-lac.vercel.app/api/webhook?token=TU_TOKEN</div>
+        <button class="copy-btn-sm" onclick="copiarTexto('modalWebhookUrl')">📋 Copiar Webhook</button>
+      </div>
+
+      <!-- Paso 2 -->
+      <div class="step-box">
+        <h4>2. Formato del Mensaje (JSON)</h4>
+        <p>En el campo <b>Mensaje</b> de tu alerta en TradingView, pega este bloque para que la notificación incluya el ticker y precio exacto:</p>
+        <div class="code-snippet" id="modalJsonSnippet">{"title": "🟢 SEÑAL {{ticker}}", "message": "Precio: {{close}} | Tiempo: {{time}}"}</div>
+        <button class="copy-btn-sm" onclick="copiarTexto('modalJsonSnippet')">📋 Copiar JSON</button>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="step-box">
+        <h4>3. Listo para operar</h4>
+        <p>Guarda la alerta. En el milisegundo en que se cumpla la condición, tu móvil sonará y vibrará instantáneamente.</p>
+      </div>
+
+      <button class="btn-secondary" style="margin-top: 6px;" onclick="cerrarModal()">Entendido</button>
+    </div>
+  </div>
+
   <script>
     const savedToken = localStorage.getItem('tradenotify_token');
 
     if (savedToken) {
+      document.getElementById('tokenInput').value = savedToken;
+      actualizarWebhookModal(savedToken);
       mostrarPanelLive(savedToken);
+    }
+
+    function actualizarWebhookModal(token) {
+      const url = `https://tradenotify-lac.vercel.app/api/webhook?token=${token || 'TU_TOKEN'}`;
+      document.getElementById('modalWebhookUrl').innerText = url;
+    }
+
+    function abrirModal() {
+      const currentToken = localStorage.getItem('tradenotify_token') || document.getElementById('tokenInput').value.trim();
+      actualizarWebhookModal(currentToken);
+      document.getElementById('guideModal').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+      document.getElementById('guideModal').style.display = 'none';
+    }
+
+    function copiarTexto(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert('¡Copiado al portapapeles!');
     }
 
     function urlBase64ToUint8Array(base64String) {
@@ -227,7 +367,7 @@
 
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         status.className = 'status-msg error';
-        status.innerText = 'Navegador no compatible. Abre la app desde el icono de inicio en iOS.';
+        status.innerText = 'Abre la app desde la pantalla de inicio en iOS para activar Push.';
         return;
       }
 
@@ -248,7 +388,7 @@
         const keyRes = await fetch('/api/vapid-key');
         const keyData = await keyRes.json();
 
-        status.innerText = 'Activando Service Worker...';
+        status.innerText = 'Registrando Service Worker...';
         await navigator.serviceWorker.register('/sw.js');
         const registration = await navigator.serviceWorker.ready;
 
@@ -272,6 +412,7 @@
 
         if (res.ok) {
           localStorage.setItem('tradenotify_token', token);
+          actualizarWebhookModal(token);
           mostrarPanelLive(token);
         } else {
           status.className = 'status-msg error';
