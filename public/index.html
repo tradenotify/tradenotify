@@ -114,7 +114,7 @@
     /* Hero */
     .hero {
       text-align: center;
-      padding: 84px 0 52px;
+      padding: 84px 0 40px;
     }
     .badge {
       display: inline-flex;
@@ -173,28 +173,6 @@
       box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
     }
 
-    /* Mockup Glass */
-    .preview-box {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 500px;
-      margin: 44px auto 0;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: var(--glass-shadow);
-      text-align: left;
-    }
-    .mock-notif {
-      background: rgba(10, 14, 23, 0.7);
-      border: 1px solid var(--glass-border);
-      border-left: 3px solid var(--green-glow);
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-
     /* Secciones */
     .section-wrap {
       padding: 72px 0;
@@ -215,6 +193,104 @@
       margin-top: 6px;
     }
 
+    /* --- SIMULADOR INTERACTIVO --- */
+    .interactive-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--glass-shadow);
+      max-width: 860px;
+      margin: 0 auto 50px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .interactive-card { grid-template-columns: 1fr; }
+    }
+
+    .sim-left { display: flex; flex-direction: column; gap: 16px; }
+    .sim-right {
+      background: rgba(10, 14, 23, 0.85);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sim-stat-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .speed-compare-bar {
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .bar-item { display: flex; align-items: center; justify-content: space-between; }
+    .bar-line { height: 6px; border-radius: 3px; background: #6366f1; width: 10%; transition: width 0.3s; }
+    .bar-line.bad { background: #f43f5e; width: 95%; }
+
+    .mock-notif-sim {
+      background: rgba(18, 24, 38, 0.9);
+      border: 1px solid var(--glass-border);
+      border-left: 3px solid var(--green-glow);
+      border-radius: 10px;
+      padding: 14px;
+      transition: all 0.25s ease;
+    }
+    .mock-notif-sim.pulse-active {
+      border-color: #818cf8;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      transform: scale(1.02);
+    }
+
+    /* Steps Grid */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .step-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+    .step-num {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 24px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.08);
+      font-family: var(--mono);
+    }
+    .step-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .step-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Features Grid */
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -369,21 +445,91 @@
       </button>
       <a href="/app" class="nav-btn" style="padding: 13px 22px; font-size: 14px;" data-i18n="hero.btn_token">Tengo un Token</a>
     </div>
+  </header>
 
-    <!-- Mockup Preview Glass -->
-    <div class="preview-box">
-      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; display:flex; justify-content:space-between;">
-        <span data-i18n="preview.badge">📱 Web Push Directo</span>
-        <span style="color: #10b981; font-weight: 600;">● 0ms delay</span>
+  <!-- --- SECCIÓN INTERACTIVA: QUÉ ES Y CÓMO FUNCIONA --- -->
+  <section class="section-wrap container">
+    <div class="section-header">
+      <h2 data-i18n="how.title">¿Qué es exactamente y cómo funciona?</h2>
+      <p data-i18n="how.subtitle">Un puente directo entre tus gráficos de TradingView y tu móvil sin pasar por bots saturados.</p>
+    </div>
+
+    <!-- Simulador en Vivo -->
+    <div class="interactive-card">
+      <div class="sim-left">
+        <div style="font-size: 12px; color: #a5b4fc; font-weight: 700; text-transform: uppercase;" data-i18n="sim.tag">
+          🧪 Simulador de Velocidad
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; color: #fff;" data-i18n="sim.title">
+          Comprueba la entrega en tiempo real
+        </h3>
+        <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5;" data-i18n="sim.desc">
+          Pulsa el botón para simular una señal de compra activada en TradingView y observa la velocidad de entrega en la pantalla bloqueada:
+        </p>
+
+        <button onclick="dispararSimulador()" id="simBtn" class="btn-gradient" style="width: 100%; padding: 12px; font-size: 14px;" data-i18n="sim.btn">
+          ⚡ Disparar Alerta de Prueba
+        </button>
+
+        <div class="speed-compare-bar">
+          <div class="bar-item">
+            <span>⚡ TradeNotify (Push Nativo)</span>
+            <span id="simLatency" style="color: #34d399; font-weight: bold; font-family: var(--mono);">~38 ms</span>
+          </div>
+          <div class="bar-line" style="background: #34d399;"></div>
+          
+          <div class="bar-item" style="margin-top: 6px;">
+            <span>🐢 Bots de Telegram / Emails</span>
+            <span style="color: #f43f5e; font-weight: bold; font-family: var(--mono);">5,000 - 30,000 ms</span>
+          </div>
+          <div class="bar-line bad"></div>
+        </div>
       </div>
-      <div class="mock-notif">
-        <div style="font-size: 13.5px; font-weight: 700;" data-i18n="preview.signal_title">🟢 NASDAQ 100 - BUY SIGNAL</div>
-        <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 5px;" data-i18n="preview.signal_body">
-          Entrada: 19,850.50 | SL: 19,800.00 | TP: 19,950.00
+
+      <div class="sim-right">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; display:flex; justify-content:space-between;">
+          <span data-i18n="sim.phone_title">📱 Pantalla de Bloqueo (iOS / PC)</span>
+          <span id="simStatus" style="color: #34d399; font-weight: 600;">● Conectado</span>
+        </div>
+
+        <div id="simMockBox" class="mock-notif-sim">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;" id="simTime">⏱️ Hace 0s</div>
+          <div style="font-size: 14px; font-weight: 800; color: #fff;" id="simAlertTitle">🟢 NASDAQ 100 - BUY BREAKOUT</div>
+          <div style="font-size: 12px; color: #94a3b8; font-family: var(--mono); margin-top: 4px;" id="simAlertBody">
+            Precio: 19,850.50 | SL: 19,800.00 | TP: 19,950.00
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4;" data-i18n="sim.note">
+          💡 <b>Sin abrir apps:</b> La notificación despierta la pantalla y emite sonido instantáneo, ideal para entrar al mercado sin perder pips.
         </div>
       </div>
     </div>
-  </header>
+
+    <!-- 3 Pasos Visuales -->
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div style="font-size: 24px; margin-bottom: 10px;">📊</div>
+        <h3 data-i18n="step1.title">1. Tu alerta en TradingView</h3>
+        <p data-i18n="step1.desc">Creas una alerta en tu indicador, cruce de medias o estrategia en Pine Script y pegas tu URL privada de webhook.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div style="font-size: 24px; margin-bottom: 10px;">⚡</div>
+        <h3 data-i18n="step2.title">2. Disparo a los Servidores Push</h3>
+        <p data-i18n="step2.desc">TradeNotify recibe el evento y lo retransmite en milisegundos directamente a los servidores de Apple (APNs) y Google.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div style="font-size: 24px; margin-bottom: 10px;">📲</div>
+        <h3 data-i18n="step3.title">3. Sonido y Alerta Inmediatos</h3>
+        <p data-i18n="step3.desc">Tu iPhone o PC vibra y muestra la señal al instante en la pantalla bloqueada con todos los detalles de tu entrada.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- Por qué TradeNotify -->
   <section class="section-wrap container">
@@ -488,9 +634,23 @@
         "hero.description": "Elimina los retrasos de Telegram y el correo. Recibe señales de tus indicadores y estrategias directamente en tu pantalla de bloqueo con sonido y vibración en tiempo real.",
         "hero.btn_trial": "🚀 Probar 14 días Gratis",
         "hero.btn_token": "Tengo un Token",
-        "preview.badge": "📱 Web Push Directo",
-        "preview.signal_title": "🟢 NASDAQ 100 - BUY SIGNAL",
-        "preview.signal_body": "Entrada: 19,850.50 | SL: 19,800.00 | TP: 19,950.00",
+        
+        "how.title": "¿Qué es exactamente y cómo funciona?",
+        "how.subtitle": "Un puente directo entre tus gráficos de TradingView y tu móvil sin pasar por bots saturados.",
+        "sim.tag": "🧪 Simulador de Velocidad",
+        "sim.title": "Comprueba la entrega en tiempo real",
+        "sim.desc": "Pulsa el botón para simular una señal de compra activada en TradingView y observa la velocidad de entrega en la pantalla bloqueada:",
+        "sim.btn": "⚡ Disparar Alerta de Prueba",
+        "sim.phone_title": "📱 Pantalla de Bloqueo (iOS / PC)",
+        "sim.note": "💡 <b>Sin abrir apps:</b> La notificación despierta la pantalla y emite sonido instantáneo, ideal para entrar al mercado sin perder pips.",
+        
+        "step1.title": "1. Tu alerta en TradingView",
+        "step1.desc": "Creas una alerta en tu indicador, cruce de medias o estrategia en Pine Script y pegas tu URL privada de webhook.",
+        "step2.title": "2. Disparo a los Servidores Push",
+        "step2.desc": "TradeNotify recibe el evento y lo retransmite en milisegundos directamente a los servidores de Apple (APNs) y Google.",
+        "step3.title": "3. Sonido y Alerta Inmediatos",
+        "step3.desc": "Tu iPhone o PC vibra y muestra la señal al instante en la pantalla bloqueada con todos los detalles de tu entrada.",
+
         "why.title": "¿Por qué TradeNotify?",
         "why.subtitle": "Infraestructura directa para traders que necesitan reaccionar en el segundo exacto.",
         "why.f1_title": "Latencia Cero",
@@ -499,6 +659,7 @@
         "why.f2_desc": "Funciona con la tecnología PWA nativa de Safari y Chrome. Se añade a la pantalla de inicio en un clic.",
         "why.f3_title": "Traders & Mentores",
         "why.f3_desc": "Válido para uso personal o para emitir señales instantáneas a comunidades completas.",
+        
         "pricing.title": "Planes y Precios",
         "pricing.subtitle": "Suscripción sin permanencia ni límites de volumen.",
         "pricing.trader_badge": "MÁS POPULAR",
@@ -528,9 +689,23 @@
         "hero.description": "Eliminate Telegram and email delays. Receive indicator and strategy signals straight to your lock screen with instant sound and vibration.",
         "hero.btn_trial": "🚀 14-Day Free Trial",
         "hero.btn_token": "I have a Token",
-        "preview.badge": "📱 Direct Web Push",
-        "preview.signal_title": "🟢 NASDAQ 100 - BUY SIGNAL",
-        "preview.signal_body": "Entry: 19,850.50 | SL: 19,800.00 | TP: 19,950.00",
+        
+        "how.title": "What is it and how does it work?",
+        "how.subtitle": "A direct bridge between your TradingView charts and your phone without congested bots.",
+        "sim.tag": "🧪 Speed Simulator",
+        "sim.title": "Check real-time delivery speed",
+        "sim.desc": "Click below to simulate a buy signal triggered from TradingView and see delivery right on the lockscreen:",
+        "sim.btn": "⚡ Fire Test Alert",
+        "sim.phone_title": "📱 Lock Screen (iOS / PC)",
+        "sim.note": "💡 <b>No need to open apps:</b> The alert wakes your screen with instant sound and vibration for timely market entries.",
+        
+        "step1.title": "1. Your TradingView Alert",
+        "step1.desc": "Create an alert on your indicator, MA cross, or Pine Script strategy and paste your private webhook URL.",
+        "step2.title": "2. Dispatched to Push Servers",
+        "step2.desc": "TradeNotify receives the event and fans it out in milliseconds straight to Apple (APNs) and Google servers.",
+        "step3.title": "3. Instant Sound & Vibration",
+        "step3.desc": "Your iPhone or PC rings and displays the signal instantly on the lock screen with all entry parameters.",
+
         "why.title": "Why TradeNotify?",
         "why.subtitle": "Direct infrastructure built for traders who need sub-second execution alerts.",
         "why.f1_title": "Zero Latency",
@@ -539,6 +714,7 @@
         "why.f2_desc": "Runs on native PWA technology in Safari and Chrome. Add to home screen in one tap.",
         "why.f3_title": "Traders & Mentors",
         "why.f3_desc": "Perfect for single traders or broadcasting instant signals to entire trading communities.",
+        
         "pricing.title": "Simple Pricing",
         "pricing.subtitle": "Transparent subscription with no signal volume limits.",
         "pricing.trader_badge": "MOST POPULAR",
@@ -576,6 +752,47 @@
 
       const selector = document.getElementById('langSelector');
       if (selector) selector.value = selectedLang;
+    }
+
+    // SIMULADOR INTERACTIVO
+    const mockSignals = [
+      { title: "🟢 NASDAQ 100 - BUY BREAKOUT", body: "Precio: 19,850.50 | SL: 19,800.00 | TP: 19,950.00" },
+      { title: "🔴 EUR/USD - SHORT REVERSAL", body: "Precio: 1.08450 | SL: 1.08600 | TP: 1.08100" },
+      { title: "🟢 BTC/USDT - MOMENTUM ENTRY", body: "Precio: 68,420.00 | SL: 67,800.00 | TP: 70,500.00" },
+      { title: "🟢 S&P 500 - LIQUIDITY SWEEP", body: "Precio: 5,480.25 | SL: 5,465.00 | TP: 5,515.00" }
+    ];
+
+    let currentSigIdx = 0;
+
+    function dispararSimulador() {
+      const btn = document.getElementById('simBtn');
+      const box = document.getElementById('simMockBox');
+      const latencyEl = document.getElementById('simLatency');
+      const titleEl = document.getElementById('simAlertTitle');
+      const bodyEl = document.getElementById('simAlertBody');
+      const timeEl = document.getElementById('simTime');
+
+      btn.disabled = true;
+      btn.innerText = '📡 Transmitiendo...';
+
+      const randomLatency = Math.floor(Math.random() * 20) + 25; // 25ms - 45ms
+
+      setTimeout(() => {
+        currentSigIdx = (currentSigIdx + 1) % mockSignals.length;
+        const sig = mockSignals[currentSigIdx];
+
+        titleEl.innerText = sig.title;
+        bodyEl.innerText = sig.body;
+        timeEl.innerText = '⏱️ ' + new Date().toLocaleTimeString();
+        latencyEl.innerText = `${randomLatency} ms`;
+
+        box.classList.add('pulse-active');
+        setTimeout(() => box.classList.remove('pulse-active'), 500);
+
+        btn.disabled = false;
+        const currentLang = localStorage.getItem('tradeNotify_lang') || 'es';
+        btn.innerText = translations[currentLang]?.["sim.btn"] || '⚡ Disparar Alerta de Prueba';
+      }, randomLatency);
     }
 
     function abrirModalTrial() {
