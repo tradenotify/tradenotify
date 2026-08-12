@@ -79,7 +79,7 @@
     .hero h1 span { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { font-size: clamp(14px, 2vw, 16px); color: var(--text-muted); line-height: 1.6; max-width: 680px; margin: 0 auto; }
 
-    /* PASARELA / TARJETAS PROFESIONALES */
+    /* PASARELA DE PLANES */
     .gateway-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -101,7 +101,6 @@
     }
     .gateway-card:hover { transform: translateY(-3px); }
 
-    /* ESTILO DIFERENCIADO: TARJETA MENTOR (BRILLO ÉLITE) */
     .card-mentor {
       border: 1px solid rgba(129, 140, 248, 0.35);
       border-top: 2px solid #818cf8;
@@ -116,7 +115,6 @@
       padding: 4px 10px; border-radius: 6px; letter-spacing: 0.05em;
     }
 
-    /* ESTILO DIFERENCIADO: TARJETA INDIVIDUAL (BRILLO NEUTRO) */
     .card-individual {
       border: 1px solid var(--glass-border);
       border-top: 2px solid rgba(255, 255, 255, 0.2);
@@ -139,6 +137,81 @@
     
     .btn-outline { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: #f8fafc; }
     .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+
+    /* PANEL INTERACTIVO DE SERVICIOS */
+    .services-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 50px 0;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .services-header { text-align: center; margin-bottom: 24px; }
+    .services-header h2 { font-size: 22px; color: #fff; font-weight: 700; margin-bottom: 6px; }
+    .services-header p { font-size: 13.5px; color: var(--text-muted); }
+
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 16px;
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .tab-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(129, 140, 248, 0.4);
+      color: #c7d2fe;
+    }
+
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-body-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    @media(max-width: 768px) { .tab-body-grid { grid-template-columns: 1fr; } }
+
+    .tab-info h3 { font-size: 18px; color: #fff; font-weight: 700; margin-bottom: 10px; }
+    .tab-info p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+    
+    .tab-checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; color: var(--text); }
+    .tab-checklist li { display: flex; align-items: center; gap: 8px; }
+    .tab-checklist li::before { content: '✓'; color: #34d399; font-weight: bold; }
+
+    .tab-preview-box {
+      background: rgba(10, 14, 23, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #93c5fd;
+      line-height: 1.5;
+    }
 
     /* FOOTER */
     footer { text-align: center; padding: 24px 0; border-top: 1px solid var(--glass-border); font-size: 13px; color: var(--text-muted); }
@@ -178,7 +251,6 @@
           <div class="price-box">49€ <span>/ mes</span></div>
         </div>
         <div class="btn-group">
-          <!-- CAMBIA ESTE ENLACE '#' POR TU URL DE PASARELA DE PAGO (Stripe, etc.) -->
           <a href="https://buy.stripe.com/tu_enlace_de_pago_mentor" class="btn-main btn-primary">Contratar Plan Mentor</a>
           <a href="/dashboard-mentor.html" class="btn-main btn-outline">Probar 14 días Gratis (Mentor)</a>
         </div>
@@ -192,9 +264,109 @@
           <div class="price-box">19€ <span>/ mes</span></div>
         </div>
         <div class="btn-group">
-          <!-- CAMBIA ESTE ENLACE '#' POR TU URL DE PASARELA DE PAGO (Stripe, etc.) -->
           <a href="https://buy.stripe.com/tu_enlace_de_pago_individual" class="btn-main btn-primary">Contratar Plan Individual</a>
           <a href="/app.html" class="btn-main btn-outline">Probar 14 días Gratis (Individual)</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL INTERACTIVO DE SERVICIOS -->
+    <div class="services-panel">
+      <div class="services-header">
+        <h2>Explora nuestra tecnología y servicios</h2>
+        <p>Haz clic en cada sección para conocer en profundidad cómo funciona nuestra infraestructura.</p>
+      </div>
+
+      <!-- NAVEGACIÓN DE PESTAÑAS -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-webhook')">🔗 Webhook TradingView</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-mentors')">👑 Gestión de Alumnos</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-push')">📱 Notificaciones Nativas</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-security')">🛡️ Seguridad y Control</button>
+      </div>
+
+      <!-- CONTENIDO PESTAÑA 1: WEBHOOK -->
+      <div id="tab-webhook" class="tab-content active">
+        <div class="tab-body-grid">
+          <div class="tab-info">
+            <h3>Integración Instantánea con Webhooks</h3>
+            <p>Conecta cualquier alerta técnica o indicador de TradingView directamente mediante una URL cifrada. El sistema procesa los datos JSON y los distribuye de forma automática.</p>
+            <ul class="tab-checklist">
+              <li>Latencia menor a 200 milisegundos.</li>
+              <li>Soporte para variables dinámicas ({{ticker}}, {{close}}, {{time}}).</li>
+              <li>Compatible con estrategias Pine Script personalizadas.</li>
+            </ul>
+          </div>
+          <div class="tab-preview-box">
+            // Formato JSON soportado en TradingView<br>
+            {<br>
+            &nbsp;&nbsp;"title": "🔵 ZONA CLAVE - {{ticker}}",<br>
+            &nbsp;&nbsp;"message": "Precio actual: {{close}} | Soportes H4"<br>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENIDO PESTAÑA 2: GESTIÓN DE ALUMNOS -->
+      <div id="tab-mentors" class="tab-content">
+        <div class="tab-body-grid">
+          <div class="tab-info">
+            <h3>Control Total para Mentores y Academias</h3>
+            <p>Tu panel de administración privado te otorga soberanía absoluta sobre tu comunidad formativa sin depender de canales públicos o saturados.</p>
+            <ul class="tab-checklist">
+              <li>Generación ilimitada de códigos de invitación únicos.</li>
+              <li>Listado dinámico de alumnos activos conectados.</li>
+              <li>Revocación instantánea de acceso por finalización de suscripción.</li>
+            </ul>
+          </div>
+          <div class="tab-preview-box" style="color: #34d399;">
+            [Panel Mentor Activado]<br>
+            - Código Generado: MIG-7X2A9 (Activo)<br>
+            - Alumno Vinculado: Carlos M. (Suscripción OK)<br>
+            - Estado: Enlace seguro establecido.
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENIDO PESTAÑA 3: NOTIFICACIONES PUSH -->
+      <div id="tab-push" class="tab-content">
+        <div class="tab-body-grid">
+          <div class="tab-info">
+            <h3>Alertas Nativas en Pantalla de Bloqueo</h3>
+            <p>A diferencia de los canales de chat tradicionales donde las alertas se pierden entre conversaciones, nuestra app utiliza notificaciones push nativas de alta prioridad.</p>
+            <ul class="tab-checklist">
+              <li>Avisos con sonido y vibración instantáneos en el móvil o PC.</li>
+              <li>Diseño optimizado para iOS, Android y navegadores web.</li>
+              <li>Acceso rápido al historial completo de alertas recientes.</li>
+            </ul>
+          </div>
+          <div class="tab-preview-box" style="color: #f87171;">
+            🔔 <b>TradeNotify - Alerta en Vivo</b><br>
+            <b>🟢 Rango Asiático - EURUSD</b><br>
+            Precio testeando la zona de liquidez institucional explicada en clase.
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENIDO PESTAÑA 4: SEGURIDAD -->
+      <div id="tab-security" class="tab-content">
+        <div class="tab-body-grid">
+          <div class="tab-info">
+            <h3>Arquitectura Privada y Privacidad Absoluta</h3>
+            <p>Cada canal opera mediante un token único y cifrado de extremo a extremo. Nadie fuera de tu mentoría o de tu operativa personal tiene acceso a tus flujos de datos.</p>
+            <ul class="tab-checklist">
+              <li>Tokens seguros de acceso único por dispositivo.</li>
+              <li>Base de datos blindada en servidores de alta disponibilidad.</li>
+              <li>Cero publicidad y cero fricción técnica.</li>
+            </ul>
+          </div>
+          <div class="tab-preview-box" style="color: #a5b4fc;">
+            [Cifrado de Canal]<br>
+            - Token: tn_918237498123askdjf<br>
+            - Estado de Red: Conexión SSL/TLS Activa<br>
+            - Protocolo de seguridad: Validado.
+          </div>
         </div>
       </div>
 
@@ -206,6 +378,20 @@
     </footer>
 
   </div>
+
+  <!-- SCRIPT PARA EL CONTROL DE LAS PESTAÑAS INTERACTIVAS -->
+  <script>
+    function switchTab(evt, tabId) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(c => c.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(b => b.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      evt.currentTarget.classList.add('active');
+    }
+  </script>
 
 </body>
 </html>
