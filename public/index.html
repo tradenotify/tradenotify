@@ -45,7 +45,6 @@
       margin: 0 auto;
     }
 
-    /* NAV */
     nav {
       display: flex;
       justify-content: space-between;
@@ -72,7 +71,6 @@
     }
     .btn-nav:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
 
-    /* HERO SECTION */
     .hero {
       text-align: center;
       padding: 40px 0 60px 0;
@@ -131,7 +129,6 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5); }
 
-    /* FEATURES GRID */
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -150,7 +147,6 @@
     .feature-card h3 { font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 8px; }
     .feature-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; }
 
-    /* PRICING SECTION */
     .pricing-card {
       background: var(--glass-bg);
       border: 1px solid rgba(129, 140, 248, 0.3);
@@ -176,7 +172,6 @@
     .pricing-features li { display: flex; align-items: center; gap: 10px; }
     .pricing-features li::before { content: '✓'; color: var(--green); font-weight: bold; }
 
-    /* FOOTER */
     footer {
       text-align: center;
       padding: 24px 0;
@@ -189,8 +184,6 @@
 <body>
 
   <div class="container">
-    
-    <!-- NAVBAR -->
     <nav>
       <div class="logo-area">
         <img src="/icon.png" alt="TradeNotify Logo">
@@ -202,7 +195,6 @@
       </div>
     </nav>
 
-    <!-- HERO -->
     <section class="hero">
       <div class="badge">✨ Infraestructura Privada para Academias y Mentores</div>
       <h1>Lleva tu mentoría al siguiente nivel: comparte <span>zonas críticas y análisis</span> en tiempo real</h1>
@@ -214,7 +206,6 @@
       </div>
     </section>
 
-    <!-- FEATURES -->
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">📚</div>
@@ -233,7 +224,6 @@
       </div>
     </div>
 
-    <!-- PRICING -->
     <div class="pricing-card">
       <div style="font-size: 13px; font-weight: 700; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.05em;">Plan Mentor Profesional</div>
       <div class="price-tag">49€ <span>/ mes</span></div>
@@ -249,11 +239,9 @@
       <a href="/dashboard-mentor.html" class="btn-primary" style="display: block; text-align: center; margin-top: 20px;">Comenzar Ahora</a>
     </div>
 
-    <!-- FOOTER -->
     <footer>
       <p>&copy; 2026 TradeNotify. Infraestructura de análisis y acompañamiento educativo.</p>
     </footer>
-
   </div>
 
 </body>
