@@ -45,19 +45,27 @@ module.exports = async (req, res) => {
       const now = new Date();
       const expiresAt = new Date(channel.trial_ends_at);
       if (now > expiresAt) {
-        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado. Suscríbete para continuar.' });
+        return res.status(403).json({ error: 'Tu prueba gratuita de 14 días ha finalizado.' });
       }
     }
 
-    const payload = req.body;
-    const alertTitle = payload.title || '🚨 TradeNotify Alerta';
-    const alertBody = payload.message || (typeof payload === 'string' ? payload : JSON.stringify(payload));
+    let payload = req.body;
+    if (typeof payload === 'string') {
+      try { payload = JSON.parse(payload); } catch (e) {}
+    }
 
-    // 3. Registrar alerta en Supabase
-    await supabase.from('alerts').insert({
+    const alertTitle = payload.title || '🚨 TradeNotify Alerta';
+    const alertBody = payload.message || (typeof payload === 'object' ? JSON.stringify(payload) : String(payload));
+
+    // 3. Registrar alerta en Supabase con verificación
+    const { error: insertError } = await supabase.from('alerts').insert({
       channel_id: channel.id,
-      payload: payload
+      payload: { title: alertTitle, message: alertBody }
     });
+
+    if (insertError) {
+      console.error('Error insertando en alerts:', insertError);
+    }
 
     // 4. Obtener suscriptores
     const { data: subscribers, error: subError } = await supabase
@@ -66,7 +74,7 @@ module.exports = async (req, res) => {
       .eq('channel_id', channel.id);
 
     if (subError || !subscribers || subscribers.length === 0) {
-      return res.status(200).json({ message: 'Alerta registrada (Sin dispositivos vinculados)' });
+      return res.status(200).json({ success: true, count: 0, message: 'Alerta guardada (Sin dispositivos vinculados)' });
     }
 
     // 5. Enviar Notificación Push
