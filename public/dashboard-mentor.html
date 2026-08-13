@@ -106,7 +106,7 @@
 
     /* MÉTRICAS GRID */
     .metrics-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;
     }
     .metric-card {
       background: rgba(10, 14, 23, 0.6); border: 1px solid var(--glass-border);
@@ -115,7 +115,7 @@
     .metric-value { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
     .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 
-    /* WEBHOOK BOX PARA EL MENTOR */
+    /* WEBHOOK BOX */
     .webhook-box {
       background: rgba(10, 14, 23, 0.8); border: 1px solid var(--glass-border);
       border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;
@@ -127,9 +127,16 @@
       color: #93c5fd; font-family: var(--mono); font-size: 11.5px; padding: 8px 10px; width: 100%; margin: 0; outline: none;
     }
 
+    /* BUSCADOR DE ALUMNOS */
+    .search-input {
+      background: rgba(10, 14, 23, 0.5); border: 1px solid var(--glass-border); border-radius: 8px;
+      color: #fff; font-size: 12.5px; padding: 8px 12px; width: 100%; margin-bottom: 10px; outline: none;
+    }
+    .search-input:focus { border-color: #818cf8; }
+
     .section-title {
       font-size: 13px; font-weight: 700; color: #a5b4fc;
-      margin: 16px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
+      margin: 14px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
     }
 
     .list-container {
@@ -186,7 +193,7 @@
     <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
       
-      <!-- CABECERA LIMPIA CON ACCIONES -->
+      <!-- CABECERA -->
       <div class="header-top">
         <div class="brand">
           <img src="/icon.png" alt="Logo">
@@ -201,16 +208,17 @@
         </div>
       </div>
 
-      <!-- WEBHOOK URL DEL MENTOR (CRÍTICO PARA EMITIR ALERTAS) -->
+      <!-- WEBHOOK URL DEL MENTOR + TEST DE ALERTA -->
       <div class="webhook-box">
-        <label>🔗 Tu URL de Webhook (Pégala en TradingView para enviar alertas a tus alumnos):</label>
+        <label>🔗 URL de Webhook (Pégala en TradingView y prueba el sistema):</label>
         <div class="webhook-url-row">
           <input type="text" id="mentorWebhookUrl" class="webhook-input" readonly>
-          <button class="btn-icon" style="width: auto; padding: 8px 12px; background: rgba(99,102,241,0.2); border-color: rgba(129,140,248,0.4);" onclick="copiarWebhookMentor()">📋 Copiar</button>
+          <button class="btn-icon" style="width: auto; padding: 8px 10px; background: rgba(99,102,241,0.2); border-color: rgba(129,140,248,0.4);" onclick="copiarWebhookMentor()">📋 Copiar</button>
+          <button class="btn-icon" style="width: auto; padding: 8px 10px; background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.4); color:#34d399;" onclick="enviarTestAlerta()">🧪 Test</button>
         </div>
       </div>
 
-      <!-- MÉTRICAS DE TIEMPOS Y ALUMNOS -->
+      <!-- MÉTRICAS -->
       <div class="metrics-grid">
         <div class="metric-card">
           <div id="metricActive" class="metric-value">0</div>
@@ -228,10 +236,15 @@
 
       <button onclick="generarCodigo()" style="margin-bottom: 14px;">+ Generar Nuevo Código de Invitación</button>
 
-      <div class="section-title"><span>🎟️ Códigos Generados <small style="color:var(--text-muted); font-weight:normal;">(Haz clic para copiar)</small></span></div>
+      <!-- CÓDIGOS GENERADOS CON CONTADOR (X / 50) -->
+      <div class="section-title">
+        <span>🎟️ Códigos Generados <small id="codesCountBadge" style="color:#a5b4fc; font-weight:bold; font-size:12px;">(0 / 50)</small></span>
+      </div>
       <div id="codesList" class="list-container"></div>
 
+      <!-- ALUMNOS ACTIVOS CON BUSCADOR -->
       <div class="section-title" style="margin-top: 14px;"><span>🎓 Alumnos Activos</span></div>
+      <input type="text" id="searchStudentInput" class="search-input" placeholder="🔍 Buscar alumno activo..." oninput="filtrarAlumnos()">
       <div id="studentsList" class="list-container"></div>
 
       <div class="section-title" style="margin-top: 14px;"><span>📚 Histórico de Alumnos (Pasados)</span></div>
@@ -255,6 +268,7 @@
 
   <script>
     let studentToRevokeId = null;
+    let cachedActiveStudents = [];
 
     const savedMentorToken = localStorage.getItem('mentor_token');
     if (savedMentorToken) {
@@ -277,7 +291,6 @@
           document.getElementById('authSection').style.display = 'none';
           document.getElementById('dashboardSection').style.display = 'block';
           
-          // Rellenar datos del mentor
           document.getElementById('mentorChannelName').innerText = data.channel.name || 'Mentoría';
           document.getElementById('mentorWebhookUrl').value = `https://tradenotify-lac.vercel.app/api/webhook?token=${token}`;
           
@@ -308,6 +321,30 @@
       alert('¡URL de Webhook copiada al portapapeles!');
     }
 
+    async function enviarTestAlerta() {
+      const token = localStorage.getItem('mentor_token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(`/api/webhook?token=${token}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: "🧪 Alerta de Prueba Mentor",
+            message: "Simulación de nivel institucional enviada correctamente desde el panel."
+          })
+        });
+
+        if (res.ok) {
+          alert('¡Alerta de prueba enviada con éxito a todos los dispositivos vinculados!');
+        } else {
+          alert('Error al enviar la alerta de prueba.');
+        }
+      } catch (e) {
+        alert('Error de red al enviar el test.');
+      }
+    }
+
     function copiarCodigo(code) {
       navigator.clipboard.writeText(code);
       alert(`¡Código ${code} copiado al portapapeles!`);
@@ -318,11 +355,15 @@
       const resCodes = await fetch(`/api/list-codes?token=${token}`);
       const dataCodes = await resCodes.json();
       const codesList = document.getElementById('codesList');
-      
-      if (!dataCodes.codes || dataCodes.codes.length === 0) {
+      const codes = dataCodes.codes || [];
+
+      // Actualizar contador (X / 50)
+      document.getElementById('codesCountBadge').innerText = `(${codes.length} / 50)`;
+
+      if (codes.length === 0) {
         codesList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay códigos generados.</div>';
       } else {
-        codesList.innerHTML = dataCodes.codes.map(c => `
+        codesList.innerHTML = codes.map(c => `
           <div class="list-item">
             <span style="font-family:var(--mono); color:#93c5fd; cursor:pointer;" onclick="copiarCodigo('${c.code}')" title="Copiar código">${c.code} 📋</span>
             <span class="${c.is_used ? 'status-used' : 'status-active'}" ${!c.is_used ? `onclick="copiarCodigo('${c.code}')"` : ''}>${c.is_used ? 'Usado' : 'Activo (Copiar)'}</span>
@@ -333,14 +374,13 @@
       // 2. Cargar Alumnos y métricas
       const resStudents = await fetch(`/api/mentor-students?token=${token}`);
       const dataStudents = await resStudents.json();
-      const studentsList = document.getElementById('studentsList');
       const historyList = document.getElementById('historyList');
 
       const allRelations = dataStudents.students || [];
-      const activeStudents = allRelations.filter(s => s.status !== 'revoked');
+      cachedActiveStudents = allRelations.filter(s => s.status !== 'revoked');
       const revokedStudents = allRelations.filter(s => s.status === 'revoked');
 
-      document.getElementById('metricActive').innerText = activeStudents.length;
+      document.getElementById('metricActive').innerText = cachedActiveStudents.length;
       document.getElementById('metricHistoric').innerText = allRelations.length;
 
       if (allRelations.length > 0) {
@@ -356,19 +396,7 @@
         document.getElementById('metricPeak').innerText = 'N/D';
       }
 
-      if (activeStudents.length === 0) {
-        studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay alumnos activos.</div>';
-      } else {
-        studentsList.innerHTML = activeStudents.map(s => `
-          <div class="list-item">
-            <div>
-              <div style="font-weight:600; color:#fff;">${s.channels?.name || 'Alumno sin nombre'}</div>
-              <div style="font-size:11px; color:var(--text-muted);">Vinculado: ${new Date(s.created_at).toLocaleDateString()}</div>
-            </div>
-            <button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button>
-          </div>
-        `).join('');
-      }
+      renderizarAlumnosActivos(cachedActiveStudents);
 
       if (revokedStudents.length === 0) {
         historyList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">Sin registros en el histórico.</div>';
@@ -385,9 +413,36 @@
       }
     }
 
+    function renderizarAlumnosActivos(lista) {
+      const studentsList = document.getElementById('studentsList');
+      if (lista.length === 0) {
+        studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay alumnos activos.</div>';
+        return;
+      }
+      studentsList.innerHTML = lista.map(s => `
+        <div class="list-item">
+          <div>
+            <div style="font-weight:600; color:#fff;">${s.channels?.name || 'Alumno sin nombre'}</div>
+            <div style="font-size:11px; color:var(--text-muted);">Vinculado: ${new Date(s.created_at).toLocaleDateString()}</div>
+          </div>
+          <button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button>
+        </div>
+      `).join('');
+    }
+
+    function filtrarAlumnos() {
+      const query = document.getElementById('searchStudentInput').value.toLowerCase();
+      const filtrados = cachedActiveStudents.filter(s => (s.channels?.name || '').toLowerCase().includes(query));
+      renderizarAlumnosActivos(filtrados);
+    }
+
     async function generarCodigo() {
       const token = localStorage.getItem('mentor_token');
-      await fetch(`/api/generate-code?token=${token}`);
+      const res = await fetch(`/api/generate-code?token=${token}`, { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert('❌ ' + (data.error || 'No se pudo generar el código'));
+      }
       cargarDatosMentor(token);
     }
 

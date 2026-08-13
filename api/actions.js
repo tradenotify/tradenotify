@@ -5,7 +5,6 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || ''
 );
 
-// Función auxiliar para leer el body de forma segura en Vercel
 async function parseBody(req) {
   if (req.body) {
     if (typeof req.body === 'object') return req.body;
@@ -63,7 +62,7 @@ module.exports = async (req, res) => {
 
     const token = url.searchParams.get('token') || body.token;
 
-    // 2. GENERAR CÓDIGO DE INVITACIÓN
+    // 2. GENERAR CÓDIGO DE INVITACIÓN (Con límite máximo de 50)
     if (pathname.includes('/generate-code')) {
       const { data: mentor, error } = await supabase
         .from('channels')
@@ -73,6 +72,16 @@ module.exports = async (req, res) => {
 
       if (error || !mentor || mentor.role !== 'mentor') {
         return res.status(403).json({ error: 'Acceso denegado: Solo mentores' });
+      }
+
+      // Comprobar cuántos códigos tiene ya generados
+      const { count, error: countError } = await supabase
+        .from('invitation_codes')
+        .select('*', { count: 'exact', head: true })
+        .eq('mentor_id', mentor.id);
+
+      if (!countError && count >= 50) {
+        return res.status(400).json({ error: 'Has alcanzado el límite máximo de 50 códigos de invitación.' });
       }
 
       const randomCode = 'MIG-' + Math.random().toString(36).substring(2, 8).toUpperCase();
