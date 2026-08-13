@@ -27,6 +27,8 @@
     .brand-header { display: flex; align-items: center; gap: 10px; }
     .brand-header img { width: 38px; height: 38px; border-radius: 10px; box-shadow: 0 0 15px var(--accent-glow); }
 
+    .btn-icon { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: var(--text); padding: 8px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
     .live-badge { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--green); background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.2); font-weight: 700; }
     
     .token-row { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-family: var(--mono); font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -54,47 +56,53 @@
   <div class="card">
     <!-- VISTA SUSCRIPCIÓN -->
     <div id="viewSubscribe" style="text-align: center;">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button class="btn-icon" onclick="toggleLanguage()"><span id="langFlag">🇪🇸 ES</span></button>
+      </div>
       <img src="/icon.png" alt="TradeNotify Logo" style="width: 54px; height: 54px; border-radius: 14px; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 12px;">
-      <h2 style="margin-bottom: 6px; font-size: 20px; color: #fff;">TradeNotify Alumno</h2>
-      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Accede a tus alertas en tiempo real</p>
+      <h2 data-i18n="student_title" style="margin-bottom: 6px; font-size: 20px; color: #fff;">TradeNotify Alumno</h2>
+      <p data-i18n="student_subtitle" style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Accede a tus alertas en tiempo real</p>
       
-      <input type="text" id="tokenInput" placeholder="Token del Canal" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:10px; outline:none;">
-      <input type="text" id="inviteCodeInput" placeholder="Código Invitación (Opcional)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:12px; outline:none;">
-      <button class="btn-main" style="width:100%;" onclick="vincularCanal()">Conectar Dispositivo</button>
+      <input type="text" id="tokenInput" data-i18n-placeholder="token_placeholder" placeholder="Token del Canal" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:10px; outline:none;">
+      <input type="text" id="inviteCodeInput" data-i18n-placeholder="invite_placeholder" placeholder="Código Invitación (Opcional)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:12px; outline:none;">
+      <button class="btn-main" data-i18n="btn_connect" style="width:100%;" onclick="vincularCanal()">Conectar Dispositivo</button>
 
-      <button class="btn-secondary" style="width:100%; margin-top:15px; font-size:11px; padding:10px;" onclick="abrirGuiaPwa()">📲 ¿Cómo instalar la App en tu móvil?</button>
+      <button class="btn-secondary" data-i18n="btn_install_mobile" style="width:100%; margin-top:15px; font-size:11px; padding:10px;" onclick="abrirGuiaPwa()">📲 ¿Cómo instalar la App en tu móvil?</button>
     </div>
 
     <!-- VISTA LIVE -->
     <div id="viewLive" style="display: none;">
-      <div id="trialBanner" style="display:none; background:rgba(99,102,241,0.1); padding:8px; border-radius:8px; font-size:11px; text-align:center; color:#c7d2fe; margin-bottom:15px;">⏳ Prueba: quedan <b id="trialDaysCount">14</b> días. <a href="/#planes" style="color:#fff;"><b>Mejorar Plan</b></a></div>
+      <div id="trialBanner" style="display:none; background:rgba(99,102,241,0.1); padding:8px; border-radius:8px; font-size:11px; text-align:center; color:#c7d2fe; margin-bottom:15px;">⏳ <span data-i18n="trial_left">Prueba: quedan</span> <b id="trialDaysCount">14</b> <span data-i18n="trial_days">días</span>. <a href="/#planes" style="color:#fff;"><b data-i18n="trial_upgrade">Mejorar Plan →</b></a></div>
       
       <div class="header-top">
         <div class="brand-header">
           <img src="/icon.png" alt="Logo">
           <div>
-            <div style="font-size:9px; color:var(--text-muted); text-transform: uppercase;">CANAL</div>
+            <div style="font-size:9px; color:var(--text-muted); text-transform: uppercase;" data-i18n="channel_label">CANAL</div>
             <h2 id="channelTitle" style="font-size:14px; color:#fff;">-</h2>
           </div>
         </div>
-        <div class="live-badge">EN VIVO</div>
+        <div style="display: flex; gap: 4px; align-items: center;">
+          <button class="btn-icon" onclick="toggleLanguage()"><span id="langFlag2">🇪🇸 ES</span></button>
+          <div class="live-badge" data-i18n="live_badge">EN VIVO</div>
+        </div>
       </div>
 
       <div class="token-row">
         <span id="displayToken">tn_...</span>
-        <button onclick="copyToken()" style="background:transparent; color:#fff; padding:0; border:none; font-size:10px; cursor:pointer;">Copiar ID</button>
+        <button onclick="copyToken()" data-i18n="btn_copy_id" style="background:transparent; color:#fff; padding:0; border:none; font-size:10px; cursor:pointer;">Copiar ID</button>
       </div>
 
       <div id="feedList" class="feed-container"></div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-        <div id="lastSync" style="font-size:9px; color:#475569;">Sincronizando...</div>
-        <button onclick="abrirGuiaPwa()" style="background:transparent; border:none; color:#818cf8; font-size:9px; cursor:pointer;">📲 Instalar App en Móvil</button>
+        <div id="lastSync" style="font-size:9px; color:#475569;" data-i18n="syncing">Sincronizando...</div>
+        <button onclick="abrirGuiaPwa()" data-i18n="btn_install_mobile" style="background:transparent; border:none; color:#818cf8; font-size:9px; cursor:pointer;">📲 Instalar App en Móvil</button>
       </div>
 
       <div class="actions-grid">
-        <button class="btn-main" onclick="cargarHistorial()">🔄 Refrescar</button>
-        <button class="btn-secondary" onclick="testSonido()">🔔 Test</button>
-        <button class="btn-danger" onclick="desvincular()">❌ Salir</button>
+        <button class="btn-main" onclick="cargarHistorial()" data-i18n="btn_refresh">🔄 Refrescar</button>
+        <button class="btn-secondary" onclick="testSonido()" data-i18n="btn_test">🔔 Test</button>
+        <button class="btn-danger" onclick="desvincular()" data-i18n="btn_logout">❌ Salir</button>
       </div>
     </div>
   </div>
@@ -102,26 +110,117 @@
   <div id="modalAlert" class="modal-overlay">
     <div class="modal-content">
       <h3 id="modalMsg" style="margin-bottom:20px; font-size:16px;">Mensaje</h3>
-      <button class="btn-main" onclick="closeModal()">Aceptar</button>
+      <button class="btn-main" data-i18n="btn_accept" onclick="closeModal()">Aceptar</button>
     </div>
   </div>
 
-  <!-- GUÍA DE INSTALACIÓN PWA MÓVIL -->
+  <!-- GUÍA PWA MÓVIL -->
   <div id="pwaGuideModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 420px; text-align: left;">
-      <h3 style="margin-bottom:15px; text-align: center; font-size:16px;">📲 Instalar App en el Móvil</h3>
+      <h3 data-i18n="pwa_title" style="margin-bottom:15px; text-align: center; font-size:16px;">📲 Instalar App en el Móvil</h3>
       <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">
-        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🍏 Para iPhone / iPad (Safari):</p>
-        <p style="margin-bottom:12px; padding-left:10px; border-left:2px solid #6366f1;">1. Toca el botón <b>Compartir</b> <span style="font-size:14px;">⎋</span> abajo en Safari.<br>2. Selecciona <b>"Añadir a la pantalla de inicio"</b>.</p>
+        <p data-i18n="pwa_ios_title" style="margin-bottom:10px; color:#fff; font-weight:600;">🍏 Para iPhone / iPad (Safari):</p>
+        <p data-i18n="pwa_ios_desc" style="margin-bottom:12px; padding-left:10px; border-left:2px solid #6366f1;">1. Toca el botón <b>Compartir</b> <span style="font-size:14px;">⎋</span> abajo en Safari.<br>2. Selecciona <b>"Añadir a la pantalla de inicio"</b>.</p>
         
-        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🤖 Para Android (Chrome):</p>
-        <p style="margin-bottom:15px; padding-left:10px; border-left:2px solid #10b981;">1. Toca el menú de los <b>tres puntos</b> <span style="font-size:14px;">⋮</span> arriba a la derecha.<br>2. Selecciona <b>"Añadir a la pantalla principal"</b>.</p>
+        <p data-i18n="pwa_android_title" style="margin-bottom:10px; color:#fff; font-weight:600;">🤖 Para Android (Chrome):</p>
+        <p data-i18n="pwa_android_desc" style="margin-bottom:15px; padding-left:10px; border-left:2px solid #10b981;">1. Toca el menú de los <b>tres puntos</b> <span style="font-size:14px;">⋮</span> arriba a la derecha.<br>2. Selecciona <b>"Añadir a la pantalla principal"</b>.</p>
       </div>
-      <button class="btn-main" onclick="closeGuiaPwa()">¡Entendido!</button>
+      <button class="btn-main" data-i18n="btn_understood" onclick="closeGuiaPwa()">¡Entendido!</button>
     </div>
   </div>
 
   <script>
+    // DICCIONARIO DE TRADUCCIONES ALUMNO
+    const translations = {
+      es: {
+        student_title: "TradeNotify Alumno",
+        student_subtitle: "Accede a tus alertas en tiempo real",
+        token_placeholder: "Token del Canal",
+        invite_placeholder: "Código Invitación (Opcional)",
+        btn_connect: "Conectar Dispositivo",
+        btn_install_mobile: "📲 ¿Cómo instalar la App en tu móvil?",
+        trial_left: "Prueba: quedan",
+        trial_days: "días",
+        trial_upgrade: "Mejorar Plan →",
+        channel_label: "CANAL",
+        live_badge: "EN VIVO",
+        btn_copy_id: "Copiar ID",
+        syncing: "Sincronizando...",
+        btn_refresh: "🔄 Refrescar",
+        btn_test: "🔔 Test",
+        btn_logout: "❌ Salir",
+        btn_accept: "Aceptar",
+        pwa_title: "📲 Instalar App en el Móvil",
+        pwa_ios_title: "🍏 Para iPhone / iPad (Safari):",
+        pwa_ios_desc: "1. Toca el botón <b>Compartir</b> ⎋ abajo en Safari.<br>2. Selecciona <b>\"Añadir a la pantalla de inicio\"</b>.",
+        pwa_android_title: "🤖 Para Android (Chrome):",
+        pwa_android_desc: "1. Toca el menú de los <b>tres puntos</b> ⋮ arriba a la derecha.<br>2. Selecciona <b>\"Añadir a la pantalla principal\"</b>.",
+        btn_understood: "¡Entendido!",
+        waiting_signals: "Esperando señales de tu mentor...",
+        msg_copied: "Token copiado",
+        msg_test_sound: "Sonido de prueba emitido.",
+        err_token_needed: "Token necesario"
+      },
+      en: {
+        student_title: "TradeNotify Student",
+        student_subtitle: "Access your real-time alerts",
+        token_placeholder: "Channel Token",
+        invite_placeholder: "Invite Code (Optional)",
+        btn_connect: "Connect Device",
+        btn_install_mobile: "📲 How to install App on your mobile?",
+        trial_left: "Trial: you have",
+        trial_days: "days left",
+        trial_upgrade: "Upgrade Plan →",
+        channel_label: "CHANNEL",
+        live_badge: "LIVE",
+        btn_copy_id: "Copy ID",
+        syncing: "Syncing...",
+        btn_refresh: "🔄 Refresh",
+        btn_test: "🔔 Test",
+        btn_logout: "❌ Exit",
+        btn_accept: "Accept",
+        pwa_title: "📲 Install App on Mobile",
+        pwa_ios_title: "🍏 For iPhone / iPad (Safari):",
+        pwa_ios_desc: "1. Tap the <b>Share</b> button ⎋ at the bottom in Safari.<br>2. Select <b>\"Add to Home Screen\"</b>.",
+        pwa_android_title: "🤖 For Android (Chrome):",
+        pwa_android_desc: "1. Tap the <b>three dots</b> menu ⋮ at the top right.<br>2. Select <b>\"Add to Home screen\"</b>.",
+        btn_understood: "Understood!",
+        waiting_signals: "Waiting for signals from your mentor...",
+        msg_copied: "Token copied",
+        msg_test_sound: "Test sound played.",
+        err_token_needed: "Token required"
+      }
+    };
+
+    let currentLang = localStorage.getItem('tradenotify_lang') || 'es';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('tradenotify_lang', lang);
+      document.getElementById('langFlag').innerText = lang === 'es' ? '🇪🇸 ES' : '🇬🇧 EN';
+      document.getElementById('langFlag2').innerText = lang === 'es' ? '🇪🇸 ES' : '🇬🇧 EN';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          el.innerHTML = translations[lang][key];
+        }
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+          el.setAttribute('placeholder', translations[lang][key]);
+        }
+      });
+    }
+
+    function toggleLanguage() {
+      setLanguage(currentLang === 'es' ? 'en' : 'es');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => setLanguage(currentLang));
+
     const savedToken = localStorage.getItem('tradenotify_token');
     if (savedToken) mostrarPanelLive(savedToken);
 
@@ -129,13 +228,12 @@
     function closeModal() { document.getElementById('modalAlert').style.display = 'none'; }
     function abrirGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'flex'; }
     function closeGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'none'; }
-
-    function testSonido() { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); customAlert("Sonido de prueba emitido."); }
+    function testSonido() { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); customAlert(translations[currentLang].msg_test_sound); }
 
     async function vincularCanal() {
       const token = document.getElementById('tokenInput').value.trim();
       const code = document.getElementById('inviteCodeInput').value.trim();
-      if (!token) return customAlert('Token necesario');
+      if (!token) return customAlert(translations[currentLang].err_token_needed);
       if(code) { await fetch('/api/redeem-code', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({student_token:token, code}) }); }
       localStorage.setItem('tradenotify_token', token);
       mostrarPanelLive(token);
@@ -155,7 +253,7 @@
         const data = await res.json();
         if(res.ok) {
           document.getElementById('channelTitle').innerText = data.channel.name;
-          document.getElementById('lastSync').innerText = 'Última actualización: hace segundos';
+          document.getElementById('lastSync').innerText = currentLang === 'es' ? 'Última actualización: hace segundos' : 'Last update: seconds ago';
           
           if(data.channel.is_trial) {
             document.getElementById('trialBanner').style.display = 'block';
@@ -172,12 +270,12 @@
               <div class="alert-time">${new Date(a.created_at).toLocaleTimeString()}</div>
               <div class="alert-title">${a.payload.title || 'Alerta'}</div>
               <div class="alert-body">${a.payload.message || ''}</div>
-            </div>`}).join('') : '<p style="text-align:center; color:#475569; padding:20px; font-size:12px;">Esperando señales de tu mentor...</p>';
+            </div>`}).join('') : `<p style="text-align:center; color:#475569; padding:20px; font-size:12px;">${translations[currentLang].waiting_signals}</p>`;
         }
-      } catch(e) { document.getElementById('lastSync').innerText = 'Error al sincronizar'; }
+      } catch(e) { document.getElementById('lastSync').innerText = 'Error'; }
     }
 
-    function copyToken() { navigator.clipboard.writeText(localStorage.getItem('tradenotify_token')); customAlert('Token copiado'); }
+    function copyToken() { navigator.clipboard.writeText(localStorage.getItem('tradenotify_token')); customAlert(translations[currentLang].msg_copied); }
     function desvincular() { localStorage.removeItem('tradenotify_token'); location.reload(); }
   </script>
 </body>
