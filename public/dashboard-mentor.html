@@ -10,6 +10,7 @@
     :root {
       --bg: #070913; --glass-bg: rgba(18, 24, 38, 0.75); --glass-border: rgba(255, 255, 255, 0.09);
       --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --accent-glow: rgba(99, 102, 241, 0.35);
       --text: #f8fafc; --text-muted: #94a3b8; --green: #10b981; --red: #ef4444;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
@@ -21,6 +22,9 @@
     .trial-banner { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 10px; padding: 10px; font-size: 12px; text-align: center; margin-bottom: 20px; color: #c7d2fe; }
     
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
+    .brand-header { display: flex; align-items: center; gap: 10px; }
+    .brand-header img { width: 38px; height: 38px; border-radius: 10px; box-shadow: 0 0 15px var(--accent-glow); }
+
     .btn-icon { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
     
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -32,7 +36,7 @@
     .list-item { background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     
     button { padding: 12px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 13px; }
-    .btn-main { background: var(--accent-gradient); color: #fff; width: 100%; }
+    .btn-main { background: var(--accent-gradient); color: #fff; width: 100%; box-shadow: 0 4px 15px var(--accent-glow); }
     .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid var(--glass-border); }
     .btn-danger { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); font-size: 11px; padding: 6px; }
     
@@ -44,11 +48,14 @@
 
   <div class="card">
     <!-- AUTH SECTION -->
-    <div id="authSection">
-      <h2 style="text-align:center; margin-bottom:20px;">Panel Mentor</h2>
-      <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:10px;">
+    <div id="authSection" style="text-align: center;">
+      <img src="/icon.png" alt="TradeNotify Logo" style="width: 54px; height: 54px; border-radius: 14px; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 12px;">
+      <h2 style="margin-bottom: 6px; font-size: 20px;">Panel Mentor</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Introduce tu token para acceder a la gestión</p>
+      
+      <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:12px; outline:none;">
       <button class="btn-main" onclick="verificarMentor()">Acceder</button>
-      <div id="authStatus" style="font-size:12px; color:#f87171; margin-top:10px; text-align:center;"></div>
+      <div id="authStatus" style="font-size:12px; color:#f87171; margin-top:12px; text-align:center;"></div>
     </div>
 
     <!-- DASHBOARD SECTION -->
@@ -56,8 +63,14 @@
       <div id="trialBanner" class="trial-banner" style="display:none;">⏳ Prueba: quedan <b id="trialDaysCount">14</b> días. <a href="/#planes" style="color:#fff;"><b>Mejorar Plan</b></a></div>
       
       <div class="header-top">
-        <div><div style="font-size:9px; color:var(--text-muted);">MENTOR</div><h2 id="mentorChannelName" style="font-size:15px; color:#fff;">-</h2></div>
-        <div class="header-actions">
+        <div class="brand-header">
+          <img src="/icon.png" alt="Logo">
+          <div>
+            <div style="font-size:9px; color:var(--text-muted); text-transform: uppercase;">MENTOR</div>
+            <h2 id="mentorChannelName" style="font-size:14px; color:#fff;">-</h2>
+          </div>
+        </div>
+        <div class="header-actions" style="display: flex; gap: 6px;">
           <button class="btn-icon" onclick="recargarDatosMentor()">🔄 Refrescar</button>
           <button class="btn-icon" style="color:var(--red);" onclick="cerrarSesion()">🚪 Salir</button>
         </div>
@@ -77,7 +90,7 @@
       <div id="codesList" class="list-container"></div>
 
       <div style="font-size:12px; color:#a5b4fc; font-weight:700; margin:16px 0 8px;">🎓 Alumnos</div>
-      <input type="text" id="searchStudentInput" placeholder="🔍 Buscar alumno..." style="width:100%; padding:8px; border-radius:8px; border:none; background:rgba(0,0,0,0.3); color:#fff; font-size:12px; margin-bottom:10px;" oninput="filtrarAlumnos()">
+      <input type="text" id="searchStudentInput" placeholder="🔍 Buscar alumno..." style="width:100%; padding:8px; border-radius:8px; border:none; background:rgba(0,0,0,0.3); color:#fff; font-size:12px; margin-bottom:10px; outline:none;" oninput="filtrarAlumnos()">
       <div id="studentsList" class="list-container"></div>
     </div>
   </div>
@@ -108,7 +121,7 @@
         <p style="margin-bottom:8px;">1. En TradingView, entra en las propiedades de tu <b>Alerta</b>.</p>
         <p style="margin-bottom:8px;">2. En la pestaña <b>Notificaciones</b>, activa la casilla <b>URL del webhook</b>.</p>
         <p style="margin-bottom:4px;">3. Pega esta URL única de tu canal:</p>
-        <input type="text" id="webhookUrlDisplay" readonly style="width:100%; padding:8px; background:#000; color:#93c5fd; font-family:var(--mono); font-size:10px; border-radius:6px; border:1px solid var(--glass-border); margin-bottom:8px;">
+        <input type="text" id="webhookUrlDisplay" readonly style="width:100%; padding:8px; background:#000; color:#93c5fd; font-family:var(--mono); font-size:10px; border-radius:6px; border:1px solid var(--glass-border); margin-bottom:8px; outline:none;">
         <button class="btn-secondary" style="width:100%; padding:6px; font-size:11px; margin-bottom:12px;" onclick="copiarUrlGuia()">📋 Copiar URL de Webhook</button>
         
         <p style="margin-bottom:4px;">4. En el campo <b>Mensaje</b> de TradingView, pega este formato JSON:</p>
@@ -133,7 +146,7 @@
     }
 
     function customAlert(msg) {
-      document.getElementById('modalMsginnerText') || (document.getElementById('modalMsg').innerText = msg);
+      document.getElementById('modalMsg').innerText = msg;
       document.getElementById('modalAlert').style.display = 'flex';
     }
     function closeModal() { document.getElementById('modalAlert').style.display = 'none'; }
