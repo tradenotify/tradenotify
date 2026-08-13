@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TradeNotify - Panel Mentor (v2.0)</title>
+  <title>TradeNotify - Panel Mentor</title>
   <link rel="icon" type="image/png" href="/icon.png">
 
   <style>
@@ -46,7 +46,6 @@
       max-width: 580px;
       width: 100%;
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
 
@@ -56,13 +55,13 @@
     }
     .brand { display: flex; align-items: center; gap: 10px; }
     .brand img { width: 36px; height: 36px; border-radius: 10px; box-shadow: 0 0 15px var(--accent-glow); }
-    .brand span { font-weight: 800; font-size: 16px; color: #fff; }
+    .brand span { font-weight: 800; font-size: 15px; color: #fff; }
 
-    .header-actions { display: flex; gap: 8px; }
+    .header-actions { display: flex; gap: 6px; }
     
     .btn-icon {
       background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border);
-      color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
       cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
     }
     .btn-icon:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
@@ -71,100 +70,52 @@
       width: 100%; padding: 14px;
       background: rgba(10, 14, 23, 0.75);
       border: 1px solid var(--glass-border);
-      border-radius: 10px; color: #fff; font-size: 14.5px;
-      margin-bottom: 12px; outline: none; transition: border-color 0.2s;
+      border-radius: 10px; color: #fff; font-size: 14px;
+      margin-bottom: 12px; outline: none;
     }
-    input:focus { border-color: #818cf8; box-shadow: 0 0 10px rgba(129, 140, 248, 0.3); }
+    input:focus { border-color: #818cf8; }
     
     button {
       width: 100%; padding: 13px;
       background: var(--accent-gradient);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px; color: #ffffff;
-      font-size: 14.5px; font-weight: 600; cursor: pointer;
+      font-size: 14px; font-weight: 600; cursor: pointer;
       box-shadow: 0 4px 15px var(--accent-glow);
-      transition: all 0.2s ease;
     }
     button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45); }
     
-    button.btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      color: var(--text); box-shadow: none;
-    }
+    button.btn-secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: var(--text); box-shadow: none; }
     button.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); }
 
     button.btn-danger {
-      background: rgba(248, 113, 113, 0.15);
-      border: 1px solid rgba(248, 113, 113, 0.3);
-      color: #f87171; box-shadow: none; font-size: 11.5px; padding: 6px 10px; width: auto;
+      background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171; box-shadow: none; font-size: 11px; padding: 6px 10px; width: auto;
     }
     button.btn-danger:hover { background: rgba(248, 113, 113, 0.25); }
 
-    .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; }
-    .status-msg.error { color: #f87171; }
-
-    /* MÉTRICAS */
-    .metrics-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px;
-    }
-    .metric-card {
-      background: rgba(10, 14, 23, 0.6); border: 1px solid var(--glass-border);
-      border-radius: 12px; padding: 12px; text-align: center;
-    }
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+    .metric-card { background: rgba(10, 14, 23, 0.6); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; text-align: center; }
     .metric-value { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
-    .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+    .metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
 
-    /* WEBHOOK BOX */
-    .webhook-box {
-      background: rgba(10, 14, 23, 0.8); border: 1px solid var(--glass-border);
-      border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;
-    }
-    .webhook-box label { font-size: 11.5px; color: #a5b4fc; font-weight: 700; display: block; margin-bottom: 6px; }
-    .webhook-url-row { display: flex; gap: 8px; align-items: center; }
-    .webhook-input {
-      background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px;
-      color: #93c5fd; font-family: var(--mono); font-size: 11.5px; padding: 8px 10px; width: 100%; margin: 0; outline: none;
-    }
+    .webhook-box { background: rgba(10, 14, 23, 0.8); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+    .webhook-box label { font-size: 11px; color: #a5b4fc; font-weight: 700; display: block; margin-bottom: 6px; }
+    .webhook-url-row { display: flex; gap: 6px; align-items: center; }
+    .webhook-input { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px; color: #93c5fd; font-family: var(--mono); font-size: 11px; padding: 8px; width: 100%; outline: none; }
 
-    .search-input {
-      background: rgba(10, 14, 23, 0.5); border: 1px solid var(--glass-border); border-radius: 8px;
-      color: #fff; font-size: 12.5px; padding: 8px 12px; width: 100%; margin-bottom: 10px; outline: none;
-    }
+    .search-input { background: rgba(10, 14, 23, 0.5); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 12px; padding: 8px; width: 100%; margin-bottom: 10px; outline: none; }
+    
+    .section-title { font-size: 12px; font-weight: 700; color: #a5b4fc; margin: 16px 0 8px 0; display: flex; justify-content: space-between; align-items: center; }
+    .list-container { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+    .list-item { background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    
+    .status-used { color: #f87171; font-size: 11px; font-weight: 600; }
+    .status-active { color: #34d399; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .status-history { color: var(--text-muted); font-size: 11px; font-weight: 600; }
 
-    .section-title {
-      font-size: 13px; font-weight: 700; color: #a5b4fc;
-      margin: 14px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
-    }
-
-    .list-container {
-      max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
-    }
-    .list-container::-webkit-scrollbar { width: 4px; }
-    .list-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
-
-    .list-item {
-      background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border);
-      border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
-    }
-    .status-used { color: #f87171; font-size: 11.5px; font-weight: 600; }
-    .status-active { color: #34d399; font-size: 11.5px; font-weight: 600; cursor: pointer; }
-    .status-history { color: var(--text-muted); font-size: 11.5px; font-weight: 600; }
-
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
-      display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px);
-    }
-    .modal-content {
-      background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top); border-radius: 18px;
-      padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-    }
-    .modal-content h3 { font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 6px; }
-    .modal-content p { font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
-
-    .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
-    .back-link:hover { color: #a5b4fc; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px); }
+    .modal-content { background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border); border-radius: 18px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
   </style>
 </head>
 <body>
@@ -173,53 +124,46 @@
     <div id="authSection">
       <div style="text-align: center; margin-bottom: 22px;">
         <h1 style="font-size: 20px; font-weight: 800; color: #fff;">Panel Mentor</h1>
-        <p style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">v2.0 - Introduce tu token.</p>
       </div>
       <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor">
-      <button onclick="verificarMentor()">Acceder al Panel</button>
-      <div id="authStatus" class="status-msg"></div>
-      <a href="/app.html" class="back-link">← Ir a la App de Alertas</a>
+      <button onclick="verificarMentor()">Acceder</button>
+      <div id="authStatus" style="font-size:12px; color:#f87171; margin-top:10px; text-align:center;"></div>
     </div>
 
     <div id="dashboardSection" style="display:none;">
       <div class="header-top">
         <div class="brand">
           <img src="/icon.png" alt="Logo">
-          <div>
-            <span id="mentorChannelName" style="display:block; font-size:14px; color:#fff;">Mentoría</span>
-            <span style="font-size:10.5px; color:var(--text-muted); text-transform:uppercase;">Panel v2.0</span>
-          </div>
+          <div><span id="mentorChannelName" style="color:#fff;">Mentoría</span></div>
         </div>
         <div class="header-actions">
-          <button class="btn-icon" onclick="recargarDatosMentor()">🔄</button>
-          <button class="btn-icon" style="color: #f87171;" onclick="cerrarSesion()">🚪</button>
+          <button class="btn-icon" onclick="recargarDatosMentor()">🔄 Refrescar</button>
+          <button class="btn-icon" style="color: #f87171;" onclick="cerrarSesion()">🚪 Salir</button>
         </div>
       </div>
 
       <div class="webhook-box">
-        <label>🔗 Webhook (Pega en TradingView y Prueba):</label>
+        <label>🔗 URL de Webhook:</label>
         <div class="webhook-url-row">
           <input type="text" id="mentorWebhookUrl" class="webhook-input" readonly>
-          <button class="btn-icon" style="width: auto;" onclick="copiarWebhookMentor()">📋</button>
-          <button class="btn-icon" style="width: auto; color:#34d399;" onclick="enviarTestAlerta()">🧪</button>
+          <button class="btn-icon" style="width: auto;" onclick="copiarWebhookMentor()">📋 Copiar</button>
+          <button class="btn-icon" style="width: auto; color:#34d399;" onclick="enviarTestAlerta()">🧪 Test</button>
         </div>
       </div>
 
       <div class="metrics-grid">
         <div class="metric-card"><div id="metricActive" class="metric-value">0</div><div class="metric-label">Activos</div></div>
         <div class="metric-card"><div id="metricHistoric" class="metric-value">0</div><div class="metric-label">Históricos</div></div>
-        <div class="metric-card"><div id="metricPeak" class="metric-value" style="font-size: 13px; padding-top: 4px;">-</div><div class="metric-label">Pico</div></div>
+        <div class="metric-card"><div id="metricPeak" class="metric-value" style="font-size:12px;">-</div><div class="metric-label">Pico</div></div>
       </div>
 
-      <button onclick="generarCodigo()" style="margin-bottom: 14px;">+ Generar Nuevo Código de Invitación</button>
+      <button onclick="generarCodigo()" style="margin-bottom: 14px;">+ Generar Nuevo Código</button>
 
-      <div class="section-title">
-        <span>🎟️ Códigos <small id="codesCountBadge" style="color:#a5b4fc;">(0 / 50)</small></span>
-      </div>
+      <div class="section-title"><span>🎟️ Códigos <small id="codesCountBadge" style="color:#a5b4fc;">(0 / 50)</small></span></div>
       <div id="codesList" class="list-container"></div>
 
       <div class="section-title" style="margin-top: 14px;"><span>🎓 Alumnos Activos</span></div>
-      <input type="text" id="searchStudentInput" class="search-input" placeholder="🔍 Buscar..." oninput="filtrarAlumnos()">
+      <input type="text" id="searchStudentInput" class="search-input" placeholder="🔍 Buscar alumno..." oninput="filtrarAlumnos()">
       <div id="studentsList" class="list-container"></div>
 
       <div class="section-title" style="margin-top: 14px;"><span>📚 Histórico</span></div>
@@ -230,10 +174,9 @@
   <div id="revokeModal" class="modal-overlay">
     <div class="modal-content">
       <h3>⚠️ ¿Revocar acceso?</h3>
-      <p>El alumno pasará al registro histórico.</p>
-      <div style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
         <button class="btn-secondary" onclick="cerrarModalRevoke()">Cancelar</button>
-        <button class="btn-primary" style="background:#f87171; color:#fff;" onclick="ejecutarRevocacion()">Sí, Revocar</button>
+        <button class="btn-primary" style="background:#f87171;" onclick="ejecutarRevocacion()">Sí, Revocar</button>
       </div>
     </div>
   </div>
@@ -250,7 +193,6 @@
 
     async function verificarMentor(auto = false) {
       const token = document.getElementById('mentorToken').value.trim();
-      const status = document.getElementById('authStatus');
       if (!token) return;
       try {
         const res = await fetch(`/api/alerts?token=${token}`);
@@ -262,40 +204,25 @@
           document.getElementById('mentorChannelName').innerText = data.channel.name || 'Mentoría';
           document.getElementById('mentorWebhookUrl').value = `https://tradenotify-lac.vercel.app/api/webhook?token=${token}`;
           cargarDatosMentor(token);
-        } else if (!auto) {
-          status.className = 'status-msg error';
-          status.innerText = '❌ Acceso denegado.';
-        }
-      } catch (e) { status.innerText = '❌ Error de conexión.'; }
+        } else if (!auto) document.getElementById('authStatus').innerText = '❌ Acceso denegado.';
+      } catch (e) { document.getElementById('authStatus').innerText = '❌ Error.'; }
     }
 
     function recargarDatosMentor() { const token = localStorage.getItem('mentor_token'); if (token) cargarDatosMentor(token); }
-
-    function copiarWebhookMentor() {
-      const input = document.getElementById('mentorWebhookUrl');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      alert('¡URL copiada!');
-    }
-
+    function copiarWebhookMentor() { navigator.clipboard.writeText(document.getElementById('mentorWebhookUrl').value); alert('¡Copiado!'); }
     async function enviarTestAlerta() {
       const token = localStorage.getItem('mentor_token');
-      try {
-        await fetch(`/api/webhook?token=${token}`, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ title: "🧪 Test", message: "Sistema operativo correctamente." })
-        });
-        alert('Test enviado.');
-      } catch (e) { alert('Error enviando test.'); }
+      await fetch(`/api/webhook?token=${token}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: "🧪 Test", message: "Sistema operativo." }) });
+      alert('Test enviado.');
     }
+    function copiarCodigo(code) { navigator.clipboard.writeText(code); alert('¡Código copiado!'); }
 
     async function cargarDatosMentor(token) {
       const resCodes = await fetch(`/api/list-codes?token=${token}`);
       const dataCodes = await resCodes.json();
       const codes = dataCodes.codes || [];
       document.getElementById('codesCountBadge').innerText = `(${codes.length} / 50)`;
-      document.getElementById('codesList').innerHTML = codes.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Sin códigos.</div>' : codes.map(c => `<div class="list-item"><span style="font-family:var(--mono); color:#93c5fd;">${c.code}</span><span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span></div>`).join('');
+      document.getElementById('codesList').innerHTML = codes.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Sin códigos.</div>' : codes.map(c => `<div class="list-item"><span style="font-family:var(--mono); color:#93c5fd; cursor:pointer;" onclick="copiarCodigo('${c.code}')">${c.code} 📋</span><span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span></div>`).join('');
 
       const resStudents = await fetch(`/api/mentor-students?token=${token}`);
       const dataStudents = await resStudents.json();
@@ -306,13 +233,22 @@
       document.getElementById('metricActive').innerText = cachedActiveStudents.length;
       document.getElementById('metricHistoric').innerText = allRelations.length;
 
+      if (allRelations.length > 0) {
+        const monthsCount = {};
+        allRelations.forEach(r => {
+          const d = new Date(r.created_at);
+          const key = d.toLocaleString('es', { month: 'short', year: '2-digit' });
+          monthsCount[key] = (monthsCount[key] || 0) + 1;
+        });
+        document.getElementById('metricPeak').innerText = Object.keys(monthsCount).reduce((a, b) => monthsCount[a] > monthsCount[b] ? a : b);
+      }
+
       renderizarAlumnosActivos(cachedActiveStudents);
-      document.getElementById('historyList').innerHTML = revokedStudents.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Sin histórico.</div>' : revokedStudents.map(s => `<div class="list-item"><div><div style="color:#fff;">${s.channels?.name || 'Alumno'}</div><div style="font-size:10px; color:#64748b;">${new Date(s.revoked_at).toLocaleDateString()}</div></div><span class="status-history">Finalizado</span></div>`).join('');
+      document.getElementById('historyList').innerHTML = revokedStudents.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Vacío.</div>' : revokedStudents.map(s => `<div class="list-item"><div><div style="color:#fff;">${s.channels?.name || 'Alumno'}</div></div><span class="status-history">Finalizado</span></div>`).join('');
     }
 
     function renderizarAlumnosActivos(lista) {
-      const studentsList = document.getElementById('studentsList');
-      studentsList.innerHTML = lista.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Sin alumnos.</div>' : lista.map(s => `<div class="list-item"><div><div style="color:#fff;">${s.channels?.name || 'Alumno'}</div></div><button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button></div>`).join('');
+      document.getElementById('studentsList').innerHTML = lista.length === 0 ? '<div style="color:#64748b; font-size:12px; text-align:center; padding:8px;">Sin alumnos.</div>' : lista.map(s => `<div class="list-item"><div><div style="color:#fff;">${s.channels?.name || 'Alumno'}</div></div><button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button></div>`).join('');
     }
 
     function filtrarAlumnos() {
@@ -322,8 +258,7 @@
 
     async function generarCodigo() {
       const token = localStorage.getItem('mentor_token');
-      const res = await fetch(`/api/generate-code?token=${token}`, { method: 'POST' });
-      if(!res.ok) alert('Has alcanzado el límite de 50 códigos.');
+      await fetch(`/api/generate-code?token=${token}`, { method: 'POST' });
       cargarDatosMentor(token);
     }
 
