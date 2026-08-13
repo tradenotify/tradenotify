@@ -8,9 +8,11 @@ const supabase = createClient(
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
-  // Validar clave maestra de administrador
+  // Validar clave maestra de administrador (Acepta '1616' o la variable de entorno)
   const adminSecret = req.headers['x-admin-secret'] || req.query.secret;
-  if (!process.env.ADMIN_SECRET || adminSecret !== process.env.ADMIN_SECRET) {
+  const validSecret = process.env.ADMIN_SECRET || '1616';
+
+  if (!adminSecret || adminSecret !== validSecret) {
     return res.status(401).json({ error: 'Acceso no autorizado. Clave incorrecta.' });
   }
 
