@@ -2,487 +2,61 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TradeNotify - Admin Master Panel</title>
-  <link rel="icon" type="image/png" href="/icon.png">
-  <link rel="apple-touch-icon" href="/icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
+  <title>TradeNotify - Admin Panel</title>
   <style>
-    :root {
-      --bg: #070913; --glass-bg: rgba(18, 24, 38, 0.75); --glass-border: rgba(255, 255, 255, 0.09);
-      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-      --accent-glow: rgba(99, 102, 241, 0.35);
-      --text: #f8fafc; --text-muted: #94a3b8; --green: #10b981; --red: #ef4444;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-    
-    .container { max-width: 1000px; width: 100%; }
-    
-    header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
-      padding-bottom: 16px; border-bottom: 1px solid var(--glass-border);
-    }
-    .brand-header { display: flex; align-items: center; gap: 10px; }
-    .brand-header img { width: 38px; height: 38px; border-radius: 10px; box-shadow: 0 0 15px var(--accent-glow); }
-
-    .card {
-      background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
-      padding: 24px; margin-bottom: 24px; backdrop-filter: blur(20px); box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    }
-
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 120px; gap: 12px; align-items: end; }
-    label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
-    
-    input, select {
-      width: 100%; padding: 12px; background: rgba(10, 14, 23, 0.75);
-      border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 14px; outline: none;
-    }
-    input:focus, select:focus { border-color: #818cf8; }
-
-    button { padding: 12px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; }
-    .btn-main { background: var(--accent-gradient); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); width: 100%; }
-    .btn-secondary { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--glass-border); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
-    .btn-icon { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); color: var(--text); padding: 8px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; text-align: left; }
-    th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); font-size: 13px; }
-    th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
-
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
-    .badge-active { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .badge-paused { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-
-    .token-box {
-      background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 6px;
-      font-family: var(--mono); font-size: 11px; color: #93c5fd; cursor: pointer; border: 1px solid var(--glass-border);
-    }
-
-    #loginOverlay {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; justify-content: center; align-items: center; z-index: 100;
-      background-image: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
-    }
-    .login-box {
-      background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;
-      padding: 32px; max-width: 380px; width: 100%; text-align: center; backdrop-filter: blur(20px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.7);
-    }
-
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 999; backdrop-filter: blur(4px); }
-    .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; max-width: 350px; width: 100%; text-align: center; }
+    :root { --bg: #070913; --glass-bg: rgba(18, 24, 38, 0.75); --glass-border: rgba(255, 255, 255, 0.09); --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%); --text: #f8fafc; --text-muted: #94a3b8; --red: #ef4444; }
+    body { background-color: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; }
+    .container { max-width: 1000px; margin: auto; }
+    .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: left; }
+    button { padding: 6px 10px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; }
+    .btn-main { background: var(--accent-gradient); color: #fff; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
+    .modal-content { background: #161b22; padding: 20px; border-radius: 12px; width: 400px; }
   </style>
 </head>
 <body>
-
-  <!-- PANTALLA DE LOGIN CON CONTRASEÑA 1616 -->
-  <div id="loginOverlay">
-    <div class="login-box">
-      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-        <button class="btn-icon" onclick="toggleLanguage()"><span id="langFlagLogin">🇪🇸 ES</span></button>
-      </div>
-      <img src="/icon.png" alt="Logo" style="width: 54px; height: 54px; border-radius: 14px; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 12px;">
-      <h2 data-i18n="login_title" style="margin-bottom: 6px; font-size: 20px; color: #fff;">Acceso Administrador</h2>
-      <p data-i18n="login_subtitle" style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">Introduce la clave maestra de seguridad</p>
-      
-      <input type="password" id="secretInput" data-i18n-placeholder="login_placeholder" placeholder="••••••••" style="margin-bottom: 16px; text-align: center; font-family: var(--mono); letter-spacing: 2px;">
-      <button class="btn-main" data-i18n="btn_login" onclick="login()">Entrar al Panel</button>
-      <div id="loginError" style="color: var(--red); font-size: 12px; margin-top: 12px;"></div>
+  <div class="container">
+    <h1>TradeNotify Admin</h1>
+    <div class="card">
+      <table>
+        <thead><tr><th>Nombre</th><th>Tipo</th><th>Acciones</th></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
     </div>
   </div>
 
-  <div class="container" id="adminDashboard" style="display: none;">
-    <header>
-      <div class="brand-header">
-        <img src="/icon.png" alt="Logo">
-        <div>
-          <div style="font-size:9px; color:var(--text-muted); text-transform:uppercase;" data-i18n="admin_label">PANEL MASTER</div>
-          <h1 style="font-size:16px; color:#fff;" data-i18n="admin_main_title">TradeNotify Admin</h1>
-        </div>
-      </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <button class="btn-icon" onclick="toggleLanguage()"><span id="langFlag">🇪🇸 ES</span></button>
-        <button class="btn-secondary" onclick="logout()" data-i18n="btn_logout">Cerrar Sesión</button>
-      </div>
-    </header>
-
-    <!-- CREAR NUEVO CANAL -->
-    <div class="card">
-      <h2 data-i18n="create_title" style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px;">Crear Nuevo Canal / Cliente</h2>
-      <div class="form-grid">
-        <div>
-          <label data-i18n="label_channel_name">Nombre</label>
-          <input type="text" id="chName" data-i18n-placeholder="placeholder_channel_name" placeholder="Ej: Mentor Juan o Trader Pro">
-        </div>
-        <div>
-          <label data-i18n="label_plan_type">Tipo</label>
-          <select id="chPlan">
-            <option value="mentor" data-i18n="plan_mentor">Mentor</option>
-            <option value="individual" data-i18n="plan_individual">Individual</option>
-            <option value="student" data-i18n="plan_student">Alumno</option>
-          </select>
-        </div>
-        <div>
-          <label data-i18n="label_device_limit">Cupo Dispositivos</label>
-          <input type="number" id="chLimit" value="50" min="1" max="1000">
-        </div>
-        <button class="btn-main" onclick="crearCanal()" data-i18n="btn_create">Crear</button>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 1: MENTORES E INDIVIDUALES -->
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 data-i18n="mentors_section_title" style="font-size: 15px; font-weight: 700; color: #fff;">👨‍🏫 Mentores y Usuarios Individuales</h2>
-        <button class="btn-secondary" onclick="cargarCanales()" data-i18n="btn_refresh">🔄 Actualizar</button>
-      </div>
-      <div style="overflow-x: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="th_name">Nombre</th>
-              <th data-i18n="th_type">Tipo</th>
-              <th data-i18n="th_devices">Dispositivos</th>
-              <th data-i18n="th_webhook">Token / Webhook</th>
-              <th data-i18n="th_status">Estado</th>
-              <th data-i18n="th_actions">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="mentorsTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 2: ALUMNOS -->
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 data-i18n="students_section_title" style="font-size: 15px; font-weight: 700; color: #fff;">🎓 Alumnos Registrados</h2>
-      </div>
-      <div style="overflow-x: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="th_name">Nombre</th>
-              <th data-i18n="th_type">Tipo</th>
-              <th data-i18n="th_devices">Dispositivos</th>
-              <th data-i18n="th_webhook">Token / Webhook</th>
-              <th data-i18n="th_status">Estado</th>
-              <th data-i18n="th_actions">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="studentsTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL INTERNO -->
-  <div id="modalAlert" class="modal-overlay">
+  <div id="detailsModal" class="modal-overlay">
     <div class="modal-content">
-      <h3 id="modalMsg" style="margin-bottom:20px; font-size:15px; color:#fff;">Mensaje</h3>
-      <button class="btn-main" data-i18n="btn_accept" onclick="closeModal()">Aceptar</button>
-    </div>
-  </div>
-
-  <!-- MODAL CONFIRMACIÓN ELIMINAR -->
-  <div id="confirmModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3 data-i18n="confirm_delete_title" style="font-size:15px; color:#fff; margin-bottom:10px;">⚠️ ¿Eliminar canal?</h3>
-      <p data-i18n="confirm_delete_desc" style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Se borrará el canal y todos sus suscriptores.</p>
-      <div style="display:flex; gap:10px;">
-        <button class="btn-secondary" data-i18n="btn_cancel" onclick="closeConfirmModal()" style="width:100%;">Cancelar</button>
-        <button class="btn-danger" data-i18n="btn_confirm_delete" style="width:100%;" onclick="ejecutarEliminacion()">Sí, Eliminar</button>
-      </div>
+      <h3>Historial de Pagos</h3>
+      <div id="paymentList" style="margin: 15px 0;"></div>
+      <button onclick="document.getElementById('detailsModal').style.display='none'">Cerrar</button>
     </div>
   </div>
 
   <script>
-    const translations = {
-      es: {
-        login_title: "Acceso Administrador",
-        login_subtitle: "Introduce la clave maestra de seguridad",
-        login_placeholder: "••••••••",
-        btn_login: "Entrar al Panel",
-        admin_label: "PANEL MASTER",
-        admin_main_title: "TradeNotify Admin",
-        btn_logout: "Cerrar Sesión",
-        create_title: "Crear Nuevo Canal / Cliente",
-        label_channel_name: "Nombre",
-        placeholder_channel_name: "Ej: Mentor Juan o Trader Pro",
-        label_plan_type: "Tipo",
-        plan_mentor: "Mentor",
-        plan_individual: "Individual",
-        plan_student: "Alumno",
-        label_device_limit: "Cupo Dispositivos",
-        btn_create: "Crear",
-        mentors_section_title: "👨‍🏫 Mentores y Usuarios Individuales",
-        students_section_title: "🎓 Alumnos Registrados",
-        btn_refresh: "🔄 Actualizar",
-        th_name: "Nombre",
-        th_type: "Tipo",
-        th_devices: "Dispositivos",
-        th_webhook: "Token / Webhook",
-        th_status: "Estado",
-        th_actions: "Acciones",
-        btn_pause: "Pausar",
-        btn_activate: "Activar",
-        btn_delete: "Eliminar",
-        badge_active: "Activo",
-        badge_paused: "Pausado",
-        btn_accept: "Aceptar",
-        btn_cancel: "Cancelar",
-        confirm_delete_title: "⚠️ ¿Eliminar canal?",
-        confirm_delete_desc: "Se borrará el canal y todos sus suscriptores.",
-        btn_confirm_delete: "Sí, Eliminar",
-        err_invalid_password: "Contraseña incorrecta (debe ser 1616)",
-        err_network: "Error de conexión",
-        msg_copied: "¡URL del Webhook copiada!",
-        msg_no_channels: "No hay registros.",
-        err_name_needed: "Introduce un nombre para el canal"
-      },
-      en: {
-        login_title: "Administrator Access",
-        login_subtitle: "Enter the master security key",
-        login_placeholder: "••••••••",
-        btn_login: "Enter Panel",
-        admin_label: "MASTER PANEL",
-        admin_main_title: "TradeNotify Admin",
-        btn_logout: "Logout",
-        create_title: "Create New Channel / Client",
-        label_channel_name: "Name",
-        placeholder_channel_name: "Ex: Mentor John or Trader Pro",
-        label_plan_type: "Type",
-        plan_mentor: "Mentor",
-        plan_individual: "Individual",
-        plan_student: "Student",
-        label_device_limit: "Device Limit",
-        btn_create: "Create",
-        mentors_section_title: "👨‍🏫 Mentors & Individual Users",
-        students_section_title: "🎓 Registered Students",
-        btn_refresh: "🔄 Refresh",
-        th_name: "Name",
-        th_type: "Type",
-        th_devices: "Devices",
-        th_webhook: "Token / Webhook",
-        th_status: "Status",
-        th_actions: "Actions",
-        btn_pause: "Pause",
-        btn_activate: "Activate",
-        btn_delete: "Delete",
-        badge_active: "Active",
-        badge_paused: "Paused",
-        btn_accept: "Accept",
-        btn_cancel: "Cancel",
-        confirm_delete_title: "⚠️ Delete channel?",
-        confirm_delete_desc: "The channel and all its subscribers will be deleted.",
-        btn_confirm_delete: "Yes, Delete",
-        err_invalid_password: "Incorrect password (must be 1616)",
-        err_network: "Connection error",
-        msg_copied: "Webhook URL copied!",
-        msg_no_channels: "No records found.",
-        err_name_needed: "Enter a channel name"
-      }
-    };
-
-    let currentLang = localStorage.getItem('tradenotify_lang') || 'es';
-
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('tradenotify_lang', lang);
-      document.getElementById('langFlagLogin').innerText = lang === 'es' ? '🇪🇸 ES' : '🇬🇧 EN';
-      document.getElementById('langFlag').innerText = lang === 'es' ? '🇪🇸 ES' : '🇬🇧 EN';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) el.innerHTML = translations[lang][key];
-      });
-
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
+    let adminSecret = sessionStorage.getItem('admin_secret');
+    async function loadData() {
+      const res = await fetch('/api/admin', { headers: { 'x-admin-secret': adminSecret } });
+      const data = await res.json();
+      const tbody = document.getElementById('tableBody');
+      data.channels.forEach(ch => {
+        tbody.innerHTML += `<tr>
+          <td>${ch.name}</td>
+          <td>${ch.plan_type}</td>
+          <td><button onclick="showPayments('${ch.id}')">Info Pagos</button></td>
+        </tr>`;
       });
     }
-
-    function toggleLanguage() { setLanguage(currentLang === 'es' ? 'en' : 'es'); }
-    window.addEventListener('DOMContentLoaded', () => setLanguage(currentLang));
-
-    let adminSecret = sessionStorage.getItem('admin_secret') || '';
-    let channelToDeleteId = null;
-
-    if (adminSecret === '1616') {
-      document.getElementById('loginOverlay').style.display = 'none';
-      document.getElementById('adminDashboard').style.display = 'block';
-      cargarCanales();
+    async function showPayments(id) {
+      const res = await fetch(`/api/admin?details=true&id=${id}`, { headers: { 'x-admin-secret': adminSecret } });
+      const data = await res.json();
+      const list = document.getElementById('paymentList');
+      list.innerHTML = data.payments.length ? data.payments.map(p => `<div>${p.payment_date}: ${p.amount}€</div>`).join('') : 'Sin pagos registrados';
+      document.getElementById('detailsModal').style.display = 'flex';
     }
-
-    function customAlert(msg) { document.getElementById('modalMsg').innerText = msg; document.getElementById('modalAlert').style.display = 'flex'; }
-    function closeModal() { document.getElementById('modalAlert').style.display = 'none'; }
-
-    async function login() {
-      const key = document.getElementById('secretInput').value.trim();
-      if (key !== '1616') {
-        document.getElementById('loginError').innerText = translations[currentLang].err_invalid_password;
-        return;
-      }
-      adminSecret = key;
-      sessionStorage.setItem('admin_secret', key);
-      document.getElementById('loginOverlay').style.display = 'none';
-      document.getElementById('adminDashboard').style.display = 'block';
-      cargarCanales();
-    }
-
-    function logout() {
-      sessionStorage.removeItem('admin_secret');
-      location.reload();
-    }
-
-    async function cargarCanales() {
-      try {
-        const res = await fetch('/api/admin', {
-          headers: { 'x-admin-secret': adminSecret }
-        });
-        const data = await res.json();
-        
-        const mentorsBody = document.getElementById('mentorsTableBody');
-        const studentsBody = document.getElementById('studentsTableBody');
-        mentorsBody.innerHTML = '';
-        studentsBody.innerHTML = '';
-
-        if (!data.channels || data.channels.length === 0) {
-          mentorsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
-          studentsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
-          return;
-        }
-
-        let mentorsCount = 0;
-        let studentsCount = 0;
-
-        data.channels.forEach(ch => {
-          const webhookUrl = `${window.location.origin}/api/webhook?token=${ch.webhook_token}`;
-          
-          // Traducir visualmente 'student' a 'Alumno' y capitalizar el resto
-          let tipoVisual = ch.plan_type;
-          if (tipoVisual === 'student') tipoVisual = currentLang === 'es' ? 'Alumno' : 'Student';
-          else if (tipoVisual === 'mentor') tipoVisual = currentLang === 'es' ? 'Mentor' : 'Mentor';
-          else if (tipoVisual === 'individual') tipoVisual = currentLang === 'es' ? 'Individual' : 'Individual';
-
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="font-weight:600; color:#fff;">${ch.name}</td>
-            <td><span style="text-transform:capitalize;">${tipoVisual}</span></td>
-            <td>${ch.current_subscribers} / ${ch.max_subscribers}</td>
-            <td>
-              <span class="token-box" onclick="copiar('${webhookUrl}')">
-                📋 URL Webhook
-              </span>
-            </td>
-            <td>
-              <span class="badge ${ch.is_active ? 'badge-active' : 'badge-paused'}">
-                ${ch.is_active ? translations[currentLang].badge_active : translations[currentLang].badge_paused}
-              </span>
-            </td>
-            <td>
-              <button class="btn-secondary" style="padding:6px 10px; font-size:11px; margin-right:4px;" onclick="toggleCanal('${ch.id}', ${!ch.is_active})">
-                ${ch.is_active ? translations[currentLang].btn_pause : translations[currentLang].btn_activate}
-              </button>
-              <button class="btn-danger" style="padding:6px 10px; font-size:11px;" onclick="abrirModalEliminar('${ch.id}')">
-                ${translations[currentLang].btn_delete}
-              </button>
-            </td>
-          `;
-
-          // Separar en la tabla correspondiente
-          if (ch.plan_type === 'student') {
-            studentsBody.appendChild(tr);
-            studentsCount++;
-          } else {
-            mentorsBody.appendChild(tr);
-            mentorsCount++;
-          }
-        });
-
-        if (mentorsCount === 0) {
-          mentorsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
-        }
-        if (studentsCount === 0) {
-          studentsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
-        }
-
-      } catch (err) {
-        customAlert('Error: ' + err.message);
-      }
-    }
-
-    async function crearCanal() {
-      const name = document.getElementById('chName').value.trim();
-      const plan_type = document.getElementById('chPlan').value;
-      const max_subscribers = document.getElementById('chLimit').value;
-
-      if (!name) return customAlert(translations[currentLang].err_name_needed);
-
-      const res = await fetch('/api/admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-secret': adminSecret
-        },
-        body: JSON.stringify({ name, plan_type, max_subscribers })
-      });
-
-      if (res.ok) {
-        document.getElementById('chName').value = '';
-        cargarCanales();
-      } else {
-        const err = await res.json();
-        customAlert('Error: ' + err.error);
-      }
-    }
-
-    async function toggleCanal(channel_id, is_active) {
-      await fetch('/api/admin', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-secret': adminSecret
-        },
-        body: JSON.stringify({ channel_id, is_active })
-      });
-      cargarCanales();
-    }
-
-    function abrirModalEliminar(id) {
-      channelToDeleteId = id;
-      document.getElementById('confirmModal').style.display = 'flex';
-    }
-
-    function closeConfirmModal() {
-      channelToDeleteId = null;
-      document.getElementById('confirmModal').style.display = 'none';
-    }
-
-    async function ejecutarEliminacion() {
-      if (!channelToDeleteId) return;
-      await fetch('/api/admin', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-secret': adminSecret
-        },
-        body: JSON.stringify({ channel_id: channelToDeleteId })
-      });
-      closeConfirmModal();
-      cargarCanales();
-    }
-
-    function copiar(texto) {
-      navigator.clipboard.writeText(texto);
-      customAlert(translations[currentLang].msg_copied);
-    }
+    loadData();
   </script>
 </body>
 </html>
