@@ -140,7 +140,8 @@ module.exports = async (req, res) => {
 
       const { error: relError } = await supabase.from('mentorships').insert({
         mentor_id: invite.mentor_id,
-        student_id: student.id
+        student_id: student.id,
+        status: 'active'
       });
 
       if (relError) {
@@ -154,7 +155,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: true, message: 'Vinculación completada' });
     }
 
-    // 5. GESTIÓN DE ALUMNOS (GET / DELETE)
+    // 5. GESTIÓN DE ALUMNOS (GET / DELETE con Histórico)
     if (pathname.includes('/mentor-students')) {
       const { data: mentor, error: mError } = await supabase
         .from('channels')
@@ -169,8 +170,9 @@ module.exports = async (req, res) => {
       if (method === 'GET') {
         const { data: relations, error: rError } = await supabase
           .from('mentorships')
-          .select('id, created_at, channels:student_id (id, name, webhook_token)')
-          .eq('mentor_id', mentor.id);
+          .select('id, created_at, status, revoked_at, channels:student_id (id, name, webhook_token)')
+          .eq('mentor_id', mentor.id)
+          .order('created_at', { ascending: false });
 
         if (rError) {
           return res.status(400).json({ error: rError.message });
@@ -182,7 +184,7 @@ module.exports = async (req, res) => {
         const mentorship_id = body.mentorship_id;
         const { error: dError } = await supabase
           .from('mentorships')
-          .delete()
+          .update({ status: 'revoked', revoked_at: new Date() })
           .eq('id', mentorship_id)
           .eq('mentor_id', mentor.id);
 

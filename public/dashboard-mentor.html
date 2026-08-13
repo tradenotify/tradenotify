@@ -43,21 +43,29 @@
       border-top: 1px solid var(--glass-border-top);
       border-radius: 20px;
       padding: 26px;
-      max-width: 520px;
+      max-width: 560px;
       width: 100%;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
 
-    .header { text-align: center; margin-bottom: 22px; }
+    .header { text-align: center; margin-bottom: 22px; position: relative; }
     .header img {
-      width: 54px; height: 54px; border-radius: 14px;
+      width: 50px; height: 50px; border-radius: 14px;
       box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;
     }
-    .header h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-    .header p { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; }
+    .header h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    .header p { color: var(--text-muted); font-size: 12.5px; margin-top: 2px; }
     
+    .btn-refresh {
+      position: absolute; top: 0; right: 0;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 12px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-refresh:hover { background: rgba(255, 255, 255, 0.1); }
+
     input {
       width: 100%; padding: 14px;
       background: rgba(10, 14, 23, 0.75);
@@ -88,20 +96,31 @@
     button.btn-danger {
       background: rgba(248, 113, 113, 0.15);
       border: 1px solid rgba(248, 113, 113, 0.3);
-      color: #f87171; box-shadow: none; font-size: 12px; padding: 6px 12px; width: auto;
+      color: #f87171; box-shadow: none; font-size: 11.5px; padding: 6px 10px; width: auto;
     }
     button.btn-danger:hover { background: rgba(248, 113, 113, 0.25); }
 
     .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; }
     .status-msg.error { color: #f87171; }
 
+    /* MÉTRICAS GRID */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+    }
+    .metric-card {
+      background: rgba(10, 14, 23, 0.6); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 12px; text-align: center;
+    }
+    .metric-value { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+    .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+
     .section-title {
-      font-size: 14px; font-weight: 700; color: #a5b4fc;
-      margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center;
+      font-size: 13.5px; font-weight: 700; color: #a5b4fc;
+      margin: 18px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
     }
 
     .list-container {
-      max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
+      max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
     }
     .list-container::-webkit-scrollbar { width: 4px; }
     .list-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
@@ -110,10 +129,11 @@
       background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border);
       border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
     }
-    .status-used { color: #f87171; font-size: 12px; font-weight: 600; }
-    .status-active { color: #34d399; font-size: 12px; font-weight: 600; }
+    .status-used { color: #f87171; font-size: 11.5px; font-weight: 600; }
+    .status-active { color: #34d399; font-size: 11.5px; font-weight: 600; }
+    .status-history { color: var(--text-muted); font-size: 11.5px; font-weight: 600; }
 
-    /* MODAL INTEGRADO DE REVOCACIÓN */
+    /* MODAL DE REVOCACIÓN */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px);
@@ -121,12 +141,12 @@
     .modal-content {
       background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top); border-radius: 18px;
-      padding: 24px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+      padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
     }
-    .modal-content h3 { font-size: 17px; color: #fff; font-weight: 700; margin-bottom: 8px; }
-    .modal-content p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
+    .modal-content h3 { font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 6px; }
+    .modal-content p { font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
 
-    .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
+    .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
     .back-link:hover { color: #a5b4fc; }
   </style>
 </head>
@@ -139,7 +159,7 @@
       <div class="header">
         <img src="/icon.png" alt="TradeNotify Logo">
         <h1>Panel Mentor</h1>
-        <p>Introduce tu token de mentor para gestionar tus códigos y alumnos.</p>
+        <p>Introduce tu token para acceder a la gestión.</p>
       </div>
 
       <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor">
@@ -151,20 +171,41 @@
 
     <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
-      <div class="header" style="margin-bottom: 16px;">
-        <h1 style="font-size: 18px;">⚡ Gestión de Mentoría</h1>
-        <p style="font-size: 12px;">Controla accesos y altas de alumnos</p>
+      <div class="header" style="margin-bottom: 14px;">
+        <button class="btn-refresh" onclick="recargarDatosMentor()">🔄 Refrescar</button>
+        <img src="/icon.png" alt="Logo">
+        <h1>Gestión de Mentoría</h1>
+        <p>Control de accesos y métricas comunitarias</p>
       </div>
 
-      <button onclick="generarCodigo()" style="margin-bottom: 16px;">+ Generar Nuevo Código de Invitación</button>
+      <!-- MÉTRICAS DE TIEMPOS Y ALUMNOS -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div id="metricActive" class="metric-value">0</div>
+          <div class="metric-label">Activos</div>
+        </div>
+        <div class="metric-card">
+          <div id="metricHistoric" class="metric-value">0</div>
+          <div class="metric-label">Históricos</div>
+        </div>
+        <div class="metric-card">
+          <div id="metricPeak" class="metric-value" style="font-size: 13px; padding-top: 4px;">-</div>
+          <div class="metric-label">Pico de Altas</div>
+        </div>
+      </div>
+
+      <button onclick="generarCodigo()" style="margin-bottom: 14px;">+ Generar Nuevo Código de Invitación</button>
 
       <div class="section-title"><span>🎟️ Códigos Generados</span></div>
       <div id="codesList" class="list-container"></div>
 
-      <div class="section-title" style="margin-top: 18px;"><span>🎓 Alumnos Activos</span></div>
+      <div class="section-title" style="margin-top: 14px;"><span>🎓 Alumnos Activos</span></div>
       <div id="studentsList" class="list-container"></div>
 
-      <button class="btn-secondary" style="margin-top: 20px; font-size: 13px; padding: 10px;" onclick="cerrarSesion()">Cerrar Sesión</button>
+      <div class="section-title" style="margin-top: 14px;"><span>📚 Histórico de Alumnos (Pasados)</span></div>
+      <div id="historyList" class="list-container"></div>
+
+      <button class="btn-secondary" style="margin-top: 16px; font-size: 13px; padding: 10px;" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 
   </div>
@@ -173,7 +214,7 @@
   <div id="revokeModal" class="modal-overlay">
     <div class="modal-content">
       <h3>⚠️ ¿Revocar acceso al alumno?</h3>
-      <p>El alumno dejará de estar vinculado a tu mentoría de forma inmediata.</p>
+      <p>El alumno pasará al registro histórico de forma inmediata.</p>
       <div style="display: flex; gap: 10px;">
         <button class="btn-secondary" onclick="cerrarModalRevoke()">Cancelar</button>
         <button class="btn-primary" style="background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.4); color: #f87171;" onclick="ejecutarRevocacion()">Sí, Revocar</button>
@@ -219,13 +260,19 @@
       }
     }
 
+    function recargarDatosMentor() {
+      const token = localStorage.getItem('mentor_token');
+      if (token) cargarDatosMentor(token);
+    }
+
     async function cargarDatosMentor(token) {
+      // 1. Cargar Códigos
       const resCodes = await fetch(`/api/list-codes?token=${token}`);
       const dataCodes = await resCodes.json();
       const codesList = document.getElementById('codesList');
       
       if (!dataCodes.codes || dataCodes.codes.length === 0) {
-        codesList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">No hay códigos generados.</div>';
+        codesList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay códigos generados.</div>';
       } else {
         codesList.innerHTML = dataCodes.codes.map(c => `
           <div class="list-item">
@@ -235,20 +282,60 @@
         `).join('');
       }
 
+      // 2. Cargar Alumnos y calcular métricas temporales
       const resStudents = await fetch(`/api/mentor-students?token=${token}`);
       const dataStudents = await resStudents.json();
       const studentsList = document.getElementById('studentsList');
+      const historyList = document.getElementById('historyList');
 
-      if (!dataStudents.students || dataStudents.students.length === 0) {
-        studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">No tienes alumnos vinculados.</div>';
+      const allRelations = dataStudents.students || [];
+      const activeStudents = allRelations.filter(s => s.status !== 'revoked');
+      const revokedStudents = allRelations.filter(s => s.status === 'revoked');
+
+      // Actualizar Métricas numéricas
+      document.getElementById('metricActive').innerText = activeStudents.length;
+      document.getElementById('metricHistoric').innerText = allRelations.length;
+
+      // Calcular pico de altas por mes
+      if (allRelations.length > 0) {
+        const monthsCount = {};
+        allRelations.forEach(r => {
+          const d = new Date(r.created_at);
+          const key = d.toLocaleString('es', { month: 'short', year: '2-digit' });
+          monthsCount[key] = (monthsCount[key] || 0) + 1;
+        });
+        const peakMonth = Object.keys(monthsCount).reduce((a, b) => monthsCount[a] > monthsCount[b] ? a : b);
+        document.getElementById('metricPeak').innerText = peakMonth.charAt(0).toUpperCase() + peakMonth.slice(1);
       } else {
-        studentsList.innerHTML = dataStudents.students.map(s => `
+        document.getElementById('metricPeak').innerText = 'N/D';
+      }
+
+      // Listar Activos
+      if (activeStudents.length === 0) {
+        studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay alumnos activos.</div>';
+      } else {
+        studentsList.innerHTML = activeStudents.map(s => `
           <div class="list-item">
             <div>
               <div style="font-weight:600; color:#fff;">${s.channels?.name || 'Alumno sin nombre'}</div>
               <div style="font-size:11px; color:var(--text-muted);">Vinculado: ${new Date(s.created_at).toLocaleDateString()}</div>
             </div>
             <button class="btn-danger" onclick="abrirModalRevoke('${s.id}')">Revocar</button>
+          </div>
+        `).join('');
+      }
+
+      // Listar Históricos (Pasados)
+      if (revokedStudents.length === 0) {
+        historyList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">Sin registros en el histórico.</div>';
+      } else {
+        historyList.innerHTML = revokedStudents.map(s => `
+          <div class="list-item">
+            <div>
+              <div style="font-weight:600; color:#cbd5e1;">${s.channels?.name || 'Alumno sin nombre'}</div>
+              <div style="font-size:11px; color:var(--text-muted);">Alta: ${new Date(s.created_at).toLocaleDateString()} | Baja: ${s.revoked_at ? new Date(s.revoked_at).toLocaleDateString() : '-'}</div>
+            </div>
+            <span class="status-history">Finalizado</span>
           </div>
         `).join('');
       }
