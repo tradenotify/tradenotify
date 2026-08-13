@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Panel Alumno</title>
   <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <style>
     :root {
@@ -59,6 +61,8 @@
       <input type="text" id="tokenInput" placeholder="Token del Canal" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:10px; outline:none;">
       <input type="text" id="inviteCodeInput" placeholder="Código Invitación (Opcional)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:12px; outline:none;">
       <button class="btn-main" style="width:100%;" onclick="vincularCanal()">Conectar Dispositivo</button>
+
+      <button class="btn-secondary" style="width:100%; margin-top:15px; font-size:11px; padding:10px;" onclick="abrirGuiaPwa()">📲 ¿Cómo instalar la App en tu móvil?</button>
     </div>
 
     <!-- VISTA LIVE -->
@@ -82,7 +86,10 @@
       </div>
 
       <div id="feedList" class="feed-container"></div>
-      <div id="lastSync" style="font-size:9px; color:#475569; text-align:center; margin-top:8px;">Sincronizando...</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+        <div id="lastSync" style="font-size:9px; color:#475569;">Sincronizando...</div>
+        <button onclick="abrirGuiaPwa()" style="background:transparent; border:none; color:#818cf8; font-size:9px; cursor:pointer;">📲 Instalar App en Móvil</button>
+      </div>
 
       <div class="actions-grid">
         <button class="btn-main" onclick="cargarHistorial()">🔄 Refrescar</button>
@@ -99,12 +106,30 @@
     </div>
   </div>
 
+  <!-- GUÍA DE INSTALACIÓN PWA MÓVIL -->
+  <div id="pwaGuideModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 420px; text-align: left;">
+      <h3 style="margin-bottom:15px; text-align: center; font-size:16px;">📲 Instalar App en el Móvil</h3>
+      <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🍏 Para iPhone / iPad (Safari):</p>
+        <p style="margin-bottom:12px; padding-left:10px; border-left:2px solid #6366f1;">1. Toca el botón <b>Compartir</b> <span style="font-size:14px;">⎋</span> abajo en Safari.<br>2. Selecciona <b>"Añadir a la pantalla de inicio"</b>.</p>
+        
+        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🤖 Para Android (Chrome):</p>
+        <p style="margin-bottom:15px; padding-left:10px; border-left:2px solid #10b981;">1. Toca el menú de los <b>tres puntos</b> <span style="font-size:14px;">⋮</span> arriba a la derecha.<br>2. Selecciona <b>"Añadir a la pantalla principal"</b>.</p>
+      </div>
+      <button class="btn-main" onclick="closeGuiaPwa()">¡Entendido!</button>
+    </div>
+  </div>
+
   <script>
     const savedToken = localStorage.getItem('tradenotify_token');
     if (savedToken) mostrarPanelLive(savedToken);
 
     function customAlert(msg) { document.getElementById('modalMsg').innerText = msg; document.getElementById('modalAlert').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalAlert').style.display = 'none'; }
+    function abrirGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'flex'; }
+    function closeGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'none'; }
+
     function testSonido() { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); customAlert("Sonido de prueba emitido."); }
 
     async function vincularCanal() {

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Panel Mentor</title>
   <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <style>
     :root {
@@ -56,6 +58,8 @@
       <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor" style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#fff; margin-bottom:12px; outline:none;">
       <button class="btn-main" onclick="verificarMentor()">Acceder</button>
       <div id="authStatus" style="font-size:12px; color:#f87171; margin-top:12px; text-align:center;"></div>
+      
+      <button class="btn-secondary" style="width:100%; margin-top:15px; font-size:11px; padding:10px;" onclick="abrirGuiaPwa()">📲 ¿Cómo instalar en tu móvil?</button>
     </div>
 
     <!-- DASHBOARD SECTION -->
@@ -76,7 +80,10 @@
         </div>
       </div>
 
-      <button class="btn-secondary" style="width:100%; margin-bottom:20px;" onclick="abrirGuia()">📖 Guía de Configuración Webhook</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px;">
+        <button class="btn-secondary" style="width:100%; font-size:11px;" onclick="abrirGuia()">📖 Configurar Webhook</button>
+        <button class="btn-secondary" style="width:100%; font-size:11px;" onclick="abrirGuiaPwa()">📲 App en Móvil</button>
+      </div>
 
       <div class="metrics-grid">
         <div class="metric-card"><div id="metricActive" class="metric-value">0</div><div class="metric-label">Activos</div></div>
@@ -114,6 +121,7 @@
     </div>
   </div>
 
+  <!-- GUÍA DE CONFIGURACIÓN WEBHOOK -->
   <div id="guideModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 450px; text-align: left;">
       <h3 style="margin-bottom:15px; text-align: center; font-size:16px;">📖 Configuración de Webhook</h3>
@@ -131,6 +139,21 @@
         <button class="btn-secondary" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3); width:100%; padding:8px; font-size:11px; margin-bottom:15px;" onclick="enviarTestAlerta()">🧪 Enviar Alerta de Prueba a mis Alumnos</button>
       </div>
       <button class="btn-main" onclick="closeGuia()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- GUÍA DE INSTALACIÓN PWA MÓVIL -->
+  <div id="pwaGuideModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 420px; text-align: left;">
+      <h3 style="margin-bottom:15px; text-align: center; font-size:16px;">📲 Instalar en la Pantalla de Inicio</h3>
+      <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🍏 Para iPhone / iPad (Safari):</p>
+        <p style="margin-bottom:12px; padding-left:10px; border-left:2px solid #6366f1;">1. Toca el botón <b>Compartir</b> <span style="font-size:14px;">⎋</span> en la barra inferior del navegador.<br>2. Desplázate y selecciona <b>"Añadir a la pantalla de inicio"</b>.</p>
+        
+        <p style="margin-bottom:10px; color:#fff; font-weight:600;">🤖 Para Android (Chrome):</p>
+        <p style="margin-bottom:15px; padding-left:10px; border-left:2px solid #10b981;">1. Toca el menú de los <b>tres puntos</b> <span style="font-size:14px;">⋮</span> arriba a la derecha.<br>2. Selecciona <b>"Añadir a la pantalla principal"</b> o <b>"Instalar aplicación"</b>.</p>
+      </div>
+      <button class="btn-main" onclick="closeGuiaPwa()">¡Entendido!</button>
     </div>
   </div>
 
@@ -152,6 +175,8 @@
     function closeModal() { document.getElementById('modalAlert').style.display = 'none'; }
     function abrirGuia() { document.getElementById('guideModal').style.display = 'flex'; }
     function closeGuia() { document.getElementById('guideModal').style.display = 'none'; }
+    function abrirGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'flex'; }
+    function closeGuiaPwa() { document.getElementById('pwaGuideModal').style.display = 'none'; }
 
     async function verificarMentor(auto = false) {
       const token = document.getElementById('mentorToken').value.trim();
