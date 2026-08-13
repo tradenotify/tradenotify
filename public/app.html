@@ -4,22 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TradeNotify - Alertas en Vivo</title>
-
   <link rel="icon" type="image/png" href="/icon.png">
-  <link rel="apple-touch-icon" href="/icon.png">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="TradeNotify">
   <meta name="theme-color" content="#070913">
-
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({ appId: "fbb3e9f0-75f8-49d5-bdad-296daa278ad0" });
-    });
-  </script>
 
   <style>
     :root {
@@ -39,456 +25,157 @@
     
     body {
       background-color: var(--bg);
-      background-image: 
-        radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      background-image: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
       background-attachment: fixed;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px;
     }
 
     .card {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
-      border-radius: 20px;
-      padding: 26px;
-      max-width: 480px;
-      width: 100%;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;
+      padding: 26px; max-width: 480px; width: 100%; backdrop-filter: blur(20px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
 
-    .trial-banner {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(129, 140, 248, 0.3);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 12.5px;
-      color: #c7d2fe;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .header { text-align: center; margin-bottom: 22px; }
-    .header img {
-      width: 54px; height: 54px; border-radius: 14px;
-      box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;
-    }
-    .header h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-    .header p { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; line-height: 1.45; }
+    .header { text-align: center; margin-bottom: 20px; }
+    .header img { width: 50px; height: 50px; border-radius: 14px; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px; }
     
-    input {
-      width: 100%; padding: 14px;
-      background: rgba(10, 14, 23, 0.75);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px; color: #fff; font-size: 14.5px;
-      margin-bottom: 12px; outline: none; transition: border-color 0.2s;
-    }
-    input:focus { border-color: #818cf8; box-shadow: 0 0 10px rgba(129, 140, 248, 0.3); }
+    input { width: 100%; padding: 14px; background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; margin-bottom: 10px; }
     
-    button {
-      width: 100%; padding: 13px;
-      background: var(--accent-gradient);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px; color: #ffffff;
-      font-size: 14.5px; font-weight: 600; cursor: pointer;
-      box-shadow: 0 4px 15px var(--accent-glow);
-      transition: all 0.2s ease;
-    }
-    button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45); }
-    button:disabled { background: rgba(255, 255, 255, 0.05); color: #64748b; cursor: not-allowed; box-shadow: none; }
+    button { width: 100%; padding: 13px; background: var(--accent-gradient); border: none; border-radius: 10px; color: #fff; font-weight: 600; cursor: pointer; }
+    button.btn-secondary { background: rgba(255, 255, 255, 0.05); }
+
+    .status-msg { margin-top: 10px; font-size: 12px; text-align: center; color: var(--text-muted); }
+
+    /* DASHBOARD */
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--green); background: rgba(16, 185, 129, 0.1); padding: 4px 8px; border-radius: 20px; }
     
-    button.btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      color: var(--text); box-shadow: none;
-    }
-    button.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-1px); }
+    .token-display { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-family: var(--mono); font-size: 12px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+
+    .alert-card { background: rgba(10, 14, 23, 0.6); border-left: 3px solid #6366f1; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .alert-time { font-size: 10px; color: #64748b; }
+    .alert-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .alert-body { font-size: 12px; color: #cbd5e1; margin-top: 4px; }
     
-    .status-msg { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 500; word-break: break-word; }
-    .status-msg.error { color: #f87171; }
-    .status-msg.success { color: #34d399; }
-
-    .dashboard-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-bottom: 14px; border-bottom: 1px solid var(--glass-border); margin-bottom: 16px;
-    }
-    .live-badge {
-      display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
-      color: var(--green); background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 20px;
-    }
-    .pulse-dot {
-      width: 7px; height: 7px; background: var(--green); border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-
-    .feed-container {
-      max-height: 280px; overflow-y: auto; margin: 14px 0;
-      display: flex; flex-direction: column; gap: 10px; padding-right: 4px;
-    }
-    .feed-container::-webkit-scrollbar { width: 4px; }
-    .feed-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
-
-    .alert-card {
-      background: rgba(10, 14, 23, 0.75); border: 1px solid var(--glass-border);
-      border-left: 3px solid #818cf8; border-radius: 10px; padding: 12px 14px; text-align: left;
-    }
-    .alert-card .alert-time { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-    .alert-card .alert-title { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 3px; }
-    .alert-card .alert-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; white-space: pre-wrap; font-family: var(--mono); }
-    
-    .guide-btn {
-      width: 100%; background: rgba(99, 102, 241, 0.08);
-      border: 1px dashed rgba(129, 140, 248, 0.4); color: #c7d2fe;
-      font-size: 13px; font-weight: 600; padding: 10px; border-radius: 10px;
-      cursor: pointer; margin-bottom: 12px; display: flex; align-items: center;
-      justify-content: center; gap: 6px; box-shadow: none;
-    }
-    .guide-btn:hover { background: rgba(99, 102, 241, 0.15); border-color: #818cf8; transform: none; }
-
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
-      display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; backdrop-filter: blur(8px);
-    }
-    .modal-content {
-      background: rgba(18, 24, 38, 0.95); border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top); border-radius: 18px;
-      padding: 24px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; text-align: left; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-    }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;
-    }
-    .modal-header h2 { font-size: 17px; color: #fff; font-weight: 700; }
-    .btn-close { background: none; border: none; color: var(--text-muted); font-size: 22px; width: auto; padding: 0 4px; cursor: pointer; box-shadow: none; }
-    .btn-close:hover { color: #fff; transform: none; }
-    .step-box {
-      margin-bottom: 14px; background: rgba(10, 14, 23, 0.7);
-      border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px;
-    }
-    .step-box h4 { font-size: 13px; color: #a5b4fc; margin-bottom: 6px; }
-    .step-box p { font-size: 12px; color: var(--text-muted); line-height: 1.45; margin-bottom: 8px; }
-    .code-snippet {
-      background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border);
-      border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; color: #93c5fd; white-space: pre-wrap; word-break: break-all;
-    }
-    .copy-btn-sm {
-      padding: 5px 10px; font-size: 11px; margin-top: 6px; width: auto;
-      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); color: #e2e8f0; box-shadow: none; border-radius: 6px;
-    }
-    .copy-btn-sm:hover { background: rgba(255, 255, 255, 0.12); transform: none; }
-
-    .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); text-decoration: none; }
-    .back-link:hover { color: #a5b4fc; }
-
-    .register-box { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px; margin-top: 15px; }
+    .trial-banner { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 10px; padding: 10px; font-size: 12px; color: #c7d2fe; text-align: center; margin-bottom: 16px; }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    
-    <!-- VISTA 1: VINCULAR DISPOSITIVO -->
+  <div class="card" id="appContainer">
+    <!-- VISTA SUSCRIPCIÓN -->
     <div id="viewSubscribe">
       <div class="header">
-        <img src="/icon.png" alt="TradeNotify Logo">
-        <h1>TradeNotify</h1>
-        <p>Introduce tu token y opcionalmente el código de invitación de tu mentor.</p>
+        <img src="/icon.png" alt="Logo">
+        <h1>TradeNotify Alumno</h1>
+        <p style="color:var(--text-muted); font-size:13px;">Accede a tus alertas en tiempo real.</p>
       </div>
 
-      <input type="text" id="tokenInput" placeholder="Introduce el Token del Canal">
-      <input type="text" id="inviteCodeInput" placeholder="Código de Invitación (Opcional)">
-      
-      <button id="btnSub" onclick="vincularCanal()">Activar Alertas en este Dispositivo</button>
+      <input type="text" id="tokenInput" placeholder="Token del Canal">
+      <input type="text" id="inviteCodeInput" placeholder="Código Invitación (Opcional)">
+      <button onclick="vincularCanal()">Conectar Dispositivo</button>
+
+      <div id="createBox" class="register-box" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.02); border-radius:12px;">
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px; text-align:center;">¿Nuevo? Crea tu canal gratuito:</p>
+        <input type="text" id="newNameInput" placeholder="Alias (Ej: Trader_X)">
+        <button id="btnCreate" class="btn-secondary" onclick="crearCanalAlumno()">Crear mi Canal Gratis</button>
+      </div>
       <div id="statusMsg" class="status-msg"></div>
-
-      <div class="register-box">
-        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; text-align: center;">¿Eres alumno nuevo y no tienes token?</p>
-        <input type="text" id="newNameInput" placeholder="Nombre de tu Canal o Alias" style="margin-bottom: 8px; font-size: 13px; padding: 10px;">
-        <button class="btn-secondary" style="font-size: 13px; padding: 10px;" onclick="crearCanalAlumno()">🚀 Crear mi Canal Gratis</button>
-      </div>
-      
-      <button class="guide-btn" style="margin-top: 16px;" onclick="abrirModal()">
-        📖 ¿Cómo configurar TradingView?
-      </button>
-
-      <a href="/" class="back-link">← Volver a la portada</a>
     </div>
 
-    <!-- VISTA 2: PANEL EN VIVO CON HISTORIAL -->
+    <!-- VISTA LIVE -->
     <div id="viewLive" style="display: none;">
-      
       <div id="trialBanner" class="trial-banner" style="display: none;">
-        <span>⏳ <b>Prueba de 14 días</b>: Te quedan <b id="trialDaysCount">14</b> días</span>
-        <a href="/#planes" style="color:#34d399; font-weight:bold; text-decoration:none; font-size:11.5px; border-bottom: 1px solid #34d399;">Activar Plan Real →</a>
+        ⏳ <b>Prueba:</b> Te quedan <b id="trialDaysCount">14</b> días. <a href="/#planes" style="color:#fff; font-weight:bold;">Mejorar Plan →</a>
       </div>
-
+      
       <div class="dashboard-header">
         <div>
-          <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Canal Activo</div>
-          <div id="channelTitle" style="font-weight: 700; font-size: 16px; color: #a5b4fc;">-</div>
+          <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Tu Canal</div>
+          <div id="channelTitle" style="font-weight: 700; color: #fff;">-</div>
         </div>
-        <div class="live-badge">
-          <div class="pulse-dot"></div> En vivo
-        </div>
+        <div class="live-badge"><div style="width:6px; height:6px; background:var(--green); border-radius:50%;"></div> En vivo</div>
       </div>
 
-      <button class="guide-btn" onclick="abrirModal()">
-        📖 Ver mi Webhook y Guía TradingView
-      </button>
-
-      <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;">Registro de Alertas</div>
-      <div id="feedList" class="feed-container"></div>
-
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
-        <button class="btn-secondary" style="padding: 10px;" onclick="cargarHistorial()">🔄 Refrescar</button>
-        <button class="btn-secondary" style="padding: 10px; color: #f87171;" onclick="desvincular()">Desconectar</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- MODAL DE CONFIGURACIÓN TRADINGVIEW -->
-  <div id="guideModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>⚡ Conectar con TradingView</h2>
-        <button class="btn-close" onclick="cerrarModal()">×</button>
+      <div class="token-display">
+        <span id="displayToken">-</span>
+        <button onclick="copyToken()" style="width:auto; padding: 4px 8px; font-size:10px;">Copiar</button>
       </div>
 
-      <div class="step-box">
-        <h4>1. Copia tu URL de Webhook</h4>
-        <p>En TradingView, al crear una alerta, entra a la pestaña <b>Notificaciones</b> y activa <b>URL del webhook</b>:</p>
-        <div class="code-snippet" id="modalWebhookUrl">https://tradenotify-lac.vercel.app/api/webhook?token=TU_TOKEN</div>
-        <button class="copy-btn-sm" onclick="copiarTexto('modalWebhookUrl')">📋 Copiar Webhook</button>
+      <div id="feedList" style="max-height: 300px; overflow-y:auto;"></div>
+
+      <div style="display: flex; gap: 8px; margin-top: 20px;">
+        <button class="btn-secondary" onclick="cargarHistorial()">🔄</button>
+        <button class="btn-secondary" style="color:#f87171;" onclick="desvincular()">Desconectar</button>
       </div>
-
-      <div class="step-box">
-        <h4>2. Formato del Mensaje (JSON)</h4>
-        <p>En el campo <b>Mensaje</b> de tu alerta en TradingView, pega este bloque:</p>
-        <div class="code-snippet" id="modalJsonSnippet">{"title": "🟢 SEÑAL {{ticker}}", "message": "Precio: {{close}} | Tiempo: {{time}}"}</div>
-        <button class="copy-btn-sm" onclick="copiarTexto('modalJsonSnippet')">📋 Copiar JSON</button>
-      </div>
-
-      <div class="step-box">
-        <h4>3. Guardar Alerta</h4>
-        <p>Guarda los cambios. Recibirás las notificaciones con sonido y vibración instantáneos.</p>
-      </div>
-
-      <button class="btn-secondary" style="margin-top: 6px;" onclick="cerrarModal()">Entendido</button>
-    </div>
-  </div>
-
-  <!-- MODAL DE BLOQUEO POR TRIAL EXPIRADO -->
-  <div id="expiredModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content" style="text-align: center; max-width: 440px;">
-      <div style="font-size: 42px; margin-bottom: 10px;">⏳</div>
-      <h2 style="color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 8px;">Tu prueba de 14 días ha finalizado</h2>
-      <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 24px; line-height: 1.5;">
-        Para seguir recibiendo señales instantáneas de TradingView en tus dispositivos sin interrupciones, elige tu plan.
-      </p>
-
-      <a href="/#planes" style="display: block; width: 100%; padding: 14px; background: var(--accent-gradient); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px var(--accent-glow);">
-        Ver Planes y Suscribirme
-      </a>
-      
-      <a href="/" class="back-link" style="margin-top: 16px;">← Volver a la portada</a>
     </div>
   </div>
 
   <script>
-    const savedToken = localStorage.getItem('tradenotify_token');
+    // 1. Anti-Abuse: Bloquear creación si ya existe en este navegador
+    if (localStorage.getItem('tradenotify_channel_created') === 'true') {
+        document.getElementById('createBox').style.display = 'none';
+    }
 
+    const savedToken = localStorage.getItem('tradenotify_token');
     if (savedToken) {
       document.getElementById('tokenInput').value = savedToken;
-      actualizarWebhookModal(savedToken);
       mostrarPanelLive(savedToken);
-    }
-
-    function actualizarWebhookModal(token) {
-      const url = `https://tradenotify-lac.vercel.app/api/webhook?token=${token || 'TU_TOKEN'}`;
-      document.getElementById('modalWebhookUrl').innerText = url;
-    }
-
-    function abrirModal() {
-      const currentToken = localStorage.getItem('tradenotify_token') || document.getElementById('tokenInput').value.trim();
-      actualizarWebhookModal(currentToken);
-      document.getElementById('guideModal').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-      document.getElementById('guideModal').style.display = 'none';
-    }
-
-    function copiarTexto(id) {
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text);
-      alert('¡Copiado al portapapeles!');
     }
 
     async function crearCanalAlumno() {
       const name = document.getElementById('newNameInput').value.trim();
-      const status = document.getElementById('statusMsg');
-
-      if (!name) {
-        status.className = 'status-msg error';
-        status.innerText = 'Escribe un nombre para tu canal.';
-        return;
-      }
-
-      try {
-        status.className = 'status-msg';
-        status.innerText = 'Creando tu canal...';
-
-        const res = await fetch('/api/register-channel', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name })
-        });
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.error || 'Error al crear canal');
-
+      if (!name) return alert('Pon un nombre.');
+      
+      const res = await fetch('/api/register-channel', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name }) });
+      const data = await res.json();
+      
+      if(data.success) {
+        localStorage.setItem('tradenotify_channel_created', 'true');
         document.getElementById('tokenInput').value = data.token;
-        status.className = 'status-msg success';
-        status.innerText = '¡Canal creado! Tu token se ha rellenado arriba.';
-      } catch (err) {
-        status.className = 'status-msg error';
-        status.innerText = '❌ ' + err.message;
+        document.getElementById('createBox').style.display = 'none';
+        alert('Canal creado. Token rellenado arriba.');
       }
     }
 
     async function vincularCanal() {
       const token = document.getElementById('tokenInput').value.trim();
-      const inviteCode = document.getElementById('inviteCodeInput').value.trim();
-      const status = document.getElementById('statusMsg');
-      const btn = document.getElementById('btnSub');
+      const code = document.getElementById('inviteCodeInput').value.trim();
+      if (!token) return alert('Token necesario.');
 
-      if (!token) {
-        status.className = 'status-msg error';
-        status.innerText = 'Por favor, introduce el token del canal.';
-        return;
+      if(code) {
+        await fetch('/api/redeem-code', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({student_token:token, code}) });
       }
 
-      try {
-        btn.disabled = true;
-        status.className = 'status-msg';
-        status.innerText = 'Validando canal y permisos...';
-
-        if (inviteCode) {
-          const redeemRes = await fetch('/api/redeem-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ student_token: token, code: inviteCode })
-          });
-          const redeemData = await redeemRes.json();
-          if (!redeemRes.ok) {
-            throw new Error(redeemData.error || 'Error al canjear el código de invitación.');
-          }
-        }
-
-        const res = await fetch(`/api/alerts?token=${token}`);
-        if (!res.ok) throw new Error('Token inválido o canal no encontrado.');
-
-        localStorage.setItem('tradenotify_token', token);
-        actualizarWebhookModal(token);
-        
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        window.OneSignalDeferred.push(async function(OneSignal) {
-          await OneSignal.Slidedown.promptPush();
-        });
-
-        mostrarPanelLive(token);
-      } catch (err) {
-        status.className = 'status-msg error';
-        status.innerText = '❌ ' + err.message;
-        btn.disabled = false;
-      }
+      localStorage.setItem('tradenotify_token', token);
+      mostrarPanelLive(token);
     }
 
-    async function mostrarPanelLive(token) {
+    function mostrarPanelLive(token) {
       document.getElementById('viewSubscribe').style.display = 'none';
       document.getElementById('viewLive').style.display = 'block';
-      await cargarHistorial(token);
-      setInterval(() => cargarHistorial(token), 15000);
+      document.getElementById('displayToken').innerText = token.substring(0, 15) + '...';
+      cargarHistorial(token);
     }
 
     async function cargarHistorial(tokenParam) {
       const token = tokenParam || localStorage.getItem('tradenotify_token');
-      if (!token) return;
-
-      try {
-        const res = await fetch(`/api/alerts?token=${token}`);
-        const data = await res.json();
-
-        if (res.ok) {
-          document.getElementById('channelTitle').innerText = data.channel.name;
-
-          const guideBtn = document.querySelector('.guide-btn');
-          if (data.channel.role !== 'mentor') {
-            guideBtn.style.display = 'none';
-          } else {
-            guideBtn.style.display = 'flex';
-          }
-
-          if (data.channel.is_expired) {
-            document.getElementById('expiredModal').style.display = 'flex';
-            return;
-          }
-
-          if (data.channel.is_trial) {
-            document.getElementById('trialBanner').style.display = 'flex';
-            document.getElementById('trialDaysCount').innerText = data.channel.days_left;
-          }
-
-          const feed = document.getElementById('feedList');
-          feed.innerHTML = '';
-
-          if (!data.alerts || data.alerts.length === 0) {
-            feed.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:20px 0;">No hay alertas recientes en este canal.</div>';
-            return;
-          }
-
-          data.alerts.forEach(al => {
-            const date = new Date(al.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const title = al.payload?.title || '🚨 Alerta de Mercado';
-            const body = al.payload?.message || (typeof al.payload === 'string' ? al.payload : JSON.stringify(al.payload));
-
-            const div = document.createElement('div');
-            div.className = 'alert-card';
-            div.innerHTML = `
-              <div class="alert-time">⏱️ ${date}</div>
-              <div class="alert-title">${title}</div>
-              <div class="alert-body">${body}</div>
-            `;
-            feed.appendChild(div);
-          });
+      const res = await fetch(`/api/alerts?token=${token}`);
+      const data = await res.json();
+      if(res.ok) {
+        document.getElementById('channelTitle').innerText = data.channel.name;
+        if(data.channel.is_trial) {
+          document.getElementById('trialBanner').style.display = 'block';
+          document.getElementById('trialDaysCount').innerText = data.channel.days_left;
         }
-      } catch (e) {
-        console.error('Error al cargar historial:', e);
+        const list = document.getElementById('feedList');
+        list.innerHTML = data.alerts.map(a => `<div class="alert-card"><div class="alert-time">${new Date(a.created_at).toLocaleTimeString()}</div><div class="alert-title">${a.payload.title}</div><div class="alert-body">${a.payload.message}</div></div>`).join('');
       }
     }
 
-    function desvincular() {
-      if (confirm('¿Quieres desconectar este dispositivo del canal?')) {
-        localStorage.removeItem('tradenotify_token');
-        location.reload();
-      }
-    }
+    function desvincular() { localStorage.removeItem('tradenotify_token'); location.reload(); }
+    function copyToken() { navigator.clipboard.writeText(localStorage.getItem('tradenotify_token')); alert('Token copiado'); }
   </script>
 </body>
 </html>
