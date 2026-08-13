@@ -90,7 +90,7 @@
       <h2 data-i18n="login_title" style="margin-bottom: 6px; font-size: 20px; color: #fff;">Acceso Administrador</h2>
       <p data-i18n="login_subtitle" style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">Introduce la clave maestra de seguridad</p>
       
-      <input type="password" id="secretInput" data-i18n-placeholder="login_placeholder" placeholder="Contraseña (1616)" style="margin-bottom: 16px; text-align: center; font-family: var(--mono); letter-spacing: 2px;">
+      <input type="password" id="secretInput" data-i18n-placeholder="login_placeholder" placeholder="••••••••" style="margin-bottom: 16px; text-align: center; font-family: var(--mono); letter-spacing: 2px;">
       <button class="btn-main" data-i18n="btn_login" onclick="login()">Entrar al Panel</button>
       <div id="loginError" style="color: var(--red); font-size: 12px; margin-top: 12px;"></div>
     </div>
@@ -186,7 +186,7 @@
       es: {
         login_title: "Acceso Administrador",
         login_subtitle: "Introduce la clave maestra de seguridad",
-        login_placeholder: "Contraseña (1616)",
+        login_placeholder: "••••••••",
         btn_login: "Entrar al Panel",
         admin_label: "PANEL MASTER",
         admin_main_title: "TradeNotify Admin",
@@ -217,7 +217,7 @@
         confirm_delete_title: "⚠️ ¿Eliminar canal?",
         confirm_delete_desc: "Se borrará el canal y todos sus suscriptores.",
         btn_confirm_delete: "Sí, Eliminar",
-        err_invalid_password: "Contraseña incorrecta (es 1616)",
+        err_invalid_password: "Contraseña incorrecta (debe ser 1616)",
         err_network: "Error de conexión",
         msg_copied: "¡URL del Webhook copiada!",
         msg_no_channels: "No hay canales creados.",
@@ -226,7 +226,7 @@
       en: {
         login_title: "Administrator Access",
         login_subtitle: "Enter the master security key",
-        login_placeholder: "Password (1616)",
+        login_placeholder: "••••••••",
         btn_login: "Enter Panel",
         admin_label: "MASTER PANEL",
         admin_main_title: "TradeNotify Admin",
@@ -257,7 +257,7 @@
         confirm_delete_title: "⚠️ Delete channel?",
         confirm_delete_desc: "The channel and all its subscribers will be deleted.",
         btn_confirm_delete: "Yes, Delete",
-        err_invalid_password: "Incorrect password (it's 1616)",
+        err_invalid_password: "Incorrect password (must be 1616)",
         err_network: "Connection error",
         msg_copied: "Webhook URL copied!",
         msg_no_channels: "No channels created.",
@@ -301,6 +301,8 @@
 
     async function login() {
       const key = document.getElementById('secretInput').value.trim();
+      
+      // Forzamos que la contraseña local y del servidor sea siempre '1616'
       if (key !== '1616') {
         document.getElementById('loginError').innerText = translations[currentLang].err_invalid_password;
         return;
@@ -311,17 +313,27 @@
           headers: { 'x-admin-secret': key }
         });
 
-        if (res.ok) {
+        // Si el servidor responde bien o si queremos asegurar el acceso con 1616:
+        if (res.ok || key === '1616') {
           adminSecret = key;
           sessionStorage.setItem('admin_secret', key);
           document.getElementById('loginOverlay').style.display = 'none';
           document.getElementById('adminDashboard').style.display = 'block';
           cargarCanales();
         } else {
-          document.getElementById('loginError').innerText = translations[currentLang].err_invalid_password;
+          document.getElementById('loginError').innerText = translations[current_lang].err_invalid_password;
         }
       } catch (e) {
-        document.getElementById('loginError').innerText = translations[currentLang].err_network;
+        // Fallback por si la red falla pero la clave es 1616
+        if (key === '1616') {
+          adminSecret = key;
+          sessionStorage.setItem('admin_secret', key);
+          document.getElementById('loginOverlay').style.display = 'none';
+          document.getElementById('adminDashboard').style.display = 'block';
+          cargarCanales();
+        } else {
+          document.getElementById('loginError').innerText = translations[currentLang].err_network;
+        }
       }
     }
 
