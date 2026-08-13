@@ -43,28 +43,29 @@
       border-top: 1px solid var(--glass-border-top);
       border-radius: 20px;
       padding: 26px;
-      max-width: 560px;
+      max-width: 580px;
       width: 100%;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
 
-    .header { text-align: center; margin-bottom: 22px; position: relative; }
-    .header img {
-      width: 50px; height: 50px; border-radius: 14px;
-      box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;
+    .header-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;
     }
-    .header h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-    .header p { color: var(--text-muted); font-size: 12.5px; margin-top: 2px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 36px; height: 36px; border-radius: 10px; box-shadow: 0 0 15px var(--accent-glow); }
+    .brand span { font-weight: 800; font-size: 16px; color: #fff; }
+
+    .header-actions { display: flex; gap: 8px; }
     
-    .btn-refresh {
-      position: absolute; top: 0; right: 0;
-      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-      color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 12px;
-      cursor: pointer; transition: background 0.2s;
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border);
+      color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
     }
-    .btn-refresh:hover { background: rgba(255, 255, 255, 0.1); }
+    .btn-icon:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
 
     input {
       width: 100%; padding: 14px;
@@ -105,7 +106,7 @@
 
     /* MÉTRICAS GRID */
     .metrics-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px;
     }
     .metric-card {
       background: rgba(10, 14, 23, 0.6); border: 1px solid var(--glass-border);
@@ -114,13 +115,25 @@
     .metric-value { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px; }
     .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 
+    /* WEBHOOK BOX PARA EL MENTOR */
+    .webhook-box {
+      background: rgba(10, 14, 23, 0.8); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;
+    }
+    .webhook-box label { font-size: 11.5px; color: #a5b4fc; font-weight: 700; display: block; margin-bottom: 6px; }
+    .webhook-url-row { display: flex; gap: 8px; align-items: center; }
+    .webhook-input {
+      background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px;
+      color: #93c5fd; font-family: var(--mono); font-size: 11.5px; padding: 8px 10px; width: 100%; margin: 0; outline: none;
+    }
+
     .section-title {
-      font-size: 13.5px; font-weight: 700; color: #a5b4fc;
-      margin: 18px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; font-weight: 700; color: #a5b4fc;
+      margin: 16px 0 8px 0; display: flex; justify-content: space-between; align-items: center;
     }
 
     .list-container {
-      max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
+      max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
     }
     .list-container::-webkit-scrollbar { width: 4px; }
     .list-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
@@ -130,7 +143,8 @@
       border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
     }
     .status-used { color: #f87171; font-size: 11.5px; font-weight: 600; }
-    .status-active { color: #34d399; font-size: 11.5px; font-weight: 600; }
+    .status-active { color: #34d399; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+    .status-active:hover { text-decoration: underline; }
     .status-history { color: var(--text-muted); font-size: 11.5px; font-weight: 600; }
 
     /* MODAL DE REVOCACIÓN */
@@ -156,10 +170,10 @@
     
     <!-- AUTH SECTION -->
     <div id="authSection">
-      <div class="header">
-        <img src="/icon.png" alt="TradeNotify Logo">
-        <h1>Panel Mentor</h1>
-        <p>Introduce tu token para acceder a la gestión.</p>
+      <div style="text-align: center; margin-bottom: 22px;">
+        <img src="/icon.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 14px; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 8px;">
+        <h1 style="font-size: 20px; font-weight: 800; color: #fff;">Panel Mentor</h1>
+        <p style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">Introduce tu token para acceder a la gestión.</p>
       </div>
 
       <input type="text" id="mentorToken" placeholder="Introduce tu Token Mentor">
@@ -171,11 +185,29 @@
 
     <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
-      <div class="header" style="margin-bottom: 14px;">
-        <button class="btn-refresh" onclick="recargarDatosMentor()">🔄 Refrescar</button>
-        <img src="/icon.png" alt="Logo">
-        <h1>Gestión de Mentoría</h1>
-        <p>Control de accesos y métricas comunitarias</p>
+      
+      <!-- CABECERA LIMPIA CON ACCIONES -->
+      <div class="header-top">
+        <div class="brand">
+          <img src="/icon.png" alt="Logo">
+          <div>
+            <span id="mentorChannelName" style="display:block; font-size:14px; color:#fff;">Mentoría</span>
+            <span style="font-size:10.5px; color:var(--text-muted); text-transform:uppercase;">Panel Profesional</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" onclick="recargarDatosMentor()" title="Actualizar datos">🔄 Refrescar</button>
+          <button class="btn-icon" style="color: #f87171;" onclick="cerrarSesion()" title="Cerrar sesión">🚪 Salir</button>
+        </div>
+      </div>
+
+      <!-- WEBHOOK URL DEL MENTOR (CRÍTICO PARA EMITIR ALERTAS) -->
+      <div class="webhook-box">
+        <label>🔗 Tu URL de Webhook (Pégala en TradingView para enviar alertas a tus alumnos):</label>
+        <div class="webhook-url-row">
+          <input type="text" id="mentorWebhookUrl" class="webhook-input" readonly>
+          <button class="btn-icon" style="width: auto; padding: 8px 12px; background: rgba(99,102,241,0.2); border-color: rgba(129,140,248,0.4);" onclick="copiarWebhookMentor()">📋 Copiar</button>
+        </div>
       </div>
 
       <!-- MÉTRICAS DE TIEMPOS Y ALUMNOS -->
@@ -196,7 +228,7 @@
 
       <button onclick="generarCodigo()" style="margin-bottom: 14px;">+ Generar Nuevo Código de Invitación</button>
 
-      <div class="section-title"><span>🎟️ Códigos Generados</span></div>
+      <div class="section-title"><span>🎟️ Códigos Generados <small style="color:var(--text-muted); font-weight:normal;">(Haz clic para copiar)</small></span></div>
       <div id="codesList" class="list-container"></div>
 
       <div class="section-title" style="margin-top: 14px;"><span>🎓 Alumnos Activos</span></div>
@@ -205,12 +237,11 @@
       <div class="section-title" style="margin-top: 14px;"><span>📚 Histórico de Alumnos (Pasados)</span></div>
       <div id="historyList" class="list-container"></div>
 
-      <button class="btn-secondary" style="margin-top: 16px; font-size: 13px; padding: 10px;" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 
   </div>
 
-  <!-- MODAL DE CONFIRMACIÓN DE REVOCACIÓN -->
+  <!-- MODAL DE REVOCACIÓN -->
   <div id="revokeModal" class="modal-overlay">
     <div class="modal-content">
       <h3>⚠️ ¿Revocar acceso al alumno?</h3>
@@ -245,6 +276,11 @@
           localStorage.setItem('mentor_token', token);
           document.getElementById('authSection').style.display = 'none';
           document.getElementById('dashboardSection').style.display = 'block';
+          
+          // Rellenar datos del mentor
+          document.getElementById('mentorChannelName').innerText = data.channel.name || 'Mentoría';
+          document.getElementById('mentorWebhookUrl').value = `https://tradenotify-lac.vercel.app/api/webhook?token=${token}`;
+          
           cargarDatosMentor(token);
         } else {
           if (!auto) {
@@ -265,6 +301,18 @@
       if (token) cargarDatosMentor(token);
     }
 
+    function copiarWebhookMentor() {
+      const input = document.getElementById('mentorWebhookUrl');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      alert('¡URL de Webhook copiada al portapapeles!');
+    }
+
+    function copiarCodigo(code) {
+      navigator.clipboard.writeText(code);
+      alert(`¡Código ${code} copiado al portapapeles!`);
+    }
+
     async function cargarDatosMentor(token) {
       // 1. Cargar Códigos
       const resCodes = await fetch(`/api/list-codes?token=${token}`);
@@ -276,13 +324,13 @@
       } else {
         codesList.innerHTML = dataCodes.codes.map(c => `
           <div class="list-item">
-            <span style="font-family:var(--mono); color:#93c5fd;">${c.code}</span>
-            <span class="${c.is_used ? 'status-used' : 'status-active'}">${c.is_used ? 'Usado' : 'Activo'}</span>
+            <span style="font-family:var(--mono); color:#93c5fd; cursor:pointer;" onclick="copiarCodigo('${c.code}')" title="Copiar código">${c.code} 📋</span>
+            <span class="${c.is_used ? 'status-used' : 'status-active'}" ${!c.is_used ? `onclick="copiarCodigo('${c.code}')"` : ''}>${c.is_used ? 'Usado' : 'Activo (Copiar)'}</span>
           </div>
         `).join('');
       }
 
-      // 2. Cargar Alumnos y calcular métricas temporales
+      // 2. Cargar Alumnos y métricas
       const resStudents = await fetch(`/api/mentor-students?token=${token}`);
       const dataStudents = await resStudents.json();
       const studentsList = document.getElementById('studentsList');
@@ -292,11 +340,9 @@
       const activeStudents = allRelations.filter(s => s.status !== 'revoked');
       const revokedStudents = allRelations.filter(s => s.status === 'revoked');
 
-      // Actualizar Métricas numéricas
       document.getElementById('metricActive').innerText = activeStudents.length;
       document.getElementById('metricHistoric').innerText = allRelations.length;
 
-      // Calcular pico de altas por mes
       if (allRelations.length > 0) {
         const monthsCount = {};
         allRelations.forEach(r => {
@@ -310,7 +356,6 @@
         document.getElementById('metricPeak').innerText = 'N/D';
       }
 
-      // Listar Activos
       if (activeStudents.length === 0) {
         studentsList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">No hay alumnos activos.</div>';
       } else {
@@ -325,7 +370,6 @@
         `).join('');
       }
 
-      // Listar Históricos (Pasados)
       if (revokedStudents.length === 0) {
         historyList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:8px;">Sin registros en el histórico.</div>';
       } else {
