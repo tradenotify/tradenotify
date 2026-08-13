@@ -19,7 +19,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background-color: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
     
-    .container { max-width: 900px; width: 100%; }
+    .container { max-width: 1000px; width: 100%; }
     
     header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
@@ -116,33 +116,33 @@
       <h2 data-i18n="create_title" style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px;">Crear Nuevo Canal / Cliente</h2>
       <div class="form-grid">
         <div>
-          <label data-i18n="label_channel_name">Nombre del Canal</label>
-          <input type="text" id="chName" data-i18n-placeholder="placeholder_channel_name" placeholder="Ej: Estrategia NQ o Cliente Juan">
+          <label data-i18n="label_channel_name">Nombre</label>
+          <input type="text" id="chName" data-i18n-placeholder="placeholder_channel_name" placeholder="Ej: Mentor Juan o Trader Pro">
         </div>
         <div>
-          <label data-i18n="label_plan_type">Tipo de Plan</label>
+          <label data-i18n="label_plan_type">Tipo</label>
           <select id="chPlan">
-            <option value="individual" data-i18n="plan_individual">Individual (Uso Personal)</option>
-            <option value="community" data-i18n="plan_community">Comunidad (Mentor / Multidispositivo)</option>
+            <option value="mentor" data-i18n="plan_mentor">Mentor</option>
+            <option value="individual" data-i18n="plan_individual">Individual</option>
+            <option value="student" data-i18n="plan_student">Alumno</option>
           </select>
         </div>
         <div>
           <label data-i18n="label_device_limit">Cupo Dispositivos</label>
-          <input type="number" id="chLimit" value="1" min="1" max="1000">
+          <input type="number" id="chLimit" value="50" min="1" max="1000">
         </div>
-        <button class="btn-main" onclick="crearCanal()" data-i18n="btn_create">Crear Canal</button>
+        <button class="btn-main" onclick="crearCanal()" data-i18n="btn_create">Crear</button>
       </div>
     </div>
 
-    <!-- LISTA DE CANALES -->
+    <!-- SECCIÓN 1: MENTORES E INDIVIDUALES -->
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 data-i18n="active_channels_title" style="font-size: 15px; font-weight: 700; color: #fff;">Canales Activos</h2>
+        <h2 data-i18n="mentors_section_title" style="font-size: 15px; font-weight: 700; color: #fff;">👨‍🏫 Mentores y Usuarios Individuales</h2>
         <button class="btn-secondary" onclick="cargarCanales()" data-i18n="btn_refresh">🔄 Actualizar</button>
       </div>
-
       <div style="overflow-x: auto;">
-        <table id="channelsTable">
+        <table>
           <thead>
             <tr>
               <th data-i18n="th_name">Nombre</th>
@@ -153,9 +153,29 @@
               <th data-i18n="th_actions">Acciones</th>
             </tr>
           </thead>
-          <tbody id="channelsBody">
-            <!-- Se rellena con JS -->
-          </tbody>
+          <tbody id="mentorsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: ALUMNOS -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 data-i18n="students_section_title" style="font-size: 15px; font-weight: 700; color: #fff;">🎓 Alumnos Registrados</h2>
+      </div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="th_name">Nombre</th>
+              <th data-i18n="th_type">Tipo</th>
+              <th data-i18n="th_devices">Dispositivos</th>
+              <th data-i18n="th_webhook">Token / Webhook</th>
+              <th data-i18n="th_status">Estado</th>
+              <th data-i18n="th_actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -192,14 +212,16 @@
         admin_main_title: "TradeNotify Admin",
         btn_logout: "Cerrar Sesión",
         create_title: "Crear Nuevo Canal / Cliente",
-        label_channel_name: "Nombre del Canal",
-        placeholder_channel_name: "Ej: Estrategia NQ o Cliente Juan",
-        label_plan_type: "Tipo de Plan",
-        plan_individual: "Individual (Uso Personal)",
-        plan_community: "Comunidad (Mentor / Multidispositivo)",
+        label_channel_name: "Nombre",
+        placeholder_channel_name: "Ej: Mentor Juan o Trader Pro",
+        label_plan_type: "Tipo",
+        plan_mentor: "Mentor",
+        plan_individual: "Individual",
+        plan_student: "Alumno",
         label_device_limit: "Cupo Dispositivos",
-        btn_create: "Crear Canal",
-        active_channels_title: "Canales Activos",
+        btn_create: "Crear",
+        mentors_section_title: "👨‍🏫 Mentores y Usuarios Individuales",
+        students_section_title: "🎓 Alumnos Registrados",
         btn_refresh: "🔄 Actualizar",
         th_name: "Nombre",
         th_type: "Tipo",
@@ -220,7 +242,7 @@
         err_invalid_password: "Contraseña incorrecta (debe ser 1616)",
         err_network: "Error de conexión",
         msg_copied: "¡URL del Webhook copiada!",
-        msg_no_channels: "No hay canales creados.",
+        msg_no_channels: "No hay registros.",
         err_name_needed: "Introduce un nombre para el canal"
       },
       en: {
@@ -232,14 +254,16 @@
         admin_main_title: "TradeNotify Admin",
         btn_logout: "Logout",
         create_title: "Create New Channel / Client",
-        label_channel_name: "Channel Name",
-        placeholder_channel_name: "Ex: NQ Strategy or John Client",
-        label_plan_type: "Plan Type",
-        plan_individual: "Individual (Personal Use)",
-        plan_community: "Community (Mentor / Multi-device)",
+        label_channel_name: "Name",
+        placeholder_channel_name: "Ex: Mentor John or Trader Pro",
+        label_plan_type: "Type",
+        plan_mentor: "Mentor",
+        plan_individual: "Individual",
+        plan_student: "Student",
         label_device_limit: "Device Limit",
-        btn_create: "Create Channel",
-        active_channels_title: "Active Channels",
+        btn_create: "Create",
+        mentors_section_title: "👨‍🏫 Mentors & Individual Users",
+        students_section_title: "🎓 Registered Students",
         btn_refresh: "🔄 Refresh",
         th_name: "Name",
         th_type: "Type",
@@ -260,7 +284,7 @@
         err_invalid_password: "Incorrect password (must be 1616)",
         err_network: "Connection error",
         msg_copied: "Webhook URL copied!",
-        msg_no_channels: "No channels created.",
+        msg_no_channels: "No records found.",
         err_name_needed: "Enter a channel name"
       }
     };
@@ -301,40 +325,15 @@
 
     async function login() {
       const key = document.getElementById('secretInput').value.trim();
-      
-      // Forzamos que la contraseña local y del servidor sea siempre '1616'
       if (key !== '1616') {
         document.getElementById('loginError').innerText = translations[currentLang].err_invalid_password;
         return;
       }
-
-      try {
-        const res = await fetch('/api/admin', {
-          headers: { 'x-admin-secret': key }
-        });
-
-        // Si el servidor responde bien o si queremos asegurar el acceso con 1616:
-        if (res.ok || key === '1616') {
-          adminSecret = key;
-          sessionStorage.setItem('admin_secret', key);
-          document.getElementById('loginOverlay').style.display = 'none';
-          document.getElementById('adminDashboard').style.display = 'block';
-          cargarCanales();
-        } else {
-          document.getElementById('loginError').innerText = translations[current_lang].err_invalid_password;
-        }
-      } catch (e) {
-        // Fallback por si la red falla pero la clave es 1616
-        if (key === '1616') {
-          adminSecret = key;
-          sessionStorage.setItem('admin_secret', key);
-          document.getElementById('loginOverlay').style.display = 'none';
-          document.getElementById('adminDashboard').style.display = 'block';
-          cargarCanales();
-        } else {
-          document.getElementById('loginError').innerText = translations[currentLang].err_network;
-        }
-      }
+      adminSecret = key;
+      sessionStorage.setItem('admin_secret', key);
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      cargarCanales();
     }
 
     function logout() {
@@ -348,20 +347,34 @@
           headers: { 'x-admin-secret': adminSecret }
         });
         const data = await res.json();
-        const tbody = document.getElementById('channelsBody');
-        tbody.innerHTML = '';
+        
+        const mentorsBody = document.getElementById('mentorsTableBody');
+        const studentsBody = document.getElementById('studentsTableBody');
+        mentorsBody.innerHTML = '';
+        studentsBody.innerHTML = '';
 
         if (!data.channels || data.channels.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
+          mentorsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
+          studentsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
           return;
         }
 
+        let mentorsCount = 0;
+        let studentsCount = 0;
+
         data.channels.forEach(ch => {
           const webhookUrl = `${window.location.origin}/api/webhook?token=${ch.webhook_token}`;
+          
+          // Traducir visualmente 'student' a 'Alumno' y capitalizar el resto
+          let tipoVisual = ch.plan_type;
+          if (tipoVisual === 'student') tipoVisual = currentLang === 'es' ? 'Alumno' : 'Student';
+          else if (tipoVisual === 'mentor') tipoVisual = currentLang === 'es' ? 'Mentor' : 'Mentor';
+          else if (tipoVisual === 'individual') tipoVisual = currentLang === 'es' ? 'Individual' : 'Individual';
+
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td style="font-weight:600; color:#fff;">${ch.name}</td>
-            <td><span style="text-transform:capitalize;">${ch.plan_type}</span></td>
+            <td><span style="text-transform:capitalize;">${tipoVisual}</span></td>
             <td>${ch.current_subscribers} / ${ch.max_subscribers}</td>
             <td>
               <span class="token-box" onclick="copiar('${webhookUrl}')">
@@ -382,8 +395,24 @@
               </button>
             </td>
           `;
-          tbody.appendChild(tr);
+
+          // Separar en la tabla correspondiente
+          if (ch.plan_type === 'student') {
+            studentsBody.appendChild(tr);
+            studentsCount++;
+          } else {
+            mentorsBody.appendChild(tr);
+            mentorsCount++;
+          }
         });
+
+        if (mentorsCount === 0) {
+          mentorsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
+        }
+        if (studentsCount === 0) {
+          studentsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">${translations[currentLang].msg_no_channels}</td></tr>`;
+        }
+
       } catch (err) {
         customAlert('Error: ' + err.message);
       }
